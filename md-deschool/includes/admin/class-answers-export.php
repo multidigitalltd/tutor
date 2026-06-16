@@ -140,12 +140,12 @@ final class Answers_Export {
 						$output,
 						array(
 							$user_id,
-							$user->display_name,
-							$user->user_email,
-							$chapter->post_title,
-							$task_label,
-							$answer['text'],
-							implode( ' | ', $files ),
+							$this->csv_safe( $user->display_name ),
+							$this->csv_safe( $user->user_email ),
+							$this->csv_safe( $chapter->post_title ),
+							$this->csv_safe( $task_label ),
+							$this->csv_safe( $answer['text'] ),
+							$this->csv_safe( implode( ' | ', $files ) ),
 						)
 					);
 				}
@@ -154,5 +154,23 @@ final class Answers_Export {
 
 		fclose( $output ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fclose -- writing to php://output stream.
 		exit;
+	}
+
+	/**
+	 * Neutralise CSV formula injection by prefixing risky cells.
+	 *
+	 * Learner-controlled text could start with =, +, -, @, tab or CR, which
+	 * spreadsheet apps may execute as a formula. Prefix such values with a
+	 * single quote so they are treated as plain text.
+	 *
+	 * @param string $value Cell value.
+	 * @return string
+	 */
+	private function csv_safe( string $value ): string {
+		if ( '' !== $value && in_array( $value[0], array( '=', '+', '-', '@', "\t", "\r" ), true ) ) {
+			return "'" . $value;
+		}
+
+		return $value;
 	}
 }
