@@ -35,12 +35,38 @@ final class Integration {
 	public function add_metabox(): void {
 		add_meta_box(
 			'mdds-unit-product',
-			__( 'מוצר WooCommerce לרכישה', 'md-deschool' ),
+			__( 'WooCommerce', 'md-deschool' ),
 			array( $this, 'render' ),
 			Data::POST_TYPE_UNIT,
 			'side',
 			'default'
 		);
+	}
+
+	/**
+	 * Render a product <select> for a given meta key.
+	 *
+	 * @param string         $name     Field name / meta key.
+	 * @param string         $label    Field label.
+	 * @param int            $selected Currently selected product ID.
+	 * @param string         $empty    Empty-option label.
+	 * @param \WP_Post[]     $products Product posts.
+	 */
+	private function product_select( string $name, string $label, int $selected, string $empty, array $products ): void {
+		$id = 'mdds-' . sanitize_key( $name );
+		?>
+		<p class="mdds-field">
+			<label for="<?php echo esc_attr( $id ); ?>"><strong><?php echo esc_html( $label ); ?></strong></label>
+			<select id="<?php echo esc_attr( $id ); ?>" name="<?php echo esc_attr( $name ); ?>" class="widefat">
+				<option value="0"><?php echo esc_html( $empty ); ?></option>
+				<?php foreach ( $products as $product ) : ?>
+					<option value="<?php echo esc_attr( (string) $product->ID ); ?>" <?php selected( $selected, $product->ID ); ?>>
+						<?php echo esc_html( $product->post_title ); ?>
+					</option>
+				<?php endforeach; ?>
+			</select>
+		</p>
+		<?php
 	}
 
 	/**
@@ -51,7 +77,8 @@ final class Integration {
 	public function render( \WP_Post $post ): void {
 		wp_nonce_field( self::NONCE_ACTION, self::NONCE_NAME );
 
-		$selected = (int) get_post_meta( $post->ID, Data::META_PRODUCT_ID, true );
+		$access_product = (int) get_post_meta( $post->ID, Data::META_PRODUCT_ID, true );
+		$consult_product = (int) get_post_meta( $post->ID, Data::META_CONSULT_PRODUCT, true );
 
 		$products = get_posts(
 			array(
@@ -64,19 +91,22 @@ final class Integration {
 				'suppress_filters' => false,
 			)
 		);
-		?>
-		<p class="mdds-field">
-			<label for="mdds-product-id"><strong><?php esc_html_e( 'מוצר שרכישתו פותחת גישה ליחידה', 'md-deschool' ); ?></strong></label>
-			<select id="mdds-product-id" name="<?php echo esc_attr( Data::META_PRODUCT_ID ); ?>" class="widefat">
-				<option value="0"><?php esc_html_e( '— ללא מוצר (גישה לעורכים בלבד) —', 'md-deschool' ); ?></option>
-				<?php foreach ( $products as $product ) : ?>
-					<option value="<?php echo esc_attr( (string) $product->ID ); ?>" <?php selected( $selected, $product->ID ); ?>>
-						<?php echo esc_html( $product->post_title ); ?>
-					</option>
-				<?php endforeach; ?>
-			</select>
-		</p>
-		<?php
+
+		$this->product_select(
+			Data::META_PRODUCT_ID,
+			__( 'מוצר שרכישתו פותחת גישה ליחידה', 'md-deschool' ),
+			$access_product,
+			__( '— ללא מוצר (גישה לעורכים בלבד) —', 'md-deschool' ),
+			$products
+		);
+
+		$this->product_select(
+			Data::META_CONSULT_PRODUCT,
+			__( 'מוצר ייעוץ מסובסד (לאזור הייעוץ)', 'md-deschool' ),
+			$consult_product,
+			__( '— ללא מוצר ייעוץ —', 'md-deschool' ),
+			$products
+		);
 	}
 
 	/**
@@ -94,6 +124,9 @@ final class Integration {
 
 		$product_id = isset( $_POST[ Data::META_PRODUCT_ID ] ) ? absint( wp_unslash( $_POST[ Data::META_PRODUCT_ID ] ) ) : 0;
 		update_post_meta( $post_id, Data::META_PRODUCT_ID, $product_id );
+
+		$consult_id = isset( $_POST[ Data::META_CONSULT_PRODUCT ] ) ? absint( wp_unslash( $_POST[ Data::META_CONSULT_PRODUCT ] ) ) : 0;
+		update_post_meta( $post_id, Data::META_CONSULT_PRODUCT, $consult_id );
 	}
 
 	/**
@@ -137,5 +170,25 @@ final class Integration {
 		}
 
 		return (string) $product->get_permalink();
+	}
+
+	/**
+	 * Get the add-to-cart URL for the unit's consultation product.
+	 *
+	 * @param int $unit_id Unit ID.
+	 */
+	public static function get_consult_cart_url( int $unit_id ): string {
+		$product_id = (int) get_post_meta( $unit_id, Data::META_CONSULT_PRODUCT, true );
+		if ( $product_id <= 0 || ! function_exists( 'wc_get_product' ) ) {
+			return '';
+		}
+
+		$product = wc_get_product( $product_id );
+		if ( ! $product ) {
+			return '';
+		}
+
+		// Direct add-to-cart link; falls back to the product page if needed.
+		return add_query_arg( 'add-to-cart', $product_id, $product->get_permalink() );
 	}
 }

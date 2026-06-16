@@ -355,6 +355,43 @@
 	margin-top: 16px;
 }
 
+/* Dashboard --------------------------------------------------------------- */
+.mdds-dashboard-list {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+	display: grid;
+	gap: 16px;
+	grid-template-columns: repeat( auto-fill, minmax( 260px, 1fr ) );
+}
+
+.mdds-dashboard-card {
+	border: 1px solid var(--mdds-border);
+	border-radius: var(--mdds-radius);
+	padding: 16px;
+}
+
+.mdds-dashboard-title {
+	font-weight: 700;
+	font-size: 1.1rem;
+	text-decoration: none;
+	display: block;
+	margin-bottom: 10px;
+}
+
+.mdds-dashboard-quiz {
+	margin: 8px 0 0;
+	font-weight: 600;
+}
+
+.mdds-dashboard-quiz.is-pass {
+	color: var(--mdds-success);
+}
+
+.mdds-dashboard-quiz.is-fail {
+	color: var(--mdds-error);
+}
+
 /* Accessibility helpers --------------------------------------------------- */
 .screen-reader-text {
 	position: absolute !important;

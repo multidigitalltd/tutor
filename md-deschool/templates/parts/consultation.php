@@ -10,6 +10,7 @@
 declare( strict_types=1 );
 
 use MultiDigital\DeSchool\Data;
+use MultiDigital\DeSchool\WooCommerce\Integration;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -19,6 +20,13 @@ $title = (string) get_post_meta( $unit_id, Data::META_CONSULT_TITLE, true );
 $text  = (string) get_post_meta( $unit_id, Data::META_CONSULT_TEXT, true );
 $label = (string) get_post_meta( $unit_id, Data::META_CONSULT_LABEL, true );
 $url   = (string) get_post_meta( $unit_id, Data::META_CONSULT_URL, true );
+
+// Prefer a WooCommerce consultation product when configured.
+$cart_url = class_exists( Integration::class ) ? Integration::get_consult_cart_url( $unit_id ) : '';
+if ( '' !== $cart_url ) {
+	$url   = $cart_url;
+	$label = '' !== $label ? $label : __( 'רכישת פגישת ייעוץ מסובסדת', 'md-deschool' );
+}
 
 if ( '' === $title && '' === $text ) {
 	return;

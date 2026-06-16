@@ -36,6 +36,7 @@ final class Data {
 	public const META_CONSULT_TEXT    = '_mdds_consult_text';
 	public const META_CONSULT_LABEL   = '_mdds_consult_button_label';
 	public const META_CONSULT_URL     = '_mdds_consult_button_url';
+	public const META_CONSULT_PRODUCT = '_mdds_consult_product_id';
 	public const META_QUIZ_TITLE      = '_mdds_quiz_title';
 	public const META_QUIZ_QUESTIONS  = '_mdds_quiz_questions';
 	public const META_QUIZ_PASS       = '_mdds_quiz_pass_score';
@@ -114,6 +115,42 @@ final class Data {
 		$questions = get_post_meta( $unit_id, self::META_QUIZ_QUESTIONS, true );
 
 		return is_array( $questions ) ? array_values( $questions ) : array();
+	}
+
+	/**
+	 * Get every published unit (lean query).
+	 *
+	 * @return \WP_Post[]
+	 */
+	public static function get_all_units(): array {
+		return get_posts(
+			array(
+				'post_type'              => self::POST_TYPE_UNIT,
+				'post_status'            => 'publish',
+				'posts_per_page'         => 200,
+				'orderby'                => 'title',
+				'order'                  => 'ASC',
+				'no_found_rows'          => true,
+				'update_post_term_cache' => false,
+				'suppress_filters'       => false,
+			)
+		);
+	}
+
+	/**
+	 * Get the IDs of users who have saved any task answer.
+	 *
+	 * @return int[]
+	 */
+	public static function get_users_with_answers(): array {
+		$users = get_users(
+			array(
+				'meta_key' => self::UMETA_ANSWERS, // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key -- intentional, admin-only export.
+				'fields'   => 'ID',
+			)
+		);
+
+		return array_map( 'absint', $users );
 	}
 
 	/* ---------------------------------------------------------------------
