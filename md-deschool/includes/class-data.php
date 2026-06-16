@@ -43,6 +43,7 @@ final class Data {
 	public const META_QUIZ_SHOW       = '_mdds_quiz_show_correct';
 	public const META_QUIZ_RETRY      = '_mdds_quiz_allow_retry';
 	public const META_PRODUCT_ID      = '_mdds_product_id';
+	public const META_SEQUENTIAL      = '_mdds_sequential';
 
 	/* ---------------------------------------------------------------------
 	 * Chapter meta keys.
@@ -151,6 +152,66 @@ final class Data {
 		);
 
 		return array_map( 'absint', $users );
+	}
+
+	/* ---------------------------------------------------------------------
+	 * Sequential learning (drip) helpers.
+	 * ------------------------------------------------------------------- */
+
+	/**
+	 * Whether a unit uses sequential (drip) learning.
+	 *
+	 * In sequential mode every chapter unlocks only once the preceding chapter
+	 * has been completed, and the summary quiz unlocks only after every chapter
+	 * is completed.
+	 *
+	 * @param int $unit_id Unit ID.
+	 */
+	public static function is_sequential( int $unit_id ): bool {
+		return (bool) get_post_meta( $unit_id, self::META_SEQUENTIAL, true );
+	}
+
+	/**
+	 * Whether a chapter is unlocked for a user.
+	 *
+	 * Non-sequential units always return true. In sequential units a chapter is
+	 * unlocked only when every chapter ordered before it is completed. The first
+	 * chapter is always unlocked.
+	 *
+	 * @param int             $user_id    User ID.
+	 * @param int             $unit_id    Unit ID.
+	 * @param int             $chapter_id Chapter being checked.
+	 * @param \WP_Post[]|null $chapters   Optional pre-fetched ordered chapters.
+	 */
+	public static function is_chapter_unlocked( int $user_id, int $unit_id, int $chapter_id, ?array $chapters = null ): bool {
+		if ( ! self::is_sequential( $unit_id ) ) {
+			return true;
+		}
+
+		$chapters = null !== $chapters ? $chapters : self::get_chapters( $unit_id );
+
+		foreach ( $chapters as $chapter ) {
+			if ( (int) $chapter->ID === $chapter_id ) {
+				return true; // Every earlier chapter was completed.
+			}
+			if ( $user_id <= 0 || ! self::is_chapter_completed( $user_id, (int) $chapter->ID ) ) {
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	/**
+	 * Whether the user has completed every chapter of a unit.
+	 *
+	 * @param int $user_id User ID.
+	 * @param int $unit_id Unit ID.
+	 */
+	public static function all_chapters_completed( int $user_id, int $unit_id ): bool {
+		$progress = self::get_progress( $user_id, $unit_id );
+
+		return $progress['total'] > 0 && $progress['completed'] >= $progress['total'];
 	}
 
 	/* ---------------------------------------------------------------------

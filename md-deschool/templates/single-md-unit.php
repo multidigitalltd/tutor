@@ -59,30 +59,70 @@ while ( have_posts() ) :
 
 			<?php else : ?>
 
-				<nav class="mdds-chapter-nav" aria-label="<?php esc_attr_e( 'ניווט בין הפרקים', 'md-deschool' ); ?>">
+				<?php
+				$sequential   = Data::is_sequential( $unit_id );
+				$total        = count( $chapters );
+				$all_complete = $user_id > 0 && Data::all_chapters_completed( $user_id, $unit_id );
+
+				// Pre-compute per-chapter state once (avoids repeated meta reads).
+				$states  = array();
+				$current = 0; // Index of the first chapter to focus by default.
+				foreach ( $chapters as $i => $chapter ) {
+					$cid       = (int) $chapter->ID;
+					$completed = $user_id > 0 && Data::is_chapter_completed( $user_id, $cid );
+					$unlocked  = Data::is_chapter_unlocked( $user_id, $unit_id, $cid, $chapters );
+
+					$states[ $i ] = array(
+						'completed' => $completed,
+						'unlocked'  => $unlocked,
+					);
+
+					// Default step = first unlocked chapter that is not yet completed.
+					if ( 0 === $current && $unlocked && ! $completed ) {
+						$current = $i;
+					}
+				}
+				?>
+
+				<nav class="mdds-chapter-nav" aria-label="<?php esc_attr_e( 'ניווט בין הפרקים', 'md-deschool' ); ?>" data-mdds-step-nav>
 					<h2><?php esc_html_e( 'פרקי היחידה', 'md-deschool' ); ?></h2>
 					<ol class="mdds-chapter-list">
-						<?php foreach ( $chapters as $i => $chapter ) : ?>
-							<li>
-								<a href="#mdds-chapter-<?php echo esc_attr( (string) $chapter->ID ); ?>">
-									<?php echo esc_html( $chapter->post_title ); ?>
-								</a>
+						<?php
+						foreach ( $chapters as $i => $chapter ) :
+							$st        = $states[ $i ];
+							$item_cls  = 'mdds-step';
+							$item_cls .= $st['completed'] ? ' is-completed' : '';
+							$item_cls .= $st['unlocked'] ? '' : ' is-locked';
+							?>
+							<li class="<?php echo esc_attr( $item_cls ); ?>">
+								<button type="button" class="mdds-step-link"
+									data-mdds-step="<?php echo esc_attr( (string) $i ); ?>"
+									data-target="mdds-chapter-<?php echo esc_attr( (string) $chapter->ID ); ?>"
+									<?php echo $st['unlocked'] ? '' : 'aria-disabled="true" disabled'; ?>>
+									<span class="mdds-step-index"><?php echo esc_html( (string) ( $i + 1 ) ); ?></span>
+									<span class="mdds-step-name"><?php echo esc_html( $chapter->post_title ); ?></span>
+									<span class="mdds-step-state" aria-hidden="true"></span>
+								</button>
 							</li>
 						<?php endforeach; ?>
 					</ol>
 				</nav>
 
-				<div class="mdds-chapters">
+				<div class="mdds-chapters" data-mdds-stepper data-current="<?php echo esc_attr( (string) $current ); ?>">
 					<?php
 					foreach ( $chapters as $i => $chapter ) {
 						Template_Loader::get_part(
 							'chapter',
 							array(
-								'unit_id'   => $unit_id,
-								'chapter'   => $chapter,
-								'number'    => $i + 1,
-								'user_id'   => $user_id,
-								'completed' => $user_id > 0 && Data::is_chapter_completed( $user_id, (int) $chapter->ID ),
+								'unit_id'    => $unit_id,
+								'chapter'    => $chapter,
+								'number'     => $i + 1,
+								'index'      => $i,
+								'total'      => $total,
+								'user_id'    => $user_id,
+								'sequential' => $sequential,
+								'completed'  => $states[ $i ]['completed'],
+								'locked'     => ! $states[ $i ]['unlocked'],
 							)
 						);
 					}
@@ -90,13 +130,22 @@ while ( have_posts() ) :
 				</div>
 
 				<?php
-				Template_Loader::get_part(
-					'quiz',
-					array(
-						'unit_id' => $unit_id,
-						'user_id' => $user_id,
-					)
-				);
+				if ( $sequential && ! $all_complete && ! empty( Data::get_quiz_questions( $unit_id ) ) ) :
+					?>
+					<section class="mdds-quiz-locked" aria-labelledby="mdds-quiz-locked-title">
+						<h2 id="mdds-quiz-locked-title"><?php esc_html_e( 'מבחן הסיכום נעול', 'md-deschool' ); ?></h2>
+						<p><?php esc_html_e( 'השלימו את כל פרקי היחידה כדי לפתוח את מבחן הסיכום.', 'md-deschool' ); ?></p>
+					</section>
+					<?php
+				else :
+					Template_Loader::get_part(
+						'quiz',
+						array(
+							'unit_id' => $unit_id,
+							'user_id' => $user_id,
+						)
+					);
+				endif;
 				?>
 
 			<?php endif; ?>

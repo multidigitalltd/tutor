@@ -60,6 +60,14 @@ final class Unit_Metaboxes {
 			6
 		);
 		echo '<p class="description">' . esc_html__( 'התיאור המלא של היחידה נכתב בעורך התוכן הראשי למעלה.', 'md-deschool' ) . '</p>';
+
+		echo '<hr />';
+		echo '<h4>' . esc_html__( 'מבנה הלמידה', 'md-deschool' ) . '</h4>';
+		Field_Renderer::checkbox(
+			Data::META_SEQUENTIAL,
+			__( 'למידה רציפה (טפטוף תוכן): כל פרק נפתח רק לאחר השלמת הפרק הקודם, והמבחן נפתח רק לאחר השלמת כל הפרקים.', 'md-deschool' ),
+			(bool) get_post_meta( $post->ID, Data::META_SEQUENTIAL, true )
+		);
 	}
 
 	/**
@@ -191,6 +199,9 @@ final class Unit_Metaboxes {
 		$this->update_text( $post_id, Data::META_CONSULT_LABEL );
 		$this->update_url( $post_id, Data::META_CONSULT_URL );
 		$this->update_text( $post_id, Data::META_QUIZ_TITLE );
+
+		// Learning structure.
+		update_post_meta( $post_id, Data::META_SEQUENTIAL, isset( $_POST[ Data::META_SEQUENTIAL ] ) ? 1 : 0 );
 
 		// Lecturer image (attachment id).
 		$image = isset( $_POST[ Data::META_LECTURER_IMAGE ] ) ? absint( wp_unslash( $_POST[ Data::META_LECTURER_IMAGE ] ) ) : 0;

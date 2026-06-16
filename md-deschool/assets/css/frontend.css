@@ -134,7 +134,7 @@
 	margin: 2px 0 8px;
 }
 
-/* Chapter nav ------------------------------------------------------------- */
+/* Chapter nav (LMS stepper) ----------------------------------------------- */
 .mdds-chapter-nav {
 	background: #f8fafc;
 	border: 1px solid var(--mdds-border);
@@ -145,6 +145,139 @@
 
 .mdds-chapter-nav h2 {
 	margin-top: 0;
+}
+
+.mdds-chapter-list {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+	counter-reset: none;
+}
+
+.mdds-step-link {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	width: 100%;
+	text-align: start;
+	background: #fff;
+	border: 1px solid var(--mdds-border);
+	border-radius: var(--mdds-radius);
+	padding: 10px 14px;
+	font: inherit;
+	color: inherit;
+	cursor: pointer;
+	transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.mdds-step-link:hover:not([disabled]) {
+	border-color: var(--mdds-accent);
+}
+
+.mdds-step.is-current .mdds-step-link {
+	border-color: var(--mdds-accent);
+	background: #eff6ff;
+}
+
+.mdds-step-link[disabled] {
+	cursor: not-allowed;
+	opacity: 0.6;
+}
+
+.mdds-step-index {
+	flex: 0 0 auto;
+	width: 28px;
+	height: 28px;
+	border-radius: 50%;
+	background: var(--mdds-border);
+	color: var(--mdds-muted);
+	display: grid;
+	place-items: center;
+	font-weight: 700;
+	font-size: 0.9rem;
+}
+
+.mdds-step.is-completed .mdds-step-index {
+	background: var(--mdds-success);
+	color: #fff;
+}
+
+.mdds-step.is-current .mdds-step-index {
+	background: var(--mdds-accent);
+	color: #fff;
+}
+
+.mdds-step-name {
+	flex: 1 1 auto;
+}
+
+.mdds-step-state {
+	flex: 0 0 auto;
+	font-size: 0.9rem;
+}
+
+.mdds-step.is-completed .mdds-step-state::before {
+	content: "\2713"; /* check mark */
+	color: var(--mdds-success);
+	font-weight: 700;
+}
+
+.mdds-step.is-locked .mdds-step-state::before {
+	content: "\1F512"; /* lock */
+}
+
+/* Stepper transitions ----------------------------------------------------- */
+.mdds-chapters.is-enhanced .mdds-chapter.is-active {
+	animation: mdds-step-in 0.25s ease;
+}
+
+@keyframes mdds-step-in {
+	from { opacity: 0; transform: translateY( 8px ); }
+	to   { opacity: 1; transform: none; }
+}
+
+/* Chapter footer navigation ----------------------------------------------- */
+.mdds-chapter-nav-buttons {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 12px;
+	flex-wrap: wrap;
+	margin-top: 20px;
+}
+
+.mdds-chapter-nav-buttons .mdds-mark-complete {
+	margin-inline: auto;
+}
+
+/* Locked chapter (drip) --------------------------------------------------- */
+.mdds-chapter.is-locked {
+	border-style: dashed;
+	background: #f8fafc;
+}
+
+.mdds-chapter-locked {
+	text-align: center;
+	padding: 24px 0;
+	color: var(--mdds-muted);
+}
+
+.mdds-chapter-locked-text::before {
+	content: "\1F512 ";
+}
+
+/* Locked quiz (drip) ------------------------------------------------------ */
+.mdds-quiz-locked {
+	border: 1px dashed var(--mdds-border);
+	border-radius: var(--mdds-radius);
+	padding: 24px;
+	margin: 32px 0;
+	text-align: center;
+	color: var(--mdds-muted);
+	background: #f8fafc;
 }
 
 /* Chapter ----------------------------------------------------------------- */
@@ -409,6 +542,10 @@
 	.mdds-progress-fill,
 	.mdds-button {
 		transition: none;
+	}
+
+	.mdds-chapters.is-enhanced .mdds-chapter.is-active {
+		animation: none;
 	}
 }
 

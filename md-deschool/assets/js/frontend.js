@@ -133,6 +133,118 @@
 	}
 
 	/* ------------------------------------------------------------------ */
+	/* Chapter stepper (LMS-style one-chapter-at-a-time navigation)       */
+	/* ------------------------------------------------------------------ */
+	var stepper = null;
+
+	/**
+	 * Whether the user prefers reduced motion.
+	 *
+	 * @return {boolean}
+	 */
+	function reducedMotion() {
+		return !! ( window.matchMedia && window.matchMedia( '(prefers-reduced-motion: reduce)' ).matches );
+	}
+
+	function initStepper() {
+		var container = document.querySelector( '[data-mdds-stepper]' );
+		if ( ! container ) {
+			return;
+		}
+
+		var steps = Array.prototype.slice.call( container.querySelectorAll( '[data-mdds-chapter]' ) );
+		var links = Array.prototype.slice.call( document.querySelectorAll( '[data-mdds-step]' ) );
+		var nav   = document.querySelector( '[data-mdds-step-nav]' );
+		if ( ! steps.length ) {
+			return;
+		}
+
+		var current = parseInt( container.getAttribute( 'data-current' ), 10 ) || 0;
+
+		function unlocked( index ) {
+			return !! steps[ index ] && steps[ index ].getAttribute( 'data-locked' ) !== '1';
+		}
+
+		function show( index, focusStep ) {
+			if ( index < 0 || index >= steps.length || ! unlocked( index ) ) {
+				return;
+			}
+			current = index;
+
+			steps.forEach( function ( step, i ) {
+				var active = i === index;
+				step.classList.toggle( 'is-active', active );
+				if ( active ) {
+					step.removeAttribute( 'hidden' );
+				} else {
+					step.setAttribute( 'hidden', 'hidden' );
+				}
+			} );
+
+			links.forEach( function ( link ) {
+				var li        = link.closest( '.mdds-step' );
+				var isCurrent = parseInt( link.getAttribute( 'data-mdds-step' ), 10 ) === index;
+				link.setAttribute( 'aria-current', isCurrent ? 'step' : 'false' );
+				if ( li ) {
+					li.classList.toggle( 'is-current', isCurrent );
+				}
+			} );
+
+			if ( false !== focusStep && steps[ index ].focus ) {
+				steps[ index ].focus( { preventScroll: true } );
+			}
+			var anchor = nav || steps[ index ];
+			if ( anchor && anchor.scrollIntoView ) {
+				anchor.scrollIntoView( { behavior: reducedMotion() ? 'auto' : 'smooth', block: 'start' } );
+			}
+		}
+
+		function next() {
+			for ( var i = current + 1; i < steps.length; i++ ) {
+				if ( unlocked( i ) ) {
+					show( i );
+					return;
+				}
+			}
+		}
+
+		function prev() {
+			for ( var i = current - 1; i >= 0; i-- ) {
+				if ( unlocked( i ) ) {
+					show( i );
+					return;
+				}
+			}
+		}
+
+		links.forEach( function ( link ) {
+			link.addEventListener( 'click', function () {
+				show( parseInt( link.getAttribute( 'data-mdds-step' ), 10 ) );
+			} );
+		} );
+
+		container.querySelectorAll( '[data-mdds-next]' ).forEach( function ( btn ) {
+			btn.addEventListener( 'click', next );
+		} );
+
+		container.querySelectorAll( '[data-mdds-prev]' ).forEach( function ( btn ) {
+			btn.addEventListener( 'click', prev );
+		} );
+
+		container.classList.add( 'is-enhanced' );
+		stepper = {
+			show: show,
+			next: next,
+			unlocked: unlocked,
+			steps: steps,
+			links: links
+		};
+
+		// Render the initial step without stealing focus on page load.
+		show( current, false );
+	}
+
+	/* ------------------------------------------------------------------ */
 	/* Mark chapter complete                                              */
 	/* ------------------------------------------------------------------ */
 	function initComplete() {
@@ -147,26 +259,71 @@
 					completed: nextState ? '1' : '0'
 				} ).then( function ( res ) {
 					button.disabled = false;
-					if ( res && res.success ) {
-						button.setAttribute( 'aria-pressed', nextState ? 'true' : 'false' );
-						button.textContent = nextState ? ( i18n.completed || 'Completed' ) : ( i18n.markDone || 'Mark complete' );
-						var section = button.closest( '.mdds-chapter' );
-						if ( section ) {
-							section.classList.toggle( 'is-completed', nextState );
-							var status = section.querySelector( '[data-mdds-chapter-status]' );
-							if ( status ) {
-								status.hidden = ! nextState;
-							}
+					if ( ! res || ! res.success ) {
+						return;
+					}
+
+					button.setAttribute( 'aria-pressed', nextState ? 'true' : 'false' );
+					button.textContent = nextState ? ( i18n.completed || 'Completed' ) : ( i18n.markDone || 'Mark complete' );
+
+					var section = button.closest( '[data-mdds-chapter]' );
+					if ( section ) {
+						section.classList.toggle( 'is-completed', nextState );
+						section.setAttribute( 'data-completed', nextState ? '1' : '0' );
+						var status = section.querySelector( '[data-mdds-chapter-status]' );
+						if ( status ) {
+							status.hidden = ! nextState;
 						}
-						updateProgress( res.data && res.data.progress );
-					} else {
-						button.disabled = false;
+						updateStepStatus( section.getAttribute( 'data-index' ), nextState );
+					}
+
+					updateProgress( res.data && res.data.progress );
+
+					if ( ! nextState ) {
+						return; // Un-marking: stay put.
+					}
+
+					var sequential = button.getAttribute( 'data-sequential' ) === '1';
+					var isLast     = button.getAttribute( 'data-last' ) === '1';
+
+					// Sequential mode may need to reveal freshly-dripped content
+					// (next chapter or the summary quiz) that was withheld server-side.
+					if ( sequential ) {
+						var index    = section ? parseInt( section.getAttribute( 'data-index' ), 10 ) : -1;
+						var nextStep = stepper && stepper.steps[ index + 1 ];
+						var revealNext = nextStep && nextStep.getAttribute( 'data-locked' ) === '1';
+						var revealQuiz = !! ( res.data && res.data.all_complete ) && document.querySelector( '.mdds-quiz-locked' );
+						if ( revealNext || revealQuiz ) {
+							window.location.reload();
+							return;
+						}
+					}
+
+					if ( ! isLast && stepper ) {
+						stepper.next();
 					}
 				} ).catch( function () {
 					button.disabled = false;
 				} );
 			} );
 		} );
+	}
+
+	/**
+	 * Reflect a chapter's completion state in the step navigation.
+	 *
+	 * @param {string|number} index     Chapter index.
+	 * @param {boolean}       completed Completion state.
+	 */
+	function updateStepStatus( index, completed ) {
+		if ( null === index || 'undefined' === typeof index ) {
+			return;
+		}
+		var link = document.querySelector( '[data-mdds-step="' + index + '"]' );
+		var li   = link && link.closest( '.mdds-step' );
+		if ( li ) {
+			li.classList.toggle( 'is-completed', !! completed );
+		}
 	}
 
 	/**
@@ -329,6 +486,7 @@
 	}
 
 	document.addEventListener( 'DOMContentLoaded', function () {
+		initStepper();
 		initTasks();
 		initComplete();
 		initQuiz();

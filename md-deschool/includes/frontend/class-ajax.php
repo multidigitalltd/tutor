@@ -79,6 +79,22 @@ final class Ajax {
 	}
 
 	/**
+	 * Enforce sequential (drip) gating server-side.
+	 *
+	 * Prevents a learner from completing or answering a chapter that is still
+	 * locked because earlier chapters are not yet completed.
+	 *
+	 * @param int $user_id    User ID.
+	 * @param int $unit_id    Unit ID.
+	 * @param int $chapter_id Chapter ID.
+	 */
+	private function assert_chapter_unlocked( int $user_id, int $unit_id, int $chapter_id ): void {
+		if ( ! Data::is_chapter_unlocked( $user_id, $unit_id, $chapter_id ) ) {
+			wp_send_json_error( array( 'message' => __( 'יש להשלים את הפרקים הקודמים תחילה.', 'md-deschool' ) ), 403 );
+		}
+	}
+
+	/**
 	 * Save a task answer (text + optional file uploads).
 	 */
 	public function save_answer(): void {
@@ -90,6 +106,7 @@ final class Ajax {
 		$task_index = isset( $_POST['task_index'] ) ? absint( wp_unslash( $_POST['task_index'] ) ) : 0;
 
 		$this->assert_chapter_in_unit( $chapter_id, $unit_id );
+		$this->assert_chapter_unlocked( $user_id, $unit_id, $chapter_id );
 
 		$tasks = Data::get_tasks( $chapter_id );
 		if ( ! isset( $tasks[ $task_index ] ) ) {
@@ -222,14 +239,21 @@ final class Ajax {
 		$this->assert_chapter_in_unit( $chapter_id, $unit_id );
 
 		$completed = isset( $_POST['completed'] ) && '1' === sanitize_text_field( wp_unslash( $_POST['completed'] ) );
+
+		// Only completing requires the chapter to be unlocked; un-marking is always allowed.
+		if ( $completed ) {
+			$this->assert_chapter_unlocked( $user_id, $unit_id, $chapter_id );
+		}
+
 		Data::set_chapter_completed( $user_id, $chapter_id, $completed );
 
 		$progress = Data::get_progress( $user_id, $unit_id );
 
 		wp_send_json_success(
 			array(
-				'completed' => $completed,
-				'progress'  => $progress,
+				'completed'    => $completed,
+				'progress'     => $progress,
+				'all_complete' => Data::all_chapters_completed( $user_id, $unit_id ),
 			)
 		);
 	}
@@ -246,6 +270,11 @@ final class Ajax {
 		$total     = count( $questions );
 		if ( 0 === $total ) {
 			wp_send_json_error( array( 'message' => __( 'אין שאלות במבחן.', 'md-deschool' ) ), 400 );
+		}
+
+		// In sequential mode the quiz unlocks only after every chapter is completed.
+		if ( Data::is_sequential( $unit_id ) && ! Data::all_chapters_completed( $user_id, $unit_id ) ) {
+			wp_send_json_error( array( 'message' => __( 'יש להשלים את כל הפרקים לפני המבחן.', 'md-deschool' ) ), 403 );
 		}
 
 		// Respect the "allow retry" setting using the stored result.

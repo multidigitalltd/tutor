@@ -70,7 +70,7 @@ final class Assets {
 					'uploading'   => __( 'מעלה קובץ…', 'md-deschool' ),
 					'fileTooBig'  => __( 'הקובץ גדול מדי', 'md-deschool' ),
 					'completed'   => __( 'הפרק הושלם', 'md-deschool' ),
-					'markDone'    => __( 'סימון כהושלם', 'md-deschool' ),
+					'markDone'    => __( 'סימון כהושלם והמשך', 'md-deschool' ),
 				),
 			)
 		);
