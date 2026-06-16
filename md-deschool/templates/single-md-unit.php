@@ -66,7 +66,7 @@ while ( have_posts() ) :
 
 				// Pre-compute per-chapter state once (avoids repeated meta reads).
 				$states  = array();
-				$current = 0; // Index of the first chapter to focus by default.
+				$current = -1; // Sentinel: no default step chosen yet.
 				foreach ( $chapters as $i => $chapter ) {
 					$cid       = (int) $chapter->ID;
 					$completed = $user_id > 0 && Data::is_chapter_completed( $user_id, $cid );
@@ -78,9 +78,14 @@ while ( have_posts() ) :
 					);
 
 					// Default step = first unlocked chapter that is not yet completed.
-					if ( 0 === $current && $unlocked && ! $completed ) {
+					if ( -1 === $current && $unlocked && ! $completed ) {
 						$current = $i;
 					}
+				}
+
+				// Everything completed (or no match) → start at the first chapter.
+				if ( -1 === $current ) {
+					$current = 0;
 				}
 				?>
 
