@@ -1,0 +1,59 @@
+/**
+ * DeSchool admin styles.
+ *
+ * @package MultiDigital\DeSchool
+ */
+
+.mdds-field {
+	margin: 0 0 12px;
+}
+
+.mdds-field > label {
+	display: block;
+	margin-bottom: 4px;
+}
+
+.mdds-media-name {
+	display: inline-block;
+	margin-inline-end: 8px;
+	color: #50575e;
+	font-style: italic;
+}
+
+.mdds-repeater-item {
+	padding: 12px;
+	margin-bottom: 12px;
+	background: #f6f7f7;
+	border: 1px solid #dcdcde;
+	border-radius: 4px;
+}
+
+.mdds-answers {
+	border: 1px solid #dcdcde;
+	padding: 8px 12px;
+	border-radius: 4px;
+}
+
+.mdds-answers legend {
+	font-weight: 600;
+	padding: 0 4px;
+}
+
+.mdds-answer-row {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	margin-bottom: 6px;
+}
+
+.mdds-answer-row input[type="text"] {
+	flex: 1;
+}
+
+.mdds-repeater-remove {
+	color: #b32d2e;
+}
+
+.mdds-repeater-remove:hover {
+	color: #8a2424;
+}

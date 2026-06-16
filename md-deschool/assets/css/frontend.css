@@ -1,0 +1,384 @@
+/**
+ * DeSchool front-end styles.
+ * RTL/LTR safe (logical properties), accessible, responsive.
+ *
+ * @package MultiDigital\DeSchool
+ */
+
+.mdds-unit {
+	--mdds-accent: #1d4ed8;
+	--mdds-accent-contrast: #ffffff;
+	--mdds-border: #e2e8f0;
+	--mdds-muted: #475569;
+	--mdds-success: #15803d;
+	--mdds-error: #b91c1c;
+	--mdds-radius: 10px;
+	max-width: 920px;
+	margin-inline: auto;
+	padding: 24px 16px 64px;
+	line-height: 1.6;
+}
+
+.mdds-unit *:focus-visible {
+	outline: 3px solid var(--mdds-accent);
+	outline-offset: 2px;
+}
+
+/* Buttons ----------------------------------------------------------------- */
+.mdds-button {
+	display: inline-block;
+	padding: 12px 22px;
+	border-radius: var(--mdds-radius);
+	border: 2px solid var(--mdds-accent);
+	background: var(--mdds-accent);
+	color: var(--mdds-accent-contrast);
+	font-weight: 600;
+	text-decoration: none;
+	cursor: pointer;
+	font-size: 1rem;
+	line-height: 1.2;
+	transition: filter 0.15s ease;
+}
+
+.mdds-button:hover {
+	filter: brightness( 0.92 );
+}
+
+.mdds-button:disabled {
+	opacity: 0.6;
+	cursor: progress;
+}
+
+.mdds-button-outline {
+	background: transparent;
+	color: var(--mdds-accent);
+}
+
+.mdds-button-primary {
+	font-size: 1.05rem;
+}
+
+/* Header ------------------------------------------------------------------ */
+.mdds-unit-thumb img {
+	width: 100%;
+	height: auto;
+	border-radius: var(--mdds-radius);
+}
+
+.mdds-unit-title {
+	margin: 16px 0 8px;
+	font-size: clamp( 1.6rem, 4vw, 2.4rem );
+}
+
+.mdds-unit-subtitle {
+	font-size: 1.15rem;
+	color: var(--mdds-muted);
+	margin-top: 0;
+}
+
+.mdds-unit-includes ul {
+	padding-inline-start: 1.4em;
+}
+
+/* Progress ---------------------------------------------------------------- */
+.mdds-progress {
+	margin: 20px 0;
+}
+
+.mdds-progress-bar {
+	background: var(--mdds-border);
+	border-radius: 999px;
+	height: 12px;
+	overflow: hidden;
+}
+
+.mdds-progress-fill {
+	display: block;
+	height: 100%;
+	background: var(--mdds-success);
+	transition: width 0.3s ease;
+}
+
+.mdds-progress-text {
+	margin: 6px 0 0;
+	font-size: 0.95rem;
+	color: var(--mdds-muted);
+}
+
+/* Lecturer ---------------------------------------------------------------- */
+.mdds-lecturer-card {
+	display: flex;
+	gap: 16px;
+	align-items: center;
+	padding: 16px;
+	border: 1px solid var(--mdds-border);
+	border-radius: var(--mdds-radius);
+	margin: 24px 0;
+	flex-wrap: wrap;
+}
+
+.mdds-lecturer-avatar img {
+	width: 84px;
+	height: 84px;
+	border-radius: 50%;
+	object-fit: cover;
+}
+
+.mdds-lecturer-name {
+	font-weight: 700;
+	margin: 0;
+}
+
+.mdds-lecturer-role {
+	color: var(--mdds-muted);
+	margin: 2px 0 8px;
+}
+
+/* Chapter nav ------------------------------------------------------------- */
+.mdds-chapter-nav {
+	background: #f8fafc;
+	border: 1px solid var(--mdds-border);
+	border-radius: var(--mdds-radius);
+	padding: 16px 20px;
+	margin: 24px 0;
+}
+
+.mdds-chapter-nav h2 {
+	margin-top: 0;
+}
+
+/* Chapter ----------------------------------------------------------------- */
+.mdds-chapter {
+	border: 1px solid var(--mdds-border);
+	border-radius: var(--mdds-radius);
+	padding: 24px;
+	margin: 24px 0;
+}
+
+.mdds-chapter.is-completed {
+	border-color: var(--mdds-success);
+}
+
+.mdds-chapter-header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 12px;
+	flex-wrap: wrap;
+}
+
+.mdds-chapter-number {
+	display: block;
+	font-size: 0.85rem;
+	color: var(--mdds-accent);
+	font-weight: 700;
+}
+
+.mdds-chapter-status {
+	background: var(--mdds-success);
+	color: #fff;
+	padding: 4px 12px;
+	border-radius: 999px;
+	font-size: 0.85rem;
+	font-weight: 600;
+}
+
+/* Responsive video -------------------------------------------------------- */
+.mdds-video-embed {
+	position: relative;
+	padding-top: 56.25%;
+	margin: 16px 0;
+	border-radius: var(--mdds-radius);
+	overflow: hidden;
+}
+
+.mdds-video-embed iframe,
+.mdds-video-embed video,
+.mdds-video-embed > * {
+	position: absolute;
+	inset: 0;
+	width: 100%;
+	height: 100%;
+	border: 0;
+}
+
+.mdds-video-file {
+	width: 100%;
+	border-radius: var(--mdds-radius);
+	margin: 16px 0;
+}
+
+/* Presentation ------------------------------------------------------------ */
+.mdds-presentation-actions {
+	display: flex;
+	gap: 12px;
+	flex-wrap: wrap;
+}
+
+/* Tasks ------------------------------------------------------------------- */
+.mdds-task {
+	background: #f8fafc;
+	border: 1px solid var(--mdds-border);
+	border-radius: var(--mdds-radius);
+	padding: 16px;
+	margin: 16px 0;
+}
+
+.mdds-task-title {
+	margin: 0 0 6px;
+}
+
+.mdds-task-answer {
+	width: 100%;
+	padding: 10px;
+	border: 1px solid var(--mdds-border);
+	border-radius: 8px;
+	font: inherit;
+	resize: vertical;
+}
+
+.mdds-task-files {
+	list-style: none;
+	padding: 0;
+	margin: 8px 0;
+}
+
+.mdds-task-feedback {
+	display: inline-block;
+	margin-inline-start: 12px;
+	font-size: 0.95rem;
+}
+
+.mdds-task-feedback.is-success {
+	color: var(--mdds-success);
+}
+
+.mdds-task-feedback.is-error {
+	color: var(--mdds-error);
+}
+
+/* Quiz -------------------------------------------------------------------- */
+.mdds-quiz {
+	border: 2px solid var(--mdds-accent);
+	border-radius: var(--mdds-radius);
+	padding: 24px;
+	margin: 32px 0;
+}
+
+.mdds-quiz-question {
+	border: 1px solid var(--mdds-border);
+	border-radius: var(--mdds-radius);
+	padding: 16px;
+	margin: 16px 0;
+}
+
+.mdds-quiz-question legend {
+	font-weight: 600;
+	padding: 0 4px;
+}
+
+.mdds-quiz-qnum {
+	display: block;
+	color: var(--mdds-accent);
+	font-size: 0.85rem;
+}
+
+.mdds-quiz-answer {
+	display: flex;
+	align-items: flex-start;
+	gap: 8px;
+	padding: 10px 12px;
+	border: 1px solid var(--mdds-border);
+	border-radius: 8px;
+	margin: 8px 0;
+	cursor: pointer;
+}
+
+.mdds-quiz-answer.is-correct {
+	border-color: var(--mdds-success);
+	background: #f0fdf4;
+}
+
+.mdds-quiz-answer.is-wrong {
+	border-color: var(--mdds-error);
+	background: #fef2f2;
+}
+
+.mdds-quiz-letter {
+	font-weight: 700;
+}
+
+.mdds-quiz-score {
+	font-size: 1.2rem;
+	font-weight: 700;
+}
+
+.mdds-quiz-score.is-pass {
+	color: var(--mdds-success);
+}
+
+.mdds-quiz-score.is-fail {
+	color: var(--mdds-error);
+}
+
+/* Consultation ------------------------------------------------------------ */
+.mdds-consultation {
+	background: var(--mdds-accent);
+	color: var(--mdds-accent-contrast);
+	border-radius: var(--mdds-radius);
+	padding: 32px;
+	margin: 32px 0;
+	text-align: center;
+}
+
+.mdds-consultation .mdds-button-primary {
+	background: #fff;
+	color: var(--mdds-accent);
+	border-color: #fff;
+}
+
+/* Locked ------------------------------------------------------------------ */
+.mdds-locked {
+	background: #f8fafc;
+	border: 1px dashed var(--mdds-border);
+	border-radius: var(--mdds-radius);
+	padding: 32px;
+	margin: 24px 0;
+	text-align: center;
+}
+
+.mdds-locked-actions {
+	display: flex;
+	gap: 12px;
+	justify-content: center;
+	flex-wrap: wrap;
+	margin-top: 16px;
+}
+
+/* Accessibility helpers --------------------------------------------------- */
+.screen-reader-text {
+	position: absolute !important;
+	width: 1px;
+	height: 1px;
+	padding: 0;
+	margin: -1px;
+	overflow: hidden;
+	clip: rect( 0, 0, 0, 0 );
+	white-space: nowrap;
+	border: 0;
+}
+
+@media ( prefers-reduced-motion: reduce ) {
+	.mdds-progress-fill,
+	.mdds-button {
+		transition: none;
+	}
+}
+
+@media ( max-width: 600px ) {
+	.mdds-chapter,
+	.mdds-quiz,
+	.mdds-consultation {
+		padding: 16px;
+	}
+}
