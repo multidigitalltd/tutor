@@ -4,7 +4,7 @@ Tags: lms, courses, woocommerce, quiz, learning
 Requires at least: 6.4
 Tested up to: 6.5
 Requires PHP: 8.3
-Stable tag: 1.0.0
+Stable tag: 1.1.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -38,6 +38,12 @@ DeSchool מאפשר לבנות "יחידות תוכן" לימודיות גנרי
 4. לכל יחידה ניתן לשייך מוצר WooCommerce שרכישתו פותחת גישה.
 
 == Changelog ==
+
+= 1.1.0 =
+* חדש: אזור ייעוץ מסובסד דרך מוצר WooCommerce (כפתור הוספה לעגלה).
+* חדש: דשבורד התקדמות אישי למשתמש — שורטקוד [deschool_dashboard].
+* חדש: ייצוא תשובות הלומדים ליחידה כקובץ CSV (תפריט DeSchool ← ייצוא תשובות).
+* חדש: תיבת "פרקי היחידה" במסך עריכת היחידה, עם קישורי עריכה והוספת פרק מקושר.
 
 = 1.0.0 =
 * גרסה ראשונה: יחידות תוכן, פרקים, משימות, מבחן סיכום, אזור ייעוץ, בקרת גישה ל-WooCommerce, שמירת התקדמות.

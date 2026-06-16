@@ -15,9 +15,12 @@ use MultiDigital\DeSchool\Admin\Unit_Metaboxes;
 use MultiDigital\DeSchool\Admin\Chapter_Metaboxes;
 use MultiDigital\DeSchool\Admin\Admin_Assets;
 use MultiDigital\DeSchool\Admin\Demo_Seeder;
+use MultiDigital\DeSchool\Admin\Unit_Chapters_Box;
+use MultiDigital\DeSchool\Admin\Answers_Export;
 use MultiDigital\DeSchool\Frontend\Template_Loader;
 use MultiDigital\DeSchool\Frontend\Assets;
 use MultiDigital\DeSchool\Frontend\Ajax;
+use MultiDigital\DeSchool\Frontend\Dashboard;
 use MultiDigital\DeSchool\WooCommerce\Integration;
 
 defined( 'ABSPATH' ) || exit;
@@ -81,12 +84,15 @@ final class Plugin {
 			( new Chapter_Metaboxes() )->register();
 			( new Admin_Assets() )->register();
 			( new Demo_Seeder() )->register();
+			( new Unit_Chapters_Box() )->register();
+			( new Answers_Export() )->register();
 		}
 
 		// Front-end.
 		( new Template_Loader() )->register();
 		( new Assets() )->register();
 		( new Ajax() )->register();
+		( new Dashboard() )->register();
 
 		// WooCommerce (only if active).
 		if ( class_exists( 'WooCommerce' ) ) {

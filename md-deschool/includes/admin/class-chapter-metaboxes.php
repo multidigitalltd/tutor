@@ -57,13 +57,18 @@ final class Chapter_Metaboxes {
 				'suppress_filters' => false,
 			)
 		);
+		// Pre-select the unit when arriving from the unit "add chapter" link.
+		$current_parent = (int) $post->post_parent;
+		if ( 0 === $current_parent && isset( $_GET['mdds_unit'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- read-only default selection.
+			$current_parent = absint( wp_unslash( $_GET['mdds_unit'] ) );
+		}
 		?>
 		<p class="mdds-field">
 			<label for="mdds-chapter-parent"><strong><?php esc_html_e( 'יחידת התוכן', 'md-deschool' ); ?></strong></label>
 			<select id="mdds-chapter-parent" name="mdds_chapter_parent" class="widefat">
 				<option value="0"><?php esc_html_e( '— בחירת יחידה —', 'md-deschool' ); ?></option>
 				<?php foreach ( $units as $unit ) : ?>
-					<option value="<?php echo esc_attr( (string) $unit->ID ); ?>" <?php selected( $post->post_parent, $unit->ID ); ?>>
+					<option value="<?php echo esc_attr( (string) $unit->ID ); ?>" <?php selected( $current_parent, $unit->ID ); ?>>
 						<?php echo esc_html( $unit->post_title ); ?>
 					</option>
 				<?php endforeach; ?>
