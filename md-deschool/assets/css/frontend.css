@@ -646,6 +646,59 @@
 	height: 4px;
 }
 
+/* Permanent top mask — hides the YouTube title bar (incl. on state change). */
+.mdds-yt-titlemask {
+	position: absolute;
+	top: 0;
+	inset-inline: 0;
+	height: 96px;
+	z-index: 3;
+	pointer-events: none;
+	background: linear-gradient( to bottom, rgba( 0, 0, 0, 0.96 ) 0, rgba( 0, 0, 0, 0.6 ) 42px, rgba( 0, 0, 0, 0 ) 96px );
+}
+
+/* Loading cover — hides YouTube's init screen until the video is playing. */
+.mdds-yt-cover {
+	position: absolute;
+	inset: 0;
+	width: 100%;
+	height: 100%;
+	z-index: 5;
+	background: #0f172a;
+	pointer-events: none;
+	transition: opacity 0.3s ease;
+}
+
+.mdds-yt-cover::after {
+	content: "";
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	width: 42px;
+	height: 42px;
+	margin: -21px 0 0 -21px;
+	border: 3px solid rgba( 255, 255, 255, 0.35 );
+	border-top-color: #fff;
+	border-radius: 50%;
+	animation: mdds-spin 0.8s linear infinite;
+}
+
+.mdds-yt.is-ready .mdds-yt-cover {
+	opacity: 0;
+}
+
+@keyframes mdds-spin {
+	to {
+		transform: rotate( 360deg );
+	}
+}
+
+@media ( prefers-reduced-motion: reduce ) {
+	.mdds-yt-cover::after {
+		animation: none;
+	}
+}
+
 .mdds-video-file {
 	width: 100%;
 	border-radius: var(--mdds-radius);

@@ -633,6 +633,26 @@
 			controls.appendChild( fsBtn );
 			wrap.appendChild( controls );
 
+			// Permanent top mask: hides the YouTube title bar that appears for a
+			// few seconds when playback starts (and on any hover).
+			var titlemask = document.createElement( 'div' );
+			titlemask.className = 'mdds-yt-titlemask';
+			titlemask.setAttribute( 'aria-hidden', 'true' );
+			wrap.appendChild( titlemask );
+
+			// Opaque loading cover: hides YouTube's init screen (thumbnail, title,
+			// logo, big play button) until the video is actually playing.
+			var cover = document.createElement( 'div' );
+			cover.className = 'mdds-yt-cover';
+			cover.setAttribute( 'aria-hidden', 'true' );
+			wrap.appendChild( cover );
+
+			function reveal() {
+				wrap.classList.add( 'is-ready' );
+			}
+			// Fallback in case the PLAYING event never fires (e.g. blocked autoplay).
+			window.setTimeout( reveal, 4000 );
+
 			wrap.addEventListener( 'contextmenu', function ( e ) {
 				e.preventDefault();
 			} );
@@ -723,6 +743,9 @@
 					},
 					onStateChange: function ( e ) {
 						setPlaying( 1 === e.data );
+						if ( 1 === e.data ) {
+							reveal();
+						}
 						if ( 0 === e.data && timer ) {
 							tick();
 						}
