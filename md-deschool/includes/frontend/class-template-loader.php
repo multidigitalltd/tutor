@@ -35,6 +35,18 @@ final class Template_Loader {
 	 */
 	public function template_include( string $template ): string {
 		if ( is_singular( Data::POST_TYPE_UNIT ) ) {
+			/**
+			 * Allow disabling the built-in single template so a page builder
+			 * (e.g. an Elementor Theme Builder template using [deschool_course])
+			 * can take over. Return false to yield to the theme/builder.
+			 *
+			 * @param bool $use     Whether to use the plugin template.
+			 * @param int  $unit_id Unit ID.
+			 */
+			if ( ! apply_filters( 'mdds_use_single_template', true, get_queried_object_id() ) ) {
+				return $template;
+			}
+
 			$theme = locate_template( array( 'md-deschool/single-md-unit.php' ) );
 
 			return '' !== $theme ? $theme : MDDS_PATH . 'templates/single-md-unit.php';

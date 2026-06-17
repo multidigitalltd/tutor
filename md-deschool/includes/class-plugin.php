@@ -24,6 +24,7 @@ use MultiDigital\DeSchool\Frontend\Dashboard;
 use MultiDigital\DeSchool\Frontend\Catalog;
 use MultiDigital\DeSchool\Frontend\Account;
 use MultiDigital\DeSchool\Frontend\QA;
+use MultiDigital\DeSchool\Frontend\Course_View;
 use MultiDigital\DeSchool\WooCommerce\Integration;
 
 defined( 'ABSPATH' ) || exit;
@@ -100,6 +101,7 @@ final class Plugin {
 		( new Catalog() )->register();
 		( new Account() )->register();
 		( new QA() )->register();
+		( new Course_View() )->register();
 
 		// WooCommerce (only if active).
 		if ( class_exists( 'WooCommerce' ) ) {

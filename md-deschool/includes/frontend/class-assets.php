@@ -38,12 +38,7 @@ final class Assets {
 			return;
 		}
 
-		wp_enqueue_style(
-			self::HANDLE,
-			MDDS_URL . 'assets/css/frontend.css',
-			array(),
-			MDDS_VERSION
-		);
+		self::enqueue_style();
 
 		// The interactive stepper JS is only needed on a single unit the user can access.
 		if ( ! $is_single ) {
@@ -51,17 +46,36 @@ final class Assets {
 		}
 
 		$unit_id = get_queried_object_id();
-		if ( ! Access_Control::can_access( $unit_id ) ) {
+		if ( Access_Control::can_access( $unit_id ) ) {
+			self::enqueue_script( $unit_id );
+		}
+	}
+
+	/**
+	 * Enqueue the stylesheet (idempotent).
+	 */
+	public static function enqueue_style(): void {
+		if ( ! wp_style_is( self::HANDLE, 'enqueued' ) ) {
+			wp_enqueue_style( self::HANDLE, MDDS_URL . 'assets/css/frontend.css', array(), MDDS_VERSION );
+		}
+	}
+
+	/**
+	 * Enqueue and localise the interactive script for a unit (idempotent).
+	 *
+	 * Public so the [deschool_course] shortcode can load assets when our
+	 * template was bypassed (e.g. inside an Elementor template).
+	 *
+	 * @param int $unit_id Unit ID.
+	 */
+	public static function enqueue_script( int $unit_id ): void {
+		self::enqueue_style();
+
+		if ( wp_script_is( self::HANDLE, 'enqueued' ) ) {
 			return;
 		}
 
-		wp_enqueue_script(
-			self::HANDLE,
-			MDDS_URL . 'assets/js/frontend.js',
-			array(),
-			MDDS_VERSION,
-			true
-		);
+		wp_enqueue_script( self::HANDLE, MDDS_URL . 'assets/js/frontend.js', array(), MDDS_VERSION, true );
 
 		wp_localize_script(
 			self::HANDLE,

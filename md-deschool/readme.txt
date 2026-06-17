@@ -4,7 +4,7 @@ Tags: lms, courses, woocommerce, quiz, learning
 Requires at least: 6.4
 Tested up to: 6.5
 Requires PHP: 8.3
-Stable tag: 1.12.0
+Stable tag: 1.13.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -39,6 +39,10 @@ DeSchool מאפשר לבנות "יחידות תוכן" לימודיות גנרי
 5. צרו עמוד "אזור אישי" עם השורטקוד [deschool_account], ועמוד קטלוג (לא חובה) עם [deschool_courses]. ארכיון הקורסים זמין גם בכתובת /unit/.
 
 == Changelog ==
+
+= 1.13.0 =
+* חדש: שורטקוד [deschool_course] שמרנדר את כל ממשק הקורס (מכירה/למידה) — מאפשר לבנות תבנית עמוד יחידה ב-Elementor/בונה עמודים ולהציב בה את הקורס.
+* חדש: פילטר mdds_use_single_template לכיבוי חטיפת התבנית של התוסף, כדי שתבנית הבונה תוכל להשתלט.
 
 = 1.12.0 =
 * חדש: מסך ניהול "שאלות ותשובות" (DeSchool ← שאלות ותשובות) — המנחה רואה את כל השאלות מכל הקורסים ומשיב מתוך מקום אחד.
