@@ -102,14 +102,16 @@ final class Render {
 	private static function privacy_embed_url( string $url ): string {
 		$youtube = self::youtube_id( $url );
 		if ( '' !== $youtube ) {
+			// Standard youtube.com/embed for maximum compatibility, with reduced
+			// branding and related videos. youtube-nocookie is blocked in some
+			// environments and can show a black screen.
 			return add_query_arg(
 				array(
 					'rel'            => 0,
 					'modestbranding' => 1,
 					'playsinline'    => 1,
-					'iv_load_policy' => 3,
 				),
-				'https://www.youtube-nocookie.com/embed/' . rawurlencode( $youtube )
+				'https://www.youtube.com/embed/' . rawurlencode( $youtube )
 			);
 		}
 
@@ -165,15 +167,10 @@ final class Render {
 	 * @return string
 	 */
 	private static function harden_embed( string $html ): string {
-		$html = str_replace(
-			array( 'https://www.youtube.com/embed/', 'https://youtube.com/embed/' ),
-			'https://www.youtube-nocookie.com/embed/',
-			$html
-		);
-
-		// Nudge the player to hide related videos / branding when no query is set.
-		$html = preg_replace_callback(
-			'~(youtube-nocookie\.com/embed/[A-Za-z0-9_-]{11})(\?[^"\'\s]*)?~i',
+		// Keep the provider/domain the author pasted (works reliably); only
+		// reduce branding/related videos on YouTube embeds.
+		return (string) preg_replace_callback(
+			'~(youtube(?:-nocookie)?\.com/embed/[A-Za-z0-9_-]{11})(\?[^"\'\s]*)?~i',
 			static function ( array $m ): string {
 				$base  = $m[1];
 				$query = isset( $m[2] ) ? ltrim( $m[2], '?' ) : '';
@@ -184,8 +181,6 @@ final class Render {
 			},
 			$html
 		);
-
-		return (string) $html;
 	}
 
 	/**
