@@ -13,12 +13,6 @@
 	--mdds-success: #15803d;
 	--mdds-error: #b91c1c;
 	--mdds-radius: 10px;
-	/* Typography — override these in one place to control all DeSchool fonts.
-	   Defaults inherit the theme font; e.g. set --mdds-font: "Heebo", sans-serif. */
-	--mdds-font: inherit;
-	--mdds-font-size: inherit;
-	font-family: var(--mdds-font);
-	font-size: var(--mdds-font-size);
 	max-width: 920px;
 	margin-inline: auto;
 	padding: 24px 16px 64px;
@@ -584,7 +578,7 @@
 	gap: 10px;
 	padding: 10px 12px;
 	background: linear-gradient( to top, rgba( 0, 0, 0, 0.75 ), rgba( 0, 0, 0, 0 ) );
-	z-index: 3;
+	z-index: 6;
 	opacity: 0;
 	transition: opacity 0.2s ease;
 }
@@ -663,46 +657,26 @@
 	background: linear-gradient( to bottom, rgba( 0, 0, 0, 0.96 ) 0, rgba( 0, 0, 0, 0.6 ) 42px, rgba( 0, 0, 0, 0 ) 96px );
 }
 
-/* Loading cover — hides YouTube's init screen until the video is playing. */
+/* Opaque cover — shown whenever the video is not actively playing, so the
+   YouTube init screen and pause overlay (title, logo, suggestions) never show. */
 .mdds-yt-cover {
 	position: absolute;
 	inset: 0;
 	width: 100%;
 	height: 100%;
-	z-index: 5;
-	background: #0f172a;
-	pointer-events: none;
-	transition: opacity 0.3s ease;
+	z-index: 4;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	border: 0;
+	cursor: pointer;
+	background: radial-gradient( circle at center, #1e293b, #0f172a );
+	transition: opacity 0.25s ease;
 }
 
-.mdds-yt-cover::after {
-	content: "";
-	position: absolute;
-	top: 50%;
-	left: 50%;
-	width: 42px;
-	height: 42px;
-	margin: -21px 0 0 -21px;
-	border: 3px solid rgba( 255, 255, 255, 0.35 );
-	border-top-color: #fff;
-	border-radius: 50%;
-	animation: mdds-spin 0.8s linear infinite;
-}
-
-.mdds-yt.is-ready .mdds-yt-cover {
+.mdds-yt.is-active .mdds-yt-cover {
 	opacity: 0;
-}
-
-@keyframes mdds-spin {
-	to {
-		transform: rotate( 360deg );
-	}
-}
-
-@media ( prefers-reduced-motion: reduce ) {
-	.mdds-yt-cover::after {
-		animation: none;
-	}
+	pointer-events: none;
 }
 
 .mdds-video-file {

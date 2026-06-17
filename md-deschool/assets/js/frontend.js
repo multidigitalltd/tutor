@@ -640,18 +640,16 @@
 			titlemask.setAttribute( 'aria-hidden', 'true' );
 			wrap.appendChild( titlemask );
 
-			// Opaque loading cover: hides YouTube's init screen (thumbnail, title,
-			// logo, big play button) until the video is actually playing.
-			var cover = document.createElement( 'div' );
+			// Opaque cover shown whenever the video is NOT actively rendering
+			// (before play, on pause, on end) so YouTube's own screens — the
+			// init thumbnail/logo and the pause overlay with suggestions — are
+			// never visible. Clicking it resumes playback.
+			var cover = document.createElement( 'button' );
+			cover.type = 'button';
 			cover.className = 'mdds-yt-cover';
-			cover.setAttribute( 'aria-hidden', 'true' );
+			cover.setAttribute( 'aria-label', i18n.play || 'Play' );
+			cover.innerHTML = '<span class="mdds-video-play-icon" aria-hidden="true"></span>';
 			wrap.appendChild( cover );
-
-			function reveal() {
-				wrap.classList.add( 'is-ready' );
-			}
-			// Fallback in case the PLAYING event never fires (e.g. blocked autoplay).
-			window.setTimeout( reveal, 4000 );
 
 			wrap.addEventListener( 'contextmenu', function ( e ) {
 				e.preventDefault();
@@ -660,6 +658,12 @@
 			var player;
 			var timer;
 			var seeking = false;
+
+			cover.addEventListener( 'click', function () {
+				if ( player ) {
+					player.playVideo();
+				}
+			} );
 
 			function setPlaying( isPlaying ) {
 				wrap.classList.toggle( 'is-playing', isPlaying );
@@ -742,11 +746,12 @@
 						timer = window.setInterval( tick, 500 );
 					},
 					onStateChange: function ( e ) {
-						setPlaying( 1 === e.data );
-						if ( 1 === e.data ) {
-							reveal();
-						}
-						if ( 0 === e.data && timer ) {
+						var st = e.data;
+						setPlaying( 1 === st );
+						// Reveal the video only while it is playing/buffering; the
+						// cover hides every YouTube screen the rest of the time.
+						wrap.classList.toggle( 'is-active', 1 === st || 3 === st );
+						if ( 0 === st && timer ) {
 							tick();
 						}
 					}

@@ -4,7 +4,7 @@ Tags: lms, courses, woocommerce, quiz, learning
 Requires at least: 6.4
 Tested up to: 6.5
 Requires PHP: 8.3
-Stable tag: 1.11.0
+Stable tag: 1.11.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -39,6 +39,10 @@ DeSchool מאפשר לבנות "יחידות תוכן" לימודיות גנרי
 5. צרו עמוד "אזור אישי" עם השורטקוד [deschool_account], ועמוד קטלוג (לא חובה) עם [deschool_courses]. ארכיון הקורסים זמין גם בכתובת /unit/.
 
 == Changelog ==
+
+= 1.11.1 =
+* תיקון: הנגן המותאם מציג כעת מסך אטום משלנו בכל רגע שהווידאו אינו מנגן (לפני הפעלה, בהשהיה ובסיום), כך שמסכי יוטיוב (כותרת, לוגו, הצעות) אינם נראים בשום שלב.
+* שינוי: הוסרו משתני הפונט שנוספו ב-1.11.0 — הטיפוגרפיה יורשת מערכת הנושא כברירת מחדל.
 
 = 1.11.0 =
 * חדש: שליטה בפונטים דרך משתני CSS — --mdds-font ו---mdds-font-size על המחלקה .mdds-unit. כברירת מחדל יורשים את פונט ערכת הנושא; ניתן להגדיר פונט אחד לכל רכיבי DeSchool.
