@@ -82,7 +82,7 @@ final class Data {
 				'post_type'              => self::POST_TYPE_CHAPTER,
 				'post_parent'            => $unit_id,
 				'post_status'            => 'publish',
-				'posts_per_page'         => 200,
+				'posts_per_page'         => -1,
 				'orderby'                => array(
 					'menu_order' => 'ASC',
 					'date'       => 'ASC',
@@ -259,12 +259,16 @@ final class Data {
 	 * @return array{completed:int,total:int}
 	 */
 	public static function get_progress( int $user_id, int $unit_id ): array {
-		$chapters  = self::get_chapters( $unit_id );
-		$total     = count( $chapters );
-		$completed = 0;
+		$chapters = self::get_chapters( $unit_id );
+		$total    = count( $chapters );
 
+		// Read the completed list once instead of per-chapter lookups.
+		$completed_list = get_user_meta( $user_id, self::UMETA_COMPLETED, true );
+		$completed_list = is_array( $completed_list ) ? array_map( 'absint', $completed_list ) : array();
+
+		$completed = 0;
 		foreach ( $chapters as $chapter ) {
-			if ( self::is_chapter_completed( $user_id, (int) $chapter->ID ) ) {
+			if ( in_array( (int) $chapter->ID, $completed_list, true ) ) {
 				++$completed;
 			}
 		}

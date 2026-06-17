@@ -1,0 +1,486 @@
+# DeSchool — translation template.
+# Copyright (C) 2026 Multi Digital
+# This file is distributed under the same license as the DeSchool plugin.
+msgid ""
+msgstr ""
+"Project-Id-Version: DeSchool 1.2.0\n"
+"Report-Msgid-Bugs-To: https://multidigital.co.il/\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Domain: md-deschool\n"
+
+msgid "%1$d מתוך %2$d פרקים הושלמו"
+msgstr ""
+
+msgid "DeSchool"
+msgstr ""
+
+msgid "WooCommerce"
+msgstr ""
+
+msgid "או קובץ וידאו מהמדיה"
+msgstr ""
+
+msgid "או קוד הטמעה (iframe)"
+msgstr ""
+
+msgid "או קוד הטמעת מצגת"
+msgstr ""
+
+msgid "או קישור למצגת"
+msgstr ""
+
+msgid "אזור ייעוץ אישי"
+msgstr ""
+
+msgid "אימייל"
+msgstr ""
+
+msgid "אין הרשאה."
+msgstr ""
+
+msgid "אין לך הרשאת גישה ליחידה זו."
+msgstr ""
+
+msgid "אין שאלות במבחן."
+msgstr ""
+
+msgid "אירעה שגיאה, נסו שוב"
+msgstr ""
+
+msgid "אפשרות לניסיון חוזר"
+msgstr ""
+
+msgid "בחירת וידאו"
+msgstr ""
+
+msgid "בחירת קובץ"
+msgstr ""
+
+msgid "בחירת תמונה"
+msgstr ""
+
+msgid "בחרו יחידת תוכן והורידו קובץ CSV עם כל התשובות שהוגשו."
+msgstr ""
+
+msgid "הדפדפן שלך אינו תומך בנגן הווידאו."
+msgstr ""
+
+msgid "הוספת יחידה"
+msgstr ""
+
+msgid "הוספת יחידת תוכן"
+msgstr ""
+
+msgid "הוספת פרק"
+msgstr ""
+
+msgid "הוספת שאלה"
+msgstr ""
+
+msgid "הוספת שאלה / משימה"
+msgstr ""
+
+msgid "הורדת מצגת"
+msgstr ""
+
+msgid "הושלם"
+msgstr ""
+
+msgid "הנחיה / טקסט המשימה"
+msgstr ""
+
+msgid "הסדר בין הפרקים נקבע בשדה \"סדר\" בתיבת מאפייני העמוד."
+msgstr ""
+
+msgid "הסרה"
+msgstr ""
+
+msgid "הסרת שאלה"
+msgstr ""
+
+msgid "העלאת הקובץ נכשלה."
+msgstr ""
+
+msgid "הפרק הבא"
+msgstr ""
+
+msgid "הפרק הושלם"
+msgstr ""
+
+msgid "הפרק הקודם"
+msgstr ""
+
+msgid "הצגת התשובות הנכונות בסיום"
+msgstr ""
+
+msgid "הציון שלך: %1$d%% (%2$d מתוך %3$d)"
+msgstr ""
+
+msgid "הקובץ גדול מדי"
+msgstr ""
+
+msgid "הקובץ גדול מדי או ריק."
+msgstr ""
+
+msgid "השלימו את כל פרקי היחידה כדי לפתוח את מבחן הסיכום."
+msgstr ""
+
+msgid "התיאור המלא של היחידה נכתב בעורך התוכן הראשי למעלה."
+msgstr ""
+
+msgid "התקדמות ביחידה"
+msgstr ""
+
+msgid "התשובה נשמרה"
+msgstr ""
+
+msgid "התשובה שלך"
+msgstr ""
+
+msgid "וידאו הפרק"
+msgstr ""
+
+msgid "חיפוש יחידות"
+msgstr ""
+
+msgid "חיפוש פרקים"
+msgstr ""
+
+msgid "טקסט הכפתור"
+msgstr ""
+
+msgid "טקסט הסבר"
+msgstr ""
+
+msgid "טקסט כפתור השמירה (ברירת מחדל: שמירת תשובה)"
+msgstr ""
+
+msgid "יחידה זו כוללת את הפרקים הבאים:"
+msgstr ""
+
+msgid "יחידה לא תקינה."
+msgstr ""
+
+msgid "יחידות התוכן שלי"
+msgstr ""
+
+msgid "יחידות תוכן"
+msgstr ""
+
+msgid "יחידת דוגמה"
+msgstr ""
+
+msgid "יחידת הדוגמה כבר נוצרה:"
+msgstr ""
+
+msgid "יחידת התוכן"
+msgstr ""
+
+msgid "יחידת תוכן"
+msgstr ""
+
+msgid "יחידת תוכן חדשה"
+msgstr ""
+
+msgid "ייצוא CSV"
+msgstr ""
+
+msgid "ייצוא תשובות"
+msgstr ""
+
+msgid "ייצוא תשובות לומדים"
+msgstr ""
+
+msgid "יצירת יחידת דוגמה"
+msgstr ""
+
+msgid "יצירת יחידת תוכן לדוגמה"
+msgstr ""
+
+msgid "יש להשלים את הפרקים הקודמים תחילה."
+msgstr ""
+
+msgid "יש להשלים את כל הפרקים לפני המבחן."
+msgstr ""
+
+msgid "יש להתחבר כדי לצפות ביחידות שלך."
+msgstr ""
+
+msgid "יש לשמור את היחידה לפני הוספת פרקים."
+msgstr ""
+
+msgid "כבר ביצעת את המבחן."
+msgstr ""
+
+msgid "כותרת"
+msgstr ""
+
+msgid "כותרת המבחן"
+msgstr ""
+
+msgid "כותרת הפרק"
+msgstr ""
+
+msgid "כותרת פנימית (אופציונלי)"
+msgstr ""
+
+msgid "כל היחידות"
+msgstr ""
+
+msgid "כל הפרקים"
+msgstr ""
+
+msgid "כניסה לחשבון"
+msgstr ""
+
+msgid "כתבו כאן את התשובה שלכם…"
+msgstr ""
+
+msgid "לא נבחר קובץ"
+msgstr ""
+
+msgid "לא נמצאו יחידות"
+msgstr ""
+
+msgid "לא נמצאו יחידות בפח"
+msgstr ""
+
+msgid "לא נמצאו פרקים"
+msgstr ""
+
+msgid "לאפשר צירוף קובץ"
+msgstr ""
+
+msgid "למידה רציפה (טפטוף תוכן): כל פרק נפתח רק לאחר השלמת הפרק הקודם, והמבחן נפתח רק לאחר השלמת כל הפרקים."
+msgstr ""
+
+msgid "מבחן הסיכום נעול"
+msgstr ""
+
+msgid "מבחן סיכום"
+msgstr ""
+
+msgid "מבחן סיכום (בוחן אמריקאי)"
+msgstr ""
+
+msgid "מבנה הלמידה"
+msgstr ""
+
+msgid "מה כוללת היחידה"
+msgstr ""
+
+msgid "מה כוללת היחידה (שורה לכל נקודה)"
+msgstr ""
+
+msgid "מוצר ייעוץ מסובסד (לאזור הייעוץ)"
+msgstr ""
+
+msgid "מוצר שרכישתו פותחת גישה ליחידה"
+msgstr ""
+
+msgid "מזהה משתמש"
+msgstr ""
+
+msgid "מעלה קובץ…"
+msgstr ""
+
+msgid "מצגת הפרק"
+msgstr ""
+
+msgid "משימה"
+msgstr ""
+
+msgid "משימה לא קיימת."
+msgstr ""
+
+msgid "משימות"
+msgstr ""
+
+msgid "נדרשת התחברות."
+msgstr ""
+
+msgid "ניווט בין הפרקים"
+msgstr ""
+
+msgid "ניסיון חוזר"
+msgstr ""
+
+msgid "נשמר בהצלחה"
+msgstr ""
+
+msgid "סדר"
+msgstr ""
+
+msgid "סוג הקובץ אינו נתמך."
+msgstr ""
+
+msgid "סימון כהושלם והמשך"
+msgstr ""
+
+msgid "עדיין אין לך גישה ליחידות תוכן."
+msgstr ""
+
+msgid "עדיין לא נוספו פרקים ליחידה זו."
+msgstr ""
+
+msgid "עריכה"
+msgstr ""
+
+msgid "עריכת יחידת תוכן"
+msgstr ""
+
+msgid "עריכת פרק"
+msgstr ""
+
+msgid "פעולה זו תיצור יחידת תוכן מלאה (\"שש השאלות לפני קמפיין\") עם שני פרקים, משימות ומבחן סיכום, לבדיקת התבנית."
+msgstr ""
+
+msgid "פעולות"
+msgstr ""
+
+msgid "פרטי המרצה"
+msgstr ""
+
+msgid "פרטי יחידת התוכן"
+msgstr ""
+
+msgid "פרק"
+msgstr ""
+
+msgid "פרק %1$d מתוך %2$d"
+msgstr ""
+
+msgid "פרק %d"
+msgstr ""
+
+msgid "פרק זה ייפתח לאחר השלמת הפרק הקודם."
+msgstr ""
+
+msgid "פרק חדש"
+msgstr ""
+
+msgid "פרק לא תקין."
+msgstr ""
+
+msgid "פרקי היחידה"
+msgstr ""
+
+msgid "פרקים"
+msgstr ""
+
+msgid "ציון במבחן: %d%%"
+msgstr ""
+
+msgid "ציון מעבר (%)"
+msgstr ""
+
+msgid "ציון מעבר: %d%%"
+msgstr ""
+
+msgid "צירוף קובץ (PDF, Word, PowerPoint, Excel, תמונה)"
+msgstr ""
+
+msgid "צפייה ביחידה"
+msgstr ""
+
+msgid "צפייה במצגת"
+msgstr ""
+
+msgid "קביעת פגישה עם המרצה"
+msgstr ""
+
+msgid "קבצים"
+msgstr ""
+
+msgid "קובץ מצגת (PDF)"
+msgstr ""
+
+msgid "קישור הכפתור (יומן / טופס / מוצר / סליקה)"
+msgstr ""
+
+msgid "קישור להטמעה (YouTube / Vimeo / Bunny)"
+msgstr ""
+
+msgid "קישור לקביעת פגישה / טופס פנייה"
+msgstr ""
+
+msgid "רכישת היחידה"
+msgstr ""
+
+msgid "רכישת פגישת ייעוץ מסובסדת"
+msgstr ""
+
+msgid "שאלה"
+msgstr ""
+
+msgid "שאלה %d"
+msgstr ""
+
+msgid "שאלות / משימות הפרק"
+msgstr ""
+
+msgid "שאלות / משימות לאחר הפרק"
+msgstr ""
+
+msgid "שאלות המבחן"
+msgstr ""
+
+msgid "שומר…"
+msgstr ""
+
+msgid "שיוך ליחידת תוכן"
+msgstr ""
+
+msgid "שליחת המבחן"
+msgstr ""
+
+msgid "שם"
+msgstr ""
+
+msgid "שם המרצה"
+msgstr ""
+
+msgid "שמירת תשובה"
+msgstr ""
+
+msgid "תוכן היחידה נעול"
+msgstr ""
+
+msgid "תוכן הפרק"
+msgstr ""
+
+msgid "תיאור הפרק"
+msgstr ""
+
+msgid "תיאור קצר"
+msgstr ""
+
+msgid "תיאור קצר (מופיע מתחת לכותרת)"
+msgstr ""
+
+msgid "תמונת מרצה"
+msgstr ""
+
+msgid "תפקיד / טייטל"
+msgstr ""
+
+msgid "תשובה"
+msgstr ""
+
+msgid "תשובה %d"
+msgstr ""
+
+msgid "תשובות (סמנו את הנכונה)"
+msgstr ""
+
+msgid "— בחירת יחידה —"
+msgstr ""
+
+msgid "— ללא מוצר (גישה לעורכים בלבד) —"
+msgstr ""
+
+msgid "— ללא מוצר ייעוץ —"
+msgstr ""
+
