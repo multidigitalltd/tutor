@@ -90,6 +90,8 @@ final class Catalog {
 		$short      = (string) get_post_meta( $unit_id, Data::META_SHORT_DESC, true );
 		$chapters   = count( Data::get_chapters( $unit_id ) );
 		$can_access = Access_Control::can_access( $unit_id, $user_id );
+		// Buyers go straight to the learning interface; everyone else to the sales page.
+		$url = ( $can_access && $user_id > 0 ) ? Data::get_learn_url( $unit_id ) : $url;
 		?>
 		<li class="mdds-course-card">
 			<a class="mdds-course-card-media" href="<?php echo esc_url( $url ); ?>" tabindex="-1" aria-hidden="true">

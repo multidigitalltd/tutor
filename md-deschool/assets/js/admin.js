@@ -118,8 +118,70 @@
 		}
 	}
 
+	/**
+	 * Initialise the multi-step course wizard.
+	 *
+	 * @param {HTMLElement} wizard Wizard form.
+	 */
+	function initWizard( wizard ) {
+		var panels = Array.prototype.slice.call( wizard.querySelectorAll( '[data-mdds-wizard-step]' ) );
+		var dots   = Array.prototype.slice.call( wizard.querySelectorAll( '[data-mdds-wizard-dots] li' ) );
+		var back   = wizard.querySelector( '[data-mdds-wizard-back]' );
+		var next   = wizard.querySelector( '[data-mdds-wizard-next]' );
+		if ( ! panels.length || ! next ) {
+			return;
+		}
+
+		var current = 0;
+
+		function show( index ) {
+			current = Math.max( 0, Math.min( index, panels.length - 1 ) );
+			panels.forEach( function ( panel, i ) {
+				panel.classList.toggle( 'is-active', i === current );
+			} );
+			dots.forEach( function ( dot, i ) {
+				dot.classList.toggle( 'is-active', i <= current );
+			} );
+			if ( back ) {
+				back.hidden = 0 === current;
+			}
+			next.hidden = current === panels.length - 1;
+		}
+
+		/**
+		 * Validate required fields in the current panel before advancing.
+		 *
+		 * @return {boolean}
+		 */
+		function valid() {
+			var fields = panels[ current ].querySelectorAll( 'input, textarea, select' );
+			for ( var i = 0; i < fields.length; i++ ) {
+				if ( ! fields[ i ].checkValidity() ) {
+					fields[ i ].reportValidity();
+					return false;
+				}
+			}
+			return true;
+		}
+
+		next.addEventListener( 'click', function () {
+			if ( valid() ) {
+				show( current + 1 );
+			}
+		} );
+
+		if ( back ) {
+			back.addEventListener( 'click', function () {
+				show( current - 1 );
+			} );
+		}
+
+		show( 0 );
+	}
+
 	document.addEventListener( 'DOMContentLoaded', function () {
 		document.querySelectorAll( '[data-mdds-repeater]' ).forEach( initRepeater );
 		document.querySelectorAll( '[data-mdds-media]' ).forEach( initMedia );
+		document.querySelectorAll( '[data-mdds-wizard]' ).forEach( initWizard );
 	} );
 }() );

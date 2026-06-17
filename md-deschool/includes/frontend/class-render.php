@@ -49,13 +49,20 @@ final class Render {
 
 		$url = (string) get_post_meta( $chapter_id, Data::META_VIDEO_URL, true );
 		if ( '' !== $url ) {
-			// Build a privacy-friendly, unbranded player for known providers.
+			// Build a privacy-friendly, unbranded player for known providers,
+			// behind a click-to-play facade so there is always a play button.
 			$privacy = self::privacy_embed_url( $url );
 			if ( '' !== $privacy ) {
+				$autoplay = add_query_arg( 'autoplay', 1, $privacy );
+
 				return sprintf(
-					'<div class="mdds-video-embed"><iframe src="%1$s" title="%2$s" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe></div>',
-					esc_url( $privacy ),
-					esc_attr( $title )
+					'<div class="mdds-video-embed mdds-video-facade" data-mdds-video="%1$s">'
+					. '<button type="button" class="mdds-video-play" aria-label="%2$s"><span class="mdds-video-play-icon" aria-hidden="true"></span></button>'
+					. '<noscript><iframe src="%3$s" title="%2$s" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe></noscript>'
+					. '</div>',
+					esc_url( $autoplay ),
+					esc_attr( $title ),
+					esc_url( $privacy )
 				);
 			}
 

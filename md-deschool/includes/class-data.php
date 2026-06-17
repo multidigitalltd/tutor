@@ -176,6 +176,16 @@ final class Data {
 	}
 
 	/**
+	 * URL of a unit's learning interface (the /learn/ endpoint).
+	 *
+	 * @param int $unit_id Unit ID.
+	 * @return string
+	 */
+	public static function get_learn_url( int $unit_id ): string {
+		return trailingslashit( (string) get_permalink( $unit_id ) ) . 'learn/';
+	}
+
+	/**
 	 * Whether a chapter is unlocked for a user.
 	 *
 	 * Non-sequential units always return true. In sequential units a chapter is

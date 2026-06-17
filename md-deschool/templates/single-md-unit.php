@@ -29,18 +29,23 @@ while ( have_posts() ) :
 		'completed' => 0,
 		'total'     => count( $chapters ),
 	);
+
+	// The base URL is the sales/landing page; the learning interface lives at
+	// /unit/{slug}/learn/ and is shown only to learners with access.
+	$view_course = $can_access && ( null !== get_query_var( 'learn', null ) );
 	?>
 	<main id="mdds-main" class="mdds-unit" dir="auto">
 		<article class="mdds-unit-inner">
 
-			<?php if ( ! $can_access ) : ?>
+			<?php if ( ! $view_course ) : ?>
 
 				<?php
 				Template_Loader::get_part(
 					'sales',
 					array(
-						'unit_id'  => $unit_id,
-						'chapters' => $chapters,
+						'unit_id'    => $unit_id,
+						'chapters'   => $chapters,
+						'can_access' => $can_access,
 					)
 				);
 

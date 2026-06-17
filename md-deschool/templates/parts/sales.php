@@ -17,8 +17,9 @@ use MultiDigital\DeSchool\WooCommerce\Integration;
 
 defined( 'ABSPATH' ) || exit;
 
-$unit_id  = (int) ( $args['unit_id'] ?? 0 );
-$chapters = (array) ( $args['chapters'] ?? array() );
+$unit_id    = (int) ( $args['unit_id'] ?? 0 );
+$chapters   = (array) ( $args['chapters'] ?? array() );
+$can_access = (bool) ( $args['can_access'] ?? false );
 
 $short        = (string) get_post_meta( $unit_id, Data::META_SHORT_DESC, true );
 $includes     = (string) get_post_meta( $unit_id, Data::META_INCLUDES, true );
@@ -27,6 +28,7 @@ $price_html   = $has_wc ? Integration::get_price_html( $unit_id ) : '';
 $purchase_url = $has_wc ? Integration::get_purchase_url( $unit_id ) : '';
 $is_logged_in = is_user_logged_in();
 $login_url    = wp_login_url( (string) get_permalink( $unit_id ) );
+$learn_url    = Data::get_learn_url( $unit_id );
 $buy_label    = __( 'רכישת הקורס', 'md-deschool' );
 ?>
 <section class="mdds-sales" aria-labelledby="mdds-sales-title">
@@ -79,18 +81,22 @@ $buy_label    = __( 'רכישת הקורס', 'md-deschool' );
 			<?php endif; ?>
 
 			<div class="mdds-sales-cta">
-				<?php if ( '' !== $price_html ) : ?>
-					<span class="mdds-sales-price"><?php echo wp_kses_post( $price_html ); ?></span>
-				<?php endif; ?>
+				<?php if ( $can_access ) : ?>
+					<a class="mdds-button mdds-button-primary mdds-sales-buy" href="<?php echo esc_url( $learn_url ); ?>"><?php esc_html_e( 'מעבר לקורס', 'md-deschool' ); ?></a>
+				<?php else : ?>
+					<?php if ( '' !== $price_html ) : ?>
+						<span class="mdds-sales-price"><?php echo wp_kses_post( $price_html ); ?></span>
+					<?php endif; ?>
 
-				<?php if ( '' !== $purchase_url ) : ?>
-					<a class="mdds-button mdds-button-primary mdds-sales-buy" href="<?php echo esc_url( $purchase_url ); ?>"><?php echo esc_html( $buy_label ); ?></a>
-				<?php elseif ( ! $is_logged_in ) : ?>
-					<a class="mdds-button mdds-button-primary" href="<?php echo esc_url( $login_url ); ?>"><?php esc_html_e( 'כניסה לחשבון', 'md-deschool' ); ?></a>
-				<?php endif; ?>
+					<?php if ( '' !== $purchase_url ) : ?>
+						<a class="mdds-button mdds-button-primary mdds-sales-buy" href="<?php echo esc_url( $purchase_url ); ?>"><?php echo esc_html( $buy_label ); ?></a>
+					<?php elseif ( ! $is_logged_in ) : ?>
+						<a class="mdds-button mdds-button-primary" href="<?php echo esc_url( $login_url ); ?>"><?php esc_html_e( 'כניסה לחשבון', 'md-deschool' ); ?></a>
+					<?php endif; ?>
 
-				<?php if ( '' !== $purchase_url && ! $is_logged_in ) : ?>
-					<a class="mdds-button mdds-button-outline" href="<?php echo esc_url( $login_url ); ?>"><?php esc_html_e( 'כבר רכשתי — כניסה', 'md-deschool' ); ?></a>
+					<?php if ( '' !== $purchase_url && ! $is_logged_in ) : ?>
+						<a class="mdds-button mdds-button-outline" href="<?php echo esc_url( $login_url ); ?>"><?php esc_html_e( 'כבר רכשתי — כניסה', 'md-deschool' ); ?></a>
+					<?php endif; ?>
 				<?php endif; ?>
 			</div>
 		</div>
@@ -104,7 +110,7 @@ $buy_label    = __( 'רכישת הקורס', 'md-deschool' );
 	<?php endif; ?>
 </section>
 
-<?php if ( '' !== $purchase_url ) : ?>
+<?php if ( ! $can_access && '' !== $purchase_url ) : ?>
 	<div class="mdds-buybar" data-mdds-buybar>
 		<div class="mdds-buybar-inner">
 			<span class="mdds-buybar-title"><?php echo esc_html( get_the_title( $unit_id ) ); ?></span>

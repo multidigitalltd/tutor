@@ -116,16 +116,17 @@ final class Account {
 
 		echo '<ul class="mdds-account-courses">';
 		foreach ( $units as $unit ) {
-			$unit_id  = (int) $unit->ID;
-			$progress = Data::get_progress( $user_id, $unit_id );
-			$total    = (int) $progress['total'];
-			$done     = (int) $progress['completed'];
-			$percent  = $total > 0 ? (int) round( ( $done / $total ) * 100 ) : 0;
-			$current  = $this->current_chapter( $user_id, $unit_id );
+			$unit_id   = (int) $unit->ID;
+			$progress  = Data::get_progress( $user_id, $unit_id );
+			$total     = (int) $progress['total'];
+			$done      = (int) $progress['completed'];
+			$percent   = $total > 0 ? (int) round( ( $done / $total ) * 100 ) : 0;
+			$current   = $this->current_chapter( $user_id, $unit_id );
+			$learn_url = Data::get_learn_url( $unit_id );
 			?>
 			<li class="mdds-account-course">
 				<div class="mdds-account-course-head">
-					<a class="mdds-account-course-title" href="<?php echo esc_url( (string) get_permalink( $unit_id ) ); ?>">
+					<a class="mdds-account-course-title" href="<?php echo esc_url( $learn_url ); ?>">
 						<?php echo esc_html( $unit->post_title ); ?>
 					</a>
 					<?php if ( $total > 0 && $done >= $total ) : ?>
@@ -163,7 +164,7 @@ final class Account {
 					</p>
 				<?php endif; ?>
 
-				<a class="mdds-button mdds-button-primary" href="<?php echo esc_url( (string) get_permalink( $unit_id ) ); ?>">
+				<a class="mdds-button mdds-button-primary" href="<?php echo esc_url( $learn_url ); ?>">
 					<?php echo ( $done > 0 ) ? esc_html__( 'המשך לקורס', 'md-deschool' ) : esc_html__( 'התחלת הקורס', 'md-deschool' ); ?>
 				</a>
 			</li>

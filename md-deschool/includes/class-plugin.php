@@ -17,6 +17,7 @@ use MultiDigital\DeSchool\Admin\Admin_Assets;
 use MultiDigital\DeSchool\Admin\Demo_Seeder;
 use MultiDigital\DeSchool\Admin\Unit_Chapters_Box;
 use MultiDigital\DeSchool\Admin\Answers_Export;
+use MultiDigital\DeSchool\Admin\Wizard;
 use MultiDigital\DeSchool\Frontend\Template_Loader;
 use MultiDigital\DeSchool\Frontend\Assets;
 use MultiDigital\DeSchool\Frontend\Ajax;
@@ -80,6 +81,7 @@ final class Plugin {
 	private function boot(): void {
 		add_action( 'init', array( $this, 'register_post_types' ) );
 		add_action( 'init', array( $this, 'load_textdomain' ) );
+		add_action( 'init', array( $this, 'maybe_flush_rewrite' ), 99 );
 
 		// Admin.
 		if ( is_admin() ) {
@@ -89,6 +91,7 @@ final class Plugin {
 			( new Demo_Seeder() )->register();
 			( new Unit_Chapters_Box() )->register();
 			( new Answers_Export() )->register();
+			( new Wizard() )->register();
 		}
 
 		// Front-end.
@@ -119,5 +122,16 @@ final class Plugin {
 	 */
 	public function load_textdomain(): void {
 		load_plugin_textdomain( 'md-deschool', false, dirname( MDDS_BASENAME ) . '/languages' );
+	}
+
+	/**
+	 * Flush rewrite rules once after an update so new endpoints (e.g. /learn/)
+	 * start working without a manual permalinks re-save.
+	 */
+	public function maybe_flush_rewrite(): void {
+		if ( get_option( 'mdds_rewrite_version' ) !== MDDS_VERSION ) {
+			flush_rewrite_rules( false );
+			update_option( 'mdds_rewrite_version', MDDS_VERSION );
+		}
 	}
 }

@@ -55,5 +55,8 @@ final class Unit_Post_Type {
 				'map_meta_cap'    => true,
 			)
 		);
+
+		// /unit/{slug}/learn/ → the learning interface (sales page lives at the base URL).
+		add_rewrite_endpoint( 'learn', EP_PERMALINK );
 	}
 }
