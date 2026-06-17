@@ -31,7 +31,10 @@ final class Assets {
 	 * Enqueue assets only on a single unit page.
 	 */
 	public function enqueue(): void {
-		if ( ! is_singular( Data::POST_TYPE_UNIT ) ) {
+		$is_single  = is_singular( Data::POST_TYPE_UNIT );
+		$is_archive = is_post_type_archive( Data::POST_TYPE_UNIT );
+
+		if ( ! $is_single && ! $is_archive ) {
 			return;
 		}
 
@@ -42,7 +45,11 @@ final class Assets {
 			MDDS_VERSION
 		);
 
-		// Only enqueue interactive JS for logged-in users with access.
+		// The interactive stepper JS is only needed on a single unit the user can access.
+		if ( ! $is_single ) {
+			return;
+		}
+
 		$unit_id = get_queried_object_id();
 		if ( ! Access_Control::can_access( $unit_id ) ) {
 			return;

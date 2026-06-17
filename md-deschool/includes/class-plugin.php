@@ -21,6 +21,7 @@ use MultiDigital\DeSchool\Frontend\Template_Loader;
 use MultiDigital\DeSchool\Frontend\Assets;
 use MultiDigital\DeSchool\Frontend\Ajax;
 use MultiDigital\DeSchool\Frontend\Dashboard;
+use MultiDigital\DeSchool\Frontend\Catalog;
 use MultiDigital\DeSchool\WooCommerce\Integration;
 
 defined( 'ABSPATH' ) || exit;
@@ -93,6 +94,7 @@ final class Plugin {
 		( new Assets() )->register();
 		( new Ajax() )->register();
 		( new Dashboard() )->register();
+		( new Catalog() )->register();
 
 		// WooCommerce (only if active).
 		if ( class_exists( 'WooCommerce' ) ) {

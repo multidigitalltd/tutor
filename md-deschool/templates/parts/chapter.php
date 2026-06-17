@@ -46,6 +46,7 @@ $section_cls .= $locked ? ' is-locked' : '';
 <section id="mdds-chapter-<?php echo esc_attr( (string) $chapter_id ); ?>"
 	class="<?php echo esc_attr( $section_cls ); ?>"
 	data-mdds-chapter
+	data-mdds-panel
 	data-index="<?php echo esc_attr( (string) $index ); ?>"
 	data-locked="<?php echo $locked ? '1' : '0'; ?>"
 	data-completed="<?php echo $completed ? '1' : '0'; ?>"

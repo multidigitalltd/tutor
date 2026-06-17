@@ -152,7 +152,7 @@
 			return;
 		}
 
-		var steps = Array.prototype.slice.call( container.querySelectorAll( '[data-mdds-chapter]' ) );
+		var steps = Array.prototype.slice.call( container.querySelectorAll( '[data-mdds-panel]' ) );
 		var links = Array.prototype.slice.call( document.querySelectorAll( '[data-mdds-step]' ) );
 		var nav   = document.querySelector( '[data-mdds-step-nav]' );
 		if ( ! steps.length ) {

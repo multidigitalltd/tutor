@@ -34,16 +34,19 @@ final class Template_Loader {
 	 * @return string
 	 */
 	public function template_include( string $template ): string {
-		if ( ! is_singular( Data::POST_TYPE_UNIT ) ) {
-			return $template;
+		if ( is_singular( Data::POST_TYPE_UNIT ) ) {
+			$theme = locate_template( array( 'md-deschool/single-md-unit.php' ) );
+
+			return '' !== $theme ? $theme : MDDS_PATH . 'templates/single-md-unit.php';
 		}
 
-		$theme = locate_template( array( 'md-deschool/single-md-unit.php' ) );
-		if ( '' !== $theme ) {
-			return $theme;
+		if ( is_post_type_archive( Data::POST_TYPE_UNIT ) ) {
+			$theme = locate_template( array( 'md-deschool/archive-md-unit.php' ) );
+
+			return '' !== $theme ? $theme : MDDS_PATH . 'templates/archive-md-unit.php';
 		}
 
-		return MDDS_PATH . 'templates/single-md-unit.php';
+		return $template;
 	}
 
 	/**

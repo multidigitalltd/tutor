@@ -83,75 +83,105 @@ while ( have_posts() ) :
 					}
 				}
 
-				// Everything completed (or no match) → start at the first chapter.
+				$questions   = Data::get_quiz_questions( $unit_id );
+				$has_quiz    = ! empty( $questions );
+				$quiz_locked = $sequential && ! $all_complete;
+				$quiz_index  = $total; // Quiz is the panel after the chapters.
+
+				// No incomplete chapter found: land on the quiz if it's ready, else the first chapter.
 				if ( -1 === $current ) {
-					$current = 0;
+					$current = ( $has_quiz && ! $quiz_locked ) ? $quiz_index : 0;
 				}
 				?>
 
-				<nav class="mdds-chapter-nav" aria-label="<?php esc_attr_e( 'ניווט בין הפרקים', 'md-deschool' ); ?>" data-mdds-step-nav>
-					<h2><?php esc_html_e( 'פרקי היחידה', 'md-deschool' ); ?></h2>
-					<ol class="mdds-chapter-list">
-						<?php
-						foreach ( $chapters as $i => $chapter ) :
-							$st        = $states[ $i ];
-							$item_cls  = 'mdds-step';
-							$item_cls .= $st['completed'] ? ' is-completed' : '';
-							$item_cls .= $st['unlocked'] ? '' : ' is-locked';
+				<div class="mdds-course-layout">
+
+					<aside class="mdds-course-sidebar" aria-label="<?php esc_attr_e( 'מבנה הקורס', 'md-deschool' ); ?>">
+						<nav class="mdds-chapter-nav" data-mdds-step-nav>
+							<h2 class="mdds-course-outline-title"><?php esc_html_e( 'מבנה הקורס', 'md-deschool' ); ?></h2>
+							<ol class="mdds-chapter-list">
+								<?php
+								foreach ( $chapters as $i => $chapter ) :
+									$st        = $states[ $i ];
+									$item_cls  = 'mdds-step';
+									$item_cls .= $st['completed'] ? ' is-completed' : '';
+									$item_cls .= $st['unlocked'] ? '' : ' is-locked';
+									?>
+									<li class="<?php echo esc_attr( $item_cls ); ?>">
+										<button type="button" class="mdds-step-link"
+											data-mdds-step="<?php echo esc_attr( (string) $i ); ?>"
+											data-target="mdds-chapter-<?php echo esc_attr( (string) $chapter->ID ); ?>"
+											<?php echo $st['unlocked'] ? '' : 'aria-disabled="true" disabled'; ?>>
+											<span class="mdds-step-index"><?php echo esc_html( (string) ( $i + 1 ) ); ?></span>
+											<span class="mdds-step-name"><?php echo esc_html( $chapter->post_title ); ?></span>
+											<span class="mdds-step-state" aria-hidden="true"></span>
+										</button>
+									</li>
+								<?php endforeach; ?>
+
+								<?php if ( $has_quiz ) : ?>
+									<li class="mdds-step mdds-step-quiz<?php echo $quiz_locked ? ' is-locked' : ''; ?>">
+										<button type="button" class="mdds-step-link"
+											data-mdds-step="<?php echo esc_attr( (string) $quiz_index ); ?>"
+											data-target="mdds-quiz-panel"
+											<?php echo $quiz_locked ? 'aria-disabled="true" disabled' : ''; ?>>
+											<span class="mdds-step-index" aria-hidden="true">★</span>
+											<span class="mdds-step-name"><?php esc_html_e( 'מבחן סיכום', 'md-deschool' ); ?></span>
+											<span class="mdds-step-state" aria-hidden="true"></span>
+										</button>
+									</li>
+								<?php endif; ?>
+							</ol>
+						</nav>
+					</aside>
+
+					<div class="mdds-course-main">
+						<div class="mdds-chapters" data-mdds-stepper data-current="<?php echo esc_attr( (string) $current ); ?>">
+							<?php
+							foreach ( $chapters as $i => $chapter ) {
+								Template_Loader::get_part(
+									'chapter',
+									array(
+										'unit_id'    => $unit_id,
+										'chapter'    => $chapter,
+										'number'     => $i + 1,
+										'index'      => $i,
+										'total'      => $total,
+										'user_id'    => $user_id,
+										'sequential' => $sequential,
+										'completed'  => $states[ $i ]['completed'],
+										'locked'     => ! $states[ $i ]['unlocked'],
+									)
+								);
+							}
+
+							if ( $has_quiz && $quiz_locked ) :
+								?>
+								<section class="mdds-quiz-locked" data-mdds-panel data-index="<?php echo esc_attr( (string) $quiz_index ); ?>" data-locked="1" tabindex="-1" aria-labelledby="mdds-quiz-locked-title">
+									<h2 id="mdds-quiz-locked-title"><?php esc_html_e( 'מבחן הסיכום נעול', 'md-deschool' ); ?></h2>
+									<p><?php esc_html_e( 'השלימו את כל פרקי היחידה כדי לפתוח את מבחן הסיכום.', 'md-deschool' ); ?></p>
+								</section>
+								<?php
+							elseif ( $has_quiz ) :
+								?>
+								<div id="mdds-quiz-panel" class="mdds-quiz-wrap" data-mdds-panel data-index="<?php echo esc_attr( (string) $quiz_index ); ?>" data-locked="0" tabindex="-1">
+									<?php
+									Template_Loader::get_part(
+										'quiz',
+										array(
+											'unit_id' => $unit_id,
+											'user_id' => $user_id,
+										)
+									);
+									?>
+								</div>
+								<?php
+							endif;
 							?>
-							<li class="<?php echo esc_attr( $item_cls ); ?>">
-								<button type="button" class="mdds-step-link"
-									data-mdds-step="<?php echo esc_attr( (string) $i ); ?>"
-									data-target="mdds-chapter-<?php echo esc_attr( (string) $chapter->ID ); ?>"
-									<?php echo $st['unlocked'] ? '' : 'aria-disabled="true" disabled'; ?>>
-									<span class="mdds-step-index"><?php echo esc_html( (string) ( $i + 1 ) ); ?></span>
-									<span class="mdds-step-name"><?php echo esc_html( $chapter->post_title ); ?></span>
-									<span class="mdds-step-state" aria-hidden="true"></span>
-								</button>
-							</li>
-						<?php endforeach; ?>
-					</ol>
-				</nav>
+						</div>
+					</div>
 
-				<div class="mdds-chapters" data-mdds-stepper data-current="<?php echo esc_attr( (string) $current ); ?>">
-					<?php
-					foreach ( $chapters as $i => $chapter ) {
-						Template_Loader::get_part(
-							'chapter',
-							array(
-								'unit_id'    => $unit_id,
-								'chapter'    => $chapter,
-								'number'     => $i + 1,
-								'index'      => $i,
-								'total'      => $total,
-								'user_id'    => $user_id,
-								'sequential' => $sequential,
-								'completed'  => $states[ $i ]['completed'],
-								'locked'     => ! $states[ $i ]['unlocked'],
-							)
-						);
-					}
-					?>
 				</div>
-
-				<?php
-				if ( $sequential && ! $all_complete && ! empty( Data::get_quiz_questions( $unit_id ) ) ) :
-					?>
-					<section class="mdds-quiz-locked" aria-labelledby="mdds-quiz-locked-title">
-						<h2 id="mdds-quiz-locked-title"><?php esc_html_e( 'מבחן הסיכום נעול', 'md-deschool' ); ?></h2>
-						<p><?php esc_html_e( 'השלימו את כל פרקי היחידה כדי לפתוח את מבחן הסיכום.', 'md-deschool' ); ?></p>
-					</section>
-					<?php
-				else :
-					Template_Loader::get_part(
-						'quiz',
-						array(
-							'unit_id' => $unit_id,
-							'user_id' => $user_id,
-						)
-					);
-				endif;
-				?>
 
 			<?php endif; ?>
 
