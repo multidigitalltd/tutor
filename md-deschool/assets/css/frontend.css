@@ -305,6 +305,16 @@
 	font-size: 1.1rem;
 }
 
+.mdds-sidebar-account {
+	margin: 12px 0 0;
+	text-align: center;
+}
+
+.mdds-sidebar-account a {
+	font-weight: 600;
+	text-decoration: none;
+}
+
 .mdds-course-main {
 	min-width: 0;
 }
@@ -582,6 +592,47 @@
 
 .mdds-task-feedback.is-error {
 	color: var(--mdds-error);
+}
+
+/* File upload field ------------------------------------------------------- */
+.mdds-task-file label {
+	display: block;
+	margin-bottom: 6px;
+	font-weight: 600;
+}
+
+.mdds-task-file input[type="file"] {
+	font: inherit;
+	color: var(--mdds-muted);
+	max-width: 100%;
+}
+
+.mdds-task-file input[type="file"]::file-selector-button {
+	font: inherit;
+	font-weight: 600;
+	cursor: pointer;
+	margin-inline-end: 12px;
+	padding: 8px 16px;
+	border-radius: var(--mdds-radius);
+	border: 2px solid var(--mdds-accent);
+	background: var(--mdds-accent);
+	color: var(--mdds-accent-contrast);
+	transition: filter 0.15s ease;
+}
+
+.mdds-task-file input[type="file"]::file-selector-button:hover {
+	filter: brightness( 0.92 );
+}
+
+/* Tasks submit row -------------------------------------------------------- */
+.mdds-tasks-actions {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	flex-wrap: wrap;
+	margin-top: 12px;
+	padding-top: 12px;
+	border-top: 1px solid var(--mdds-border);
 }
 
 /* Quiz -------------------------------------------------------------------- */

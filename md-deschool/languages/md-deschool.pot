@@ -3,7 +3,7 @@
 # This file is distributed under the same license as the DeSchool plugin.
 msgid ""
 msgstr ""
-"Project-Id-Version: DeSchool 1.6.0\n"
+"Project-Id-Version: DeSchool 1.7.0\n"
 "Report-Msgid-Bugs-To: https://multidigital.co.il/\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -109,6 +109,9 @@ msgstr ""
 msgid "בנו קורס חדש בכמה שלבים. בסיום תועברו לעורך הרגיל להשלמת פרטים (וידאו, מצגות, מבחן ועוד)."
 msgstr ""
 
+msgid "האזור האישי שלי"
+msgstr ""
+
 msgid "הבא"
 msgstr ""
 
@@ -209,6 +212,9 @@ msgid "הקורס נוצר בהצלחה! השלימו כאן את התכנים (
 msgstr ""
 
 msgid "הקורסים שלי"
+msgstr ""
+
+msgid "הקורסים שלנו"
 msgstr ""
 
 msgid "השאלה שלך"
@@ -397,6 +403,9 @@ msgstr ""
 msgid "למידה רציפה (פתיחת פרק רק לאחר השלמת הקודם)"
 msgstr ""
 
+msgid "לפרטים ולרכישה"
+msgstr ""
+
 msgid "מבחן"
 msgstr ""
 
@@ -551,9 +560,6 @@ msgid "פרטי הקורס"
 msgstr ""
 
 msgid "פרטי יחידת התוכן"
-msgstr ""
-
-msgid "פרטים נוספים"
 msgstr ""
 
 msgid "פרק"

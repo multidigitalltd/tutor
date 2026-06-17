@@ -128,7 +128,7 @@ final class Catalog {
 				</p>
 
 				<a class="mdds-button <?php echo $can_access ? 'mdds-button-primary' : 'mdds-button-outline'; ?>" href="<?php echo esc_url( $url ); ?>">
-					<?php echo $can_access ? esc_html__( 'מעבר לקורס', 'md-deschool' ) : esc_html__( 'פרטים נוספים', 'md-deschool' ); ?>
+					<?php echo $can_access ? esc_html__( 'מעבר לקורס', 'md-deschool' ) : esc_html__( 'לפרטים ולרכישה', 'md-deschool' ); ?>
 				</a>
 			</div>
 		</li>

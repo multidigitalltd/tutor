@@ -12,6 +12,7 @@ declare( strict_types=1 );
 use MultiDigital\DeSchool\Data;
 use MultiDigital\DeSchool\Frontend\Access_Control;
 use MultiDigital\DeSchool\Frontend\Template_Loader;
+use MultiDigital\DeSchool\Frontend\Account;
 use MultiDigital\DeSchool\Frontend\QA;
 
 defined( 'ABSPATH' ) || exit;
@@ -152,6 +153,15 @@ while ( have_posts() ) :
 								</li>
 							</ol>
 						</nav>
+
+						<?php
+						$account_url = Account::get_account_url();
+						if ( '' !== $account_url ) :
+							?>
+							<p class="mdds-sidebar-account">
+								<a href="<?php echo esc_url( $account_url ); ?>"><?php esc_html_e( 'האזור האישי שלי', 'md-deschool' ); ?></a>
+							</p>
+						<?php endif; ?>
 					</aside>
 
 					<div class="mdds-course-main">

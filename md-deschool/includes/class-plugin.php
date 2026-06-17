@@ -126,12 +126,71 @@ final class Plugin {
 
 	/**
 	 * Flush rewrite rules once after an update so new endpoints (e.g. /learn/)
-	 * start working without a manual permalinks re-save.
+	 * start working without a manual permalinks re-save, and make sure the
+	 * personal-area and catalog pages exist.
 	 */
 	public function maybe_flush_rewrite(): void {
 		if ( get_option( 'mdds_rewrite_version' ) !== MDDS_VERSION ) {
+			$this->ensure_pages();
 			flush_rewrite_rules( false );
 			update_option( 'mdds_rewrite_version', MDDS_VERSION );
+		}
+	}
+
+	/**
+	 * Create the personal-area and catalog pages if they don't exist yet.
+	 */
+	private function ensure_pages(): void {
+		$this->ensure_page( 'mdds_account_page_id', __( 'אזור אישי', 'md-deschool' ), 'mdds-account', '[deschool_account]' );
+		$this->ensure_page( 'mdds_courses_page_id', __( 'הקורסים שלנו', 'md-deschool' ), 'mdds-courses', '[deschool_courses]' );
+	}
+
+	/**
+	 * Ensure a single shortcode page exists, storing its ID in an option.
+	 *
+	 * @param string $option  Option name holding the page ID.
+	 * @param string $title   Page title.
+	 * @param string $slug    Page slug.
+	 * @param string $content Page content (shortcode).
+	 */
+	private function ensure_page( string $option, string $title, string $slug, string $content ): void {
+		$existing = (int) get_option( $option, 0 );
+		if ( $existing > 0 ) {
+			$post = get_post( $existing );
+			if ( $post instanceof \WP_Post && 'trash' !== $post->post_status ) {
+				return;
+			}
+		}
+
+		// Reuse an existing page with the same slug if present (avoid duplicates).
+		$found = get_posts(
+			array(
+				'post_type'      => 'page',
+				'post_status'    => array( 'publish', 'draft', 'pending', 'private' ),
+				'name'           => $slug,
+				'posts_per_page' => 1,
+				'no_found_rows'  => true,
+				'fields'         => 'ids',
+			)
+		);
+
+		if ( ! empty( $found ) ) {
+			update_option( $option, (int) $found[0] );
+			return;
+		}
+
+		$page_id = wp_insert_post(
+			array(
+				'post_type'    => 'page',
+				'post_status'  => 'publish',
+				'post_title'   => $title,
+				'post_name'    => $slug,
+				'post_content' => $content,
+			)
+		);
+
+		if ( ! is_wp_error( $page_id ) && $page_id ) {
+			update_option( $option, (int) $page_id );
 		}
 	}
 }

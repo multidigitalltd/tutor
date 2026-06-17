@@ -22,6 +22,17 @@ final class Account {
 	private const SHORTCODE = 'deschool_account';
 
 	/**
+	 * URL of the personal-area page (created on activation/upgrade).
+	 *
+	 * @return string Empty string if the page does not exist.
+	 */
+	public static function get_account_url(): string {
+		$page_id = (int) get_option( 'mdds_account_page_id', 0 );
+
+		return $page_id > 0 ? (string) get_permalink( $page_id ) : '';
+	}
+
+	/**
 	 * Hook into WordPress.
 	 */
 	public function register(): void {
