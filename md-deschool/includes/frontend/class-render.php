@@ -30,16 +30,15 @@ final class Render {
 	public static function video( int $chapter_id, string $title ): string {
 		$embed = (string) get_post_meta( $chapter_id, Data::META_VIDEO_EMBED, true );
 		if ( '' !== trim( $embed ) ) {
-			// A full iframe embed code: sanitise + harden YouTube privacy.
-			if ( false !== stripos( $embed, '<iframe' ) ) {
-				return '<div class="mdds-video-embed">' . self::harden_embed( $embed ) . '</div>';
-			}
-			// A bare URL pasted into the embed box: treat it like the URL field.
-			$privacy = self::privacy_embed_url( trim( $embed ) );
-			if ( '' !== $privacy ) {
-				return self::facade( $privacy, $title );
+			// A bare YouTube/Vimeo URL pasted into the embed box.
+			if ( false === stripos( $embed, '<iframe' ) ) {
+				$built = self::provider_player( trim( $embed ), $title );
+				if ( '' !== $built ) {
+					return $built;
+				}
 			}
 
+			// A full iframe embed code: sanitise + reduce branding.
 			return '<div class="mdds-video-embed">' . self::harden_embed( $embed ) . '</div>';
 		}
 
@@ -48,7 +47,7 @@ final class Render {
 			$url = wp_get_attachment_url( $file_id );
 			if ( $url ) {
 				return sprintf(
-					'<video class="mdds-video-file" controls preload="metadata" playsinline width="100%%"><source src="%1$s" type="%2$s" />%3$s</video>',
+					'<video class="mdds-video-file" controls controlsList="nodownload" preload="metadata" playsinline width="100%%"><source src="%1$s" type="%2$s" />%3$s</video>',
 					esc_url( $url ),
 					esc_attr( (string) get_post_mime_type( $file_id ) ),
 					esc_html__( 'הדפדפן שלך אינו תומך בנגן הווידאו.', 'md-deschool' )
@@ -58,10 +57,9 @@ final class Render {
 
 		$url = (string) get_post_meta( $chapter_id, Data::META_VIDEO_URL, true );
 		if ( '' !== $url ) {
-			// Known providers get a clean facade that hides the source until play.
-			$privacy = self::privacy_embed_url( $url );
-			if ( '' !== $privacy ) {
-				return self::facade( $privacy, $title );
+			$built = self::provider_player( $url, $title );
+			if ( '' !== $built ) {
+				return $built;
 			}
 
 			$oembed = wp_oembed_get( $url );
@@ -70,6 +68,41 @@ final class Render {
 			}
 
 			return self::iframe( $url, $title );
+		}
+
+		return '';
+	}
+
+	/**
+	 * Build the appropriate facade player for a known provider URL.
+	 *
+	 * YouTube uses a fully custom player (no YouTube chrome shown while
+	 * playing); Vimeo uses a clean click-to-play iframe.
+	 *
+	 * @param string $url   Source URL.
+	 * @param string $title Accessible title.
+	 * @return string Player HTML, or '' if the provider is unknown.
+	 */
+	private static function provider_player( string $url, string $title ): string {
+		$youtube = self::youtube_id( $url );
+		if ( '' !== $youtube ) {
+			return self::facade_youtube( $youtube, $title );
+		}
+
+		$vimeo = self::vimeo_id( $url );
+		if ( '' !== $vimeo ) {
+			return self::facade(
+				add_query_arg(
+					array(
+						'byline'   => 0,
+						'portrait' => 0,
+						'title'    => 0,
+						'dnt'      => 1,
+					),
+					'https://player.vimeo.com/video/' . rawurlencode( $vimeo )
+				),
+				$title
+			);
 		}
 
 		return '';
@@ -91,8 +124,29 @@ final class Render {
 	}
 
 	/**
-	 * Build a click-to-play facade: a clean poster with a custom play button
-	 * (no provider branding) that loads the player only on click.
+	 * Facade for a YouTube video that loads into a fully custom player
+	 * (no YouTube branding/controls shown), via the IFrame API on click.
+	 *
+	 * @param string $id    YouTube video ID.
+	 * @param string $title Accessible title.
+	 * @return string
+	 */
+	private static function facade_youtube( string $id, string $title ): string {
+		$noscript = 'https://www.youtube.com/embed/' . rawurlencode( $id ) . '?rel=0&modestbranding=1&playsinline=1';
+
+		return sprintf(
+			'<div class="mdds-video-embed mdds-video-facade" data-mdds-yt="%1$s">'
+			. '<button type="button" class="mdds-video-play" aria-label="%2$s"><span class="mdds-video-play-icon" aria-hidden="true"></span></button>'
+			. '<noscript><iframe src="%3$s" title="%2$s" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe></noscript>'
+			. '</div>',
+			esc_attr( $id ),
+			esc_attr( $title ),
+			esc_url( $noscript )
+		);
+	}
+
+	/**
+	 * Build a click-to-play facade that loads an iframe on click (Vimeo).
 	 *
 	 * @param string $src   Provider embed URL (without autoplay).
 	 * @param string $title Accessible title.
@@ -110,47 +164,6 @@ final class Render {
 			esc_attr( $title ),
 			esc_url( $src )
 		);
-	}
-
-	/**
-	 * Build an unbranded, privacy-friendly embed URL for known providers.
-	 *
-	 * YouTube → youtube-nocookie.com with rel/modestbranding so the player
-	 * does not advertise YouTube; Vimeo → player without the byline/portrait.
-	 *
-	 * @param string $url Source URL.
-	 * @return string Embed URL, or '' if the provider is unknown.
-	 */
-	private static function privacy_embed_url( string $url ): string {
-		$youtube = self::youtube_id( $url );
-		if ( '' !== $youtube ) {
-			// Standard youtube.com/embed for maximum compatibility, with reduced
-			// branding and related videos. youtube-nocookie is blocked in some
-			// environments and can show a black screen.
-			return add_query_arg(
-				array(
-					'rel'            => 0,
-					'modestbranding' => 1,
-					'playsinline'    => 1,
-				),
-				'https://www.youtube.com/embed/' . rawurlencode( $youtube )
-			);
-		}
-
-		$vimeo = self::vimeo_id( $url );
-		if ( '' !== $vimeo ) {
-			return add_query_arg(
-				array(
-					'byline'   => 0,
-					'portrait' => 0,
-					'title'    => 0,
-					'dnt'      => 1,
-				),
-				'https://player.vimeo.com/video/' . rawurlencode( $vimeo )
-			);
-		}
-
-		return '';
 	}
 
 	/**

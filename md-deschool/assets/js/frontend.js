@@ -541,32 +541,227 @@
 	}
 
 	/* ------------------------------------------------------------------ */
-	/* Click-to-play video facade                                         */
+	/* Video: clean facade + fully custom YouTube player (no YT chrome)   */
 	/* ------------------------------------------------------------------ */
+	var ytApiPromise = null;
+
+	function loadYouTubeApi() {
+		if ( window.YT && window.YT.Player ) {
+			return Promise.resolve();
+		}
+		if ( ytApiPromise ) {
+			return ytApiPromise;
+		}
+		ytApiPromise = new Promise( function ( resolve ) {
+			var prev = window.onYouTubeIframeAPIReady;
+			window.onYouTubeIframeAPIReady = function () {
+				if ( typeof prev === 'function' ) {
+					prev();
+				}
+				resolve();
+			};
+			var tag = document.createElement( 'script' );
+			tag.src = 'https://www.youtube.com/iframe_api';
+			document.head.appendChild( tag );
+		} );
+		return ytApiPromise;
+	}
+
+	/**
+	 * Format seconds as m:ss.
+	 *
+	 * @param {number} s Seconds.
+	 * @return {string}
+	 */
+	function clock( s ) {
+		s = Math.max( 0, Math.floor( s || 0 ) );
+		var m = Math.floor( s / 60 );
+		var r = s % 60;
+		return m + ':' + ( r < 10 ? '0' : '' ) + r;
+	}
+
+	function buildButton( cls, label ) {
+		var b = document.createElement( 'button' );
+		b.type = 'button';
+		b.className = cls;
+		b.setAttribute( 'aria-label', label );
+		return b;
+	}
+
+	/**
+	 * Mount a custom-controls YouTube player into a facade wrapper.
+	 *
+	 * @param {HTMLElement} wrap  Facade wrapper.
+	 * @param {string}      id    YouTube video ID.
+	 * @param {string}      label Accessible label.
+	 */
+	function playYouTube( wrap, id, label ) {
+		loadYouTubeApi().then( function () {
+			wrap.classList.remove( 'mdds-video-facade' );
+			wrap.classList.add( 'mdds-yt' );
+			wrap.innerHTML = '';
+
+			var host = document.createElement( 'div' );
+			host.className = 'mdds-yt-host';
+			wrap.appendChild( host );
+
+			// Click layer: toggles play/pause and blocks the YouTube context menu.
+			var overlay = buildButton( 'mdds-yt-overlay', label || ( i18n.play || 'Play' ) );
+			wrap.appendChild( overlay );
+
+			var controls = document.createElement( 'div' );
+			controls.className = 'mdds-yt-controls';
+
+			var playBtn = buildButton( 'mdds-yt-btn mdds-yt-toggle', i18n.play || 'Play' );
+			var seek = document.createElement( 'input' );
+			seek.type = 'range';
+			seek.className = 'mdds-yt-seek';
+			seek.min = '0';
+			seek.max = '100';
+			seek.value = '0';
+			seek.setAttribute( 'aria-label', i18n.seek || 'Seek' );
+			var time = document.createElement( 'span' );
+			time.className = 'mdds-yt-time';
+			time.textContent = '0:00';
+			var muteBtn = buildButton( 'mdds-yt-btn mdds-yt-mute', i18n.mute || 'Mute' );
+			var fsBtn = buildButton( 'mdds-yt-btn mdds-yt-fs', i18n.fullscreen || 'Fullscreen' );
+
+			controls.appendChild( playBtn );
+			controls.appendChild( time );
+			controls.appendChild( seek );
+			controls.appendChild( muteBtn );
+			controls.appendChild( fsBtn );
+			wrap.appendChild( controls );
+
+			wrap.addEventListener( 'contextmenu', function ( e ) {
+				e.preventDefault();
+			} );
+
+			var player;
+			var timer;
+			var seeking = false;
+
+			function setPlaying( isPlaying ) {
+				wrap.classList.toggle( 'is-playing', isPlaying );
+				playBtn.setAttribute( 'aria-label', isPlaying ? ( i18n.pause || 'Pause' ) : ( i18n.play || 'Play' ) );
+			}
+
+			function tick() {
+				if ( ! player || ! player.getDuration || seeking ) {
+					return;
+				}
+				var dur = player.getDuration() || 0;
+				var cur = player.getCurrentTime() || 0;
+				if ( dur > 0 ) {
+					seek.value = String( ( cur / dur ) * 100 );
+				}
+				time.textContent = clock( cur ) + ' / ' + clock( dur );
+			}
+
+			function toggle() {
+				if ( ! player ) {
+					return;
+				}
+				var state = player.getPlayerState();
+				if ( 1 === state ) {
+					player.pauseVideo();
+				} else {
+					player.playVideo();
+				}
+			}
+
+			overlay.addEventListener( 'click', toggle );
+			playBtn.addEventListener( 'click', toggle );
+
+			muteBtn.addEventListener( 'click', function () {
+				if ( ! player ) {
+					return;
+				}
+				if ( player.isMuted() ) {
+					player.unMute();
+					wrap.classList.remove( 'is-muted' );
+				} else {
+					player.mute();
+					wrap.classList.add( 'is-muted' );
+				}
+			} );
+
+			fsBtn.addEventListener( 'click', function () {
+				if ( document.fullscreenElement ) {
+					document.exitFullscreen();
+				} else if ( wrap.requestFullscreen ) {
+					wrap.requestFullscreen();
+				}
+			} );
+
+			seek.addEventListener( 'input', function () {
+				seeking = true;
+			} );
+			seek.addEventListener( 'change', function () {
+				if ( player && player.getDuration ) {
+					player.seekTo( ( parseFloat( seek.value ) / 100 ) * player.getDuration(), true );
+				}
+				seeking = false;
+			} );
+
+			player = new YT.Player( host, {
+				videoId: id,
+				playerVars: {
+					autoplay: 1,
+					controls: 0,
+					modestbranding: 1,
+					rel: 0,
+					disablekb: 1,
+					fs: 0,
+					playsinline: 1,
+					iv_load_policy: 3
+				},
+				events: {
+					onReady: function ( e ) {
+						e.target.playVideo();
+						timer = window.setInterval( tick, 500 );
+					},
+					onStateChange: function ( e ) {
+						setPlaying( 1 === e.data );
+						if ( 0 === e.data && timer ) {
+							tick();
+						}
+					}
+				}
+			} );
+		} ).catch( function () {} );
+	}
+
 	function initVideo() {
-		// Delegated so it works regardless of other inits and stays robust.
 		document.addEventListener( 'click', function ( event ) {
 			var btn = event.target.closest( '.mdds-video-play' );
 			if ( ! btn ) {
 				return;
 			}
-			var wrap = btn.closest( '[data-mdds-video]' );
+			var wrap = btn.closest( '.mdds-video-facade' );
 			if ( ! wrap ) {
 				return;
 			}
+			event.preventDefault();
+			var label = btn.getAttribute( 'aria-label' ) || '';
+
+			var ytId = wrap.getAttribute( 'data-mdds-yt' );
+			if ( ytId ) {
+				playYouTube( wrap, ytId, label );
+				return;
+			}
+
+			// Other providers (e.g. Vimeo): load the iframe directly.
 			var url = wrap.getAttribute( 'data-mdds-video' );
 			if ( ! url ) {
 				return;
 			}
-			event.preventDefault();
-
 			var iframe = document.createElement( 'iframe' );
 			iframe.src = url;
-			iframe.title = btn.getAttribute( 'aria-label' ) || '';
+			iframe.title = label;
 			iframe.setAttribute( 'allow', 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture' );
 			iframe.setAttribute( 'allowfullscreen', 'true' );
 			iframe.setAttribute( 'referrerpolicy', 'strict-origin-when-cross-origin' );
-
 			wrap.classList.remove( 'mdds-video-facade' );
 			wrap.innerHTML = '';
 			wrap.appendChild( iframe );

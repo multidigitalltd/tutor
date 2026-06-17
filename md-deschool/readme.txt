@@ -4,7 +4,7 @@ Tags: lms, courses, woocommerce, quiz, learning
 Requires at least: 6.4
 Tested up to: 6.5
 Requires PHP: 8.3
-Stable tag: 1.9.0
+Stable tag: 1.10.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -39,6 +39,9 @@ DeSchool מאפשר לבנות "יחידות תוכן" לימודיות גנרי
 5. צרו עמוד "אזור אישי" עם השורטקוד [deschool_account], ועמוד קטלוג (לא חובה) עם [deschool_courses]. ארכיון הקורסים זמין גם בכתובת /unit/.
 
 == Changelog ==
+
+= 1.10.0 =
+* חדש: נגן יוטיוב מותאם לחלוטין — בזמן הניגון לא מוצג סרגל/לוגו של יוטיוב כלל. נגן עם בקרים משלנו (הפעלה/השהיה, פס התקדמות, השתקה, מסך מלא) דרך ה-YouTube IFrame API עם controls=0, ושכבה שמונעת תפריט הקשר שחושף את המקור. כך הצופה אינו רואה שמדובר ביוטיוב.
 
 = 1.9.0 =
 * חדש: נגן וידאו עם כיסוי נקי (facade) — לפני הלחיצה לא נראה שמדובר ביוטיוב (רקע + כפתור הפעלה בלבד), ובלחיצה נטען הנגן של youtube.com (שעובד) ומתנגן מיד. כך מסתירים את מקור היוטיוב בלי הדומיין nocookie שגרם למסך שחור.

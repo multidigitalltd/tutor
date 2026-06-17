@@ -78,6 +78,11 @@ final class Assets {
 					'fileTooBig' => __( 'הקובץ גדול מדי', 'md-deschool' ),
 					'completed'  => __( 'הפרק הושלם', 'md-deschool' ),
 					'markDone'   => __( 'סימון כהושלם והמשך', 'md-deschool' ),
+					'play'       => __( 'הפעלה', 'md-deschool' ),
+					'pause'      => __( 'השהיה', 'md-deschool' ),
+					'seek'       => __( 'מעבר במהלך הסרטון', 'md-deschool' ),
+					'mute'       => __( 'השתקה', 'md-deschool' ),
+					'fullscreen' => __( 'מסך מלא', 'md-deschool' ),
 				),
 			)
 		);
