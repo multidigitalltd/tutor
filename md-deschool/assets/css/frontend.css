@@ -498,6 +498,48 @@
 	border: 0;
 }
 
+/* Click-to-play facade (hides the video source until play) ---------------- */
+.mdds-video-facade {
+	background: radial-gradient( circle at center, #1e293b, #0f172a );
+	cursor: pointer;
+}
+
+.mdds-video-play {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background: transparent;
+	cursor: pointer;
+	padding: 0;
+}
+
+.mdds-video-play-icon {
+	width: 76px;
+	height: 76px;
+	border-radius: 50%;
+	background: rgba( 15, 23, 42, 0.78 );
+	border: 3px solid #fff;
+	position: relative;
+	transition: transform 0.15s ease, background 0.15s ease;
+}
+
+.mdds-video-facade:hover .mdds-video-play-icon,
+.mdds-video-play:focus-visible .mdds-video-play-icon {
+	background: var(--mdds-accent);
+	transform: scale( 1.05 );
+}
+
+.mdds-video-play-icon::after {
+	content: "";
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate( -35%, -50% );
+	border-style: solid;
+	border-width: 13px 0 13px 22px;
+	border-color: transparent transparent transparent #fff;
+}
+
 .mdds-video-file {
 	width: 100%;
 	border-radius: var(--mdds-radius);

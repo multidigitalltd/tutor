@@ -1,13 +1,9 @@
 # DeSchool — translation template.
 # Copyright (C) 2026 Multi Digital
-# This file is distributed under the same license as the DeSchool plugin.
 msgid ""
 msgstr ""
-"Project-Id-Version: DeSchool 1.8.0\n"
-"Report-Msgid-Bugs-To: https://multidigital.co.il/\n"
-"MIME-Version: 1.0\n"
+"Project-Id-Version: DeSchool 1.9.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
 "X-Domain: md-deschool\n"
 
 msgid "%1$d מתוך %2$d פרקים הושלמו"

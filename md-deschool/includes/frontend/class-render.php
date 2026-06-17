@@ -37,7 +37,7 @@ final class Render {
 			// A bare URL pasted into the embed box: treat it like the URL field.
 			$privacy = self::privacy_embed_url( trim( $embed ) );
 			if ( '' !== $privacy ) {
-				return self::iframe( $privacy, $title );
+				return self::facade( $privacy, $title );
 			}
 
 			return '<div class="mdds-video-embed">' . self::harden_embed( $embed ) . '</div>';
@@ -58,10 +58,10 @@ final class Render {
 
 		$url = (string) get_post_meta( $chapter_id, Data::META_VIDEO_URL, true );
 		if ( '' !== $url ) {
-			// A privacy-friendly, unbranded player for known providers.
+			// Known providers get a clean facade that hides the source until play.
 			$privacy = self::privacy_embed_url( $url );
 			if ( '' !== $privacy ) {
-				return self::iframe( $privacy, $title );
+				return self::facade( $privacy, $title );
 			}
 
 			$oembed = wp_oembed_get( $url );
@@ -87,6 +87,28 @@ final class Render {
 			'<div class="mdds-video-embed"><iframe src="%1$s" title="%2$s" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe></div>',
 			esc_url( $src ),
 			esc_attr( $title )
+		);
+	}
+
+	/**
+	 * Build a click-to-play facade: a clean poster with a custom play button
+	 * (no provider branding) that loads the player only on click.
+	 *
+	 * @param string $src   Provider embed URL (without autoplay).
+	 * @param string $title Accessible title.
+	 * @return string
+	 */
+	private static function facade( string $src, string $title ): string {
+		$autoplay = add_query_arg( 'autoplay', 1, $src );
+
+		return sprintf(
+			'<div class="mdds-video-embed mdds-video-facade" data-mdds-video="%1$s">'
+			. '<button type="button" class="mdds-video-play" aria-label="%2$s"><span class="mdds-video-play-icon" aria-hidden="true"></span></button>'
+			. '<noscript><iframe src="%3$s" title="%2$s" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe></noscript>'
+			. '</div>',
+			esc_url( $autoplay ),
+			esc_attr( $title ),
+			esc_url( $src )
 		);
 	}
 
