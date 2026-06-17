@@ -541,42 +541,11 @@
 	}
 
 	/* ------------------------------------------------------------------ */
-	/* Click-to-play video facade                                         */
+	/* Boot                                                               */
 	/* ------------------------------------------------------------------ */
-	function initVideo() {
-		// Event delegation: resilient even if a facade is added later or
-		// another init throws. The whole facade area is clickable.
-		document.addEventListener( 'click', function ( event ) {
-			var btn = event.target.closest( '.mdds-video-play' );
-			if ( ! btn ) {
-				return;
-			}
-			var wrap = btn.closest( '[data-mdds-video]' );
-			if ( ! wrap ) {
-				return;
-			}
-			var url = wrap.getAttribute( 'data-mdds-video' );
-			if ( ! url ) {
-				return;
-			}
-			event.preventDefault();
-
-			var iframe = document.createElement( 'iframe' );
-			iframe.src = url;
-			iframe.title = btn.getAttribute( 'aria-label' ) || '';
-			iframe.setAttribute( 'allow', 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture' );
-			iframe.setAttribute( 'allowfullscreen', 'true' );
-			iframe.setAttribute( 'referrerpolicy', 'strict-origin-when-cross-origin' );
-
-			wrap.classList.remove( 'mdds-video-facade' );
-			wrap.innerHTML = '';
-			wrap.appendChild( iframe );
-		} );
-	}
-
 	document.addEventListener( 'DOMContentLoaded', function () {
 		// Run each independently so one failure cannot disable the rest.
-		[ initVideo, initStepper, initTasks, initComplete, initQuiz, initQA ].forEach( function ( fn ) {
+		[ initStepper, initTasks, initComplete, initQuiz, initQA ].forEach( function ( fn ) {
 			try {
 				fn();
 			} catch ( e ) {

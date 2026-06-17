@@ -14,7 +14,6 @@ use MultiDigital\DeSchool\Post_Types\Chapter_Post_Type;
 use MultiDigital\DeSchool\Admin\Unit_Metaboxes;
 use MultiDigital\DeSchool\Admin\Chapter_Metaboxes;
 use MultiDigital\DeSchool\Admin\Admin_Assets;
-use MultiDigital\DeSchool\Admin\Demo_Seeder;
 use MultiDigital\DeSchool\Admin\Unit_Chapters_Box;
 use MultiDigital\DeSchool\Admin\Answers_Export;
 use MultiDigital\DeSchool\Admin\Wizard;
@@ -88,7 +87,6 @@ final class Plugin {
 			( new Unit_Metaboxes() )->register();
 			( new Chapter_Metaboxes() )->register();
 			( new Admin_Assets() )->register();
-			( new Demo_Seeder() )->register();
 			( new Unit_Chapters_Box() )->register();
 			( new Answers_Export() )->register();
 			( new Wizard() )->register();

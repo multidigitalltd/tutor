@@ -29,8 +29,17 @@ final class Render {
 	 */
 	public static function video( int $chapter_id, string $title ): string {
 		$embed = (string) get_post_meta( $chapter_id, Data::META_VIDEO_EMBED, true );
-		if ( '' !== $embed ) {
-			// Already sanitised to safe iframes on save; harden YouTube privacy.
+		if ( '' !== trim( $embed ) ) {
+			// A full iframe embed code: sanitise + harden YouTube privacy.
+			if ( false !== stripos( $embed, '<iframe' ) ) {
+				return '<div class="mdds-video-embed">' . self::harden_embed( $embed ) . '</div>';
+			}
+			// A bare URL pasted into the embed box: treat it like the URL field.
+			$privacy = self::privacy_embed_url( trim( $embed ) );
+			if ( '' !== $privacy ) {
+				return self::iframe( $privacy, $title );
+			}
+
 			return '<div class="mdds-video-embed">' . self::harden_embed( $embed ) . '</div>';
 		}
 
@@ -39,7 +48,7 @@ final class Render {
 			$url = wp_get_attachment_url( $file_id );
 			if ( $url ) {
 				return sprintf(
-					'<video class="mdds-video-file" controls preload="none" playsinline width="100%%"><source src="%1$s" type="%2$s" />%3$s</video>',
+					'<video class="mdds-video-file" controls preload="metadata" playsinline width="100%%"><source src="%1$s" type="%2$s" />%3$s</video>',
 					esc_url( $url ),
 					esc_attr( (string) get_post_mime_type( $file_id ) ),
 					esc_html__( 'הדפדפן שלך אינו תומך בנגן הווידאו.', 'md-deschool' )
@@ -49,21 +58,10 @@ final class Render {
 
 		$url = (string) get_post_meta( $chapter_id, Data::META_VIDEO_URL, true );
 		if ( '' !== $url ) {
-			// Build a privacy-friendly, unbranded player for known providers,
-			// behind a click-to-play facade so there is always a play button.
+			// A privacy-friendly, unbranded player for known providers.
 			$privacy = self::privacy_embed_url( $url );
 			if ( '' !== $privacy ) {
-				$autoplay = add_query_arg( 'autoplay', 1, $privacy );
-
-				return sprintf(
-					'<div class="mdds-video-embed mdds-video-facade" data-mdds-video="%1$s">'
-					. '<button type="button" class="mdds-video-play" aria-label="%2$s"><span class="mdds-video-play-icon" aria-hidden="true"></span></button>'
-					. '<noscript><iframe src="%3$s" title="%2$s" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe></noscript>'
-					. '</div>',
-					esc_url( $autoplay ),
-					esc_attr( $title ),
-					esc_url( $privacy )
-				);
+				return self::iframe( $privacy, $title );
 			}
 
 			$oembed = wp_oembed_get( $url );
@@ -71,14 +69,25 @@ final class Render {
 				return '<div class="mdds-video-embed">' . self::harden_embed( $oembed ) . '</div>';
 			}
 
-			return sprintf(
-				'<div class="mdds-video-embed"><iframe src="%1$s" title="%2$s" loading="lazy" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe></div>',
-				esc_url( $url ),
-				esc_attr( $title )
-			);
+			return self::iframe( $url, $title );
 		}
 
 		return '';
+	}
+
+	/**
+	 * Build a responsive, accessible embed iframe.
+	 *
+	 * @param string $src   Embed URL.
+	 * @param string $title Accessible title.
+	 * @return string
+	 */
+	private static function iframe( string $src, string $title ): string {
+		return sprintf(
+			'<div class="mdds-video-embed"><iframe src="%1$s" title="%2$s" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe></div>',
+			esc_url( $src ),
+			esc_attr( $title )
+		);
 	}
 
 	/**

@@ -3,7 +3,7 @@
 # This file is distributed under the same license as the DeSchool plugin.
 msgid ""
 msgstr ""
-"Project-Id-Version: DeSchool 1.7.0\n"
+"Project-Id-Version: DeSchool 1.8.0\n"
 "Report-Msgid-Bugs-To: https://multidigital.co.il/\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -280,12 +280,6 @@ msgstr ""
 msgid "יחידות תוכן"
 msgstr ""
 
-msgid "יחידת דוגמה"
-msgstr ""
-
-msgid "יחידת הדוגמה כבר נוצרה:"
-msgstr ""
-
 msgid "יחידת התוכן"
 msgstr ""
 
@@ -308,12 +302,6 @@ msgid "יצירת הקורס"
 msgstr ""
 
 msgid "יצירת הקורס נכשלה. ודאו שמילאתם שם קורס ונסו שוב."
-msgstr ""
-
-msgid "יצירת יחידת דוגמה"
-msgstr ""
-
-msgid "יצירת יחידת תוכן לדוגמה"
 msgstr ""
 
 msgid "יש להשלים את הפרקים הקודמים תחילה."
@@ -542,9 +530,6 @@ msgid "עריכת פרק"
 msgstr ""
 
 msgid "פורסם"
-msgstr ""
-
-msgid "פעולה זו תיצור יחידת תוכן מלאה (\"שש השאלות לפני קמפיין\") עם שני פרקים, משימות ומבחן סיכום, לבדיקת התבנית."
 msgstr ""
 
 msgid "פעולות"
