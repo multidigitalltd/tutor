@@ -3,7 +3,7 @@
 # This file is distributed under the same license as the DeSchool plugin.
 msgid ""
 msgstr ""
-"Project-Id-Version: DeSchool 1.3.0\n"
+"Project-Id-Version: DeSchool 1.4.0\n"
 "Report-Msgid-Bugs-To: https://multidigital.co.il/\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -14,6 +14,9 @@ msgid "%1$d מתוך %2$d פרקים הושלמו"
 msgstr ""
 
 msgid "%d פרק"
+msgstr ""
+
+msgid "%d פרק בקורס"
 msgstr ""
 
 msgid "(רשות)"
@@ -43,6 +46,9 @@ msgstr ""
 msgid "או קישור למצגת"
 msgstr ""
 
+msgid "אזור אישי"
+msgstr ""
+
 msgid "אזור ייעוץ אישי"
 msgstr ""
 
@@ -52,7 +58,16 @@ msgstr ""
 msgid "אין הרשאה."
 msgstr ""
 
+msgid "אין לך גישה לקורס זה."
+msgstr ""
+
 msgid "אין לך הרשאת גישה ליחידה זו."
+msgstr ""
+
+msgid "אין משימות בפרק זה."
+msgstr ""
+
+msgid "אין עדיין שאלות."
 msgstr ""
 
 msgid "אין קורסים זמינים כרגע."
@@ -62,6 +77,9 @@ msgid "אין שאלות במבחן."
 msgstr ""
 
 msgid "אירעה שגיאה, נסו שוב"
+msgstr ""
+
+msgid "אישור ושליחת התשובות"
 msgstr ""
 
 msgid "אפשרות לניסיון חוזר"
@@ -82,10 +100,19 @@ msgstr ""
 msgid "הבא"
 msgstr ""
 
+msgid "הגדרות"
+msgstr ""
+
 msgid "הגדרת מבחן סיכום (אופציונלי)"
 msgstr ""
 
 msgid "הדפדפן שלך אינו תומך בנגן הווידאו."
+msgstr ""
+
+msgid "ההגדרות נשמרו בהצלחה."
+msgstr ""
+
+msgid "ההודעה נשלחה"
 msgstr ""
 
 msgid "הוספת יחידה"
@@ -112,6 +139,9 @@ msgstr ""
 msgid "הושלם"
 msgstr ""
 
+msgid "המשך לקורס"
+msgstr ""
+
 msgid "הנחיה / טקסט המשימה"
 msgstr ""
 
@@ -128,6 +158,9 @@ msgid "העלאת הקובץ נכשלה."
 msgstr ""
 
 msgid "הפרק הבא"
+msgstr ""
+
+msgid "הפרק הבא: %s"
 msgstr ""
 
 msgid "הפרק הושלם"
@@ -151,19 +184,34 @@ msgstr ""
 msgid "הקודם"
 msgstr ""
 
+msgid "הקורסים שלי"
+msgstr ""
+
+msgid "השאלה שלך"
+msgstr ""
+
 msgid "השלימו את כל פרקי היחידה כדי לפתוח את מבחן הסיכום."
+msgstr ""
+
+msgid "התחלת הקורס"
 msgstr ""
 
 msgid "התיאור המלא של היחידה נכתב בעורך התוכן הראשי למעלה."
 msgstr ""
 
+msgid "התנתקות"
+msgstr ""
+
 msgid "התקדמות ביחידה"
 msgstr ""
 
-msgid "התשובה נשמרה"
+msgid "התקדמות בקורס"
 msgstr ""
 
 msgid "התשובה שלך"
+msgstr ""
+
+msgid "התשובות נשמרו בהצלחה"
 msgstr ""
 
 msgid "וידאו הפרק"
@@ -238,16 +286,28 @@ msgstr ""
 msgid "יש להשלים את כל הפרקים לפני המבחן."
 msgstr ""
 
+msgid "יש להתחבר כדי לצפות באזור האישי שלך."
+msgstr ""
+
 msgid "יש להתחבר כדי לצפות ביחידות שלך."
 msgstr ""
 
 msgid "יש לך גישה"
 msgstr ""
 
+msgid "יש לכם שאלה? כתבו אותה כאן והמנחה יחזור אליכם."
+msgstr ""
+
+msgid "יש לכתוב הודעה."
+msgstr ""
+
 msgid "יש לשמור את היחידה (טיוטה) לפני הוספת פרקים."
 msgstr ""
 
 msgid "כבר ביצעת את המבחן."
+msgstr ""
+
+msgid "כבר רכשתי — כניסה"
 msgstr ""
 
 msgid "כותרת"
@@ -274,6 +334,15 @@ msgstr ""
 msgid "כתבו כאן את התשובה שלכם…"
 msgstr ""
 
+msgid "כתבו כאן את שאלתכם…"
+msgstr ""
+
+msgid "כתבו תשובה…"
+msgstr ""
+
+msgid "כתובת אימייל"
+msgstr ""
+
 msgid "לא נבחר קובץ"
 msgstr ""
 
@@ -284,6 +353,9 @@ msgid "לא נמצאו יחידות בפח"
 msgstr ""
 
 msgid "לא נמצאו פרקים"
+msgstr ""
+
+msgid "לא עבר"
 msgstr ""
 
 msgid "לאפשר צירוף קובץ"
@@ -310,6 +382,9 @@ msgstr ""
 msgid "מדריך מהיר"
 msgstr ""
 
+msgid "מה כולל הקורס"
+msgstr ""
+
 msgid "מה כוללת היחידה"
 msgstr ""
 
@@ -331,6 +406,9 @@ msgstr ""
 msgid "ממתין"
 msgstr ""
 
+msgid "מנחה"
+msgstr ""
+
 msgid "מעבר לקורס"
 msgstr ""
 
@@ -344,9 +422,6 @@ msgid "מצגת הפרק"
 msgstr ""
 
 msgid "משימה"
-msgstr ""
-
-msgid "משימה לא קיימת."
 msgstr ""
 
 msgid "משימות"
@@ -379,7 +454,16 @@ msgstr ""
 msgid "סימון כהושלם והמשך"
 msgstr ""
 
+msgid "עבר"
+msgstr ""
+
 msgid "עדיין אין לך גישה ליחידות תוכן."
+msgstr ""
+
+msgid "עדיין אין לך גישה לקורסים."
+msgstr ""
+
+msgid "עדיין לא ביצעת מבחנים."
 msgstr ""
 
 msgid "עדיין לא נוספו פרקים ליחידה זו. כל פרק כולל וידאו, מצגת ומשימות משלו."
@@ -439,6 +523,9 @@ msgstr ""
 msgid "פרקים"
 msgstr ""
 
+msgid "ציון"
+msgstr ""
+
 msgid "ציון במבחן: %d%%"
 msgstr ""
 
@@ -446,6 +533,9 @@ msgid "ציון מעבר (%)"
 msgstr ""
 
 msgid "ציון מעבר: %d%%"
+msgstr ""
+
+msgid "ציונים ומבחנים"
 msgstr ""
 
 msgid "צירוף קובץ (PDF, Word, PowerPoint, Excel, תמונה)"
@@ -466,6 +556,12 @@ msgstr ""
 msgid "קובץ מצגת (PDF)"
 msgstr ""
 
+msgid "קורס"
+msgstr ""
+
+msgid "קורס לא תקין."
+msgstr ""
+
 msgid "קישור הכפתור (יומן / טופס / מוצר / סליקה)"
 msgstr ""
 
@@ -478,6 +574,9 @@ msgstr ""
 msgid "רכישת היחידה"
 msgstr ""
 
+msgid "רכישת הקורס"
+msgstr ""
+
 msgid "רכישת פגישת ייעוץ מסובסדת"
 msgstr ""
 
@@ -487,13 +586,28 @@ msgstr ""
 msgid "שאלה %d"
 msgstr ""
 
+msgid "שאלה חדשה בקורס: %s"
+msgstr ""
+
+msgid "שאלה לא תקינה."
+msgstr ""
+
 msgid "שאלות / משימות הפרק"
 msgstr ""
 
 msgid "שאלות / משימות לאחר הפרק"
 msgstr ""
 
+msgid "שאלות הלומדים בקורס זה. ניתן להשיב לכל שאלה."
+msgstr ""
+
 msgid "שאלות המבחן"
+msgstr ""
+
+msgid "שאלות ותשובות"
+msgstr ""
+
+msgid "שאלות ותשובות עם המנחה"
 msgstr ""
 
 msgid "שומר…"
@@ -508,19 +622,37 @@ msgstr ""
 msgid "שליחת המבחן"
 msgstr ""
 
+msgid "שליחת שאלה"
+msgstr ""
+
+msgid "שליחת תשובה"
+msgstr ""
+
 msgid "שם"
 msgstr ""
 
 msgid "שם המרצה"
 msgstr ""
 
-msgid "שמירת תשובה"
+msgid "שם לתצוגה"
+msgstr ""
+
+msgid "שמירת הגדרות"
+msgstr ""
+
+msgid "שמירת ההודעה נכשלה."
+msgstr ""
+
+msgid "תאריך"
 msgstr ""
 
 msgid "תוכן היחידה נעול"
 msgstr ""
 
 msgid "תוכן הפרק"
+msgstr ""
+
+msgid "תוצאה"
 msgstr ""
 
 msgid "תיאור הפרק"

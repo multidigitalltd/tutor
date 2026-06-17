@@ -678,6 +678,327 @@
 	color: var(--mdds-error);
 }
 
+/* Sales / landing page ---------------------------------------------------- */
+.mdds-sales {
+	padding-bottom: 96px; /* room for the sticky buy bar */
+}
+
+.mdds-sales-hero {
+	display: grid;
+	grid-template-columns: minmax( 0, 1.1fr ) minmax( 0, 1fr );
+	gap: 32px;
+	align-items: start;
+	margin: 16px 0 24px;
+}
+
+.mdds-sales-image {
+	width: 100%;
+	height: auto;
+	border-radius: var(--mdds-radius);
+	display: block;
+	aspect-ratio: 16 / 9;
+	object-fit: cover;
+}
+
+.mdds-sales-name {
+	margin: 0 0 8px;
+	font-size: clamp( 1.6rem, 4vw, 2.4rem );
+}
+
+.mdds-sales-subtitle {
+	font-size: 1.15rem;
+	color: var(--mdds-muted);
+	margin: 0 0 16px;
+}
+
+.mdds-sales-includes ul {
+	padding-inline-start: 1.3em;
+	margin: 8px 0 16px;
+}
+
+.mdds-sales-includes li {
+	margin-bottom: 6px;
+}
+
+.mdds-sales-meta {
+	color: var(--mdds-muted);
+	font-weight: 600;
+}
+
+.mdds-sales-cta {
+	display: flex;
+	align-items: center;
+	gap: 16px;
+	flex-wrap: wrap;
+	margin-top: 16px;
+	padding: 16px;
+	border: 1px solid var(--mdds-border);
+	border-radius: var(--mdds-radius);
+	background: #f8fafc;
+}
+
+.mdds-sales-price {
+	font-size: 1.6rem;
+	font-weight: 800;
+	color: var(--mdds-accent);
+}
+
+.mdds-sales-description {
+	margin-top: 24px;
+}
+
+/* Sticky purchase bar ----------------------------------------------------- */
+.mdds-buybar {
+	position: fixed;
+	inset-inline: 0;
+	bottom: 0;
+	z-index: 50;
+	background: #ffffff;
+	border-top: 1px solid var(--mdds-border);
+	box-shadow: 0 -6px 24px rgba( 15, 23, 42, 0.1 );
+	padding: 10px 16px;
+}
+
+.mdds-buybar-inner {
+	max-width: 920px;
+	margin-inline: auto;
+	display: flex;
+	align-items: center;
+	gap: 16px;
+	flex-wrap: wrap;
+}
+
+.mdds-buybar-title {
+	font-weight: 700;
+	flex: 1 1 auto;
+	min-width: 0;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.mdds-buybar-price {
+	font-weight: 800;
+	color: var(--mdds-accent);
+}
+
+.mdds-buybar .mdds-button {
+	margin-inline-start: auto;
+}
+
+@media ( max-width: 880px ) {
+	.mdds-sales-hero {
+		grid-template-columns: 1fr;
+	}
+
+	.mdds-buybar-title {
+		display: none;
+	}
+}
+
+/* Personal area (tabs) ---------------------------------------------------- */
+.mdds-account-notice {
+	background: #f0fdf4;
+	border: 1px solid var(--mdds-success);
+	color: var(--mdds-success);
+	border-radius: var(--mdds-radius);
+	padding: 10px 14px;
+}
+
+.mdds-tabs .mdds-tab-radio {
+	position: absolute;
+	opacity: 0;
+	pointer-events: none;
+}
+
+.mdds-tabs-nav {
+	display: flex;
+	gap: 4px;
+	flex-wrap: wrap;
+	border-bottom: 2px solid var(--mdds-border);
+	margin-bottom: 20px;
+}
+
+.mdds-tab-label {
+	padding: 10px 18px;
+	cursor: pointer;
+	font-weight: 600;
+	border: 2px solid transparent;
+	border-bottom: none;
+	border-radius: var(--mdds-radius) var(--mdds-radius) 0 0;
+	color: var(--mdds-muted);
+}
+
+.mdds-tab-label:hover {
+	color: var(--mdds-accent);
+}
+
+.mdds-tab-panel {
+	display: none;
+}
+
+#mdds-tab-courses:checked ~ .mdds-tabs-nav .mdds-tab-label--courses,
+#mdds-tab-grades:checked ~ .mdds-tabs-nav .mdds-tab-label--grades,
+#mdds-tab-settings:checked ~ .mdds-tabs-nav .mdds-tab-label--settings {
+	color: var(--mdds-accent);
+	border-color: var(--mdds-border);
+	border-bottom-color: #fff;
+	background: #fff;
+}
+
+#mdds-tab-courses:checked ~ .mdds-tabs-body .mdds-tab-panel--courses,
+#mdds-tab-grades:checked ~ .mdds-tabs-body .mdds-tab-panel--grades,
+#mdds-tab-settings:checked ~ .mdds-tabs-body .mdds-tab-panel--settings {
+	display: block;
+}
+
+.mdds-account-courses {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+	display: grid;
+	gap: 16px;
+	grid-template-columns: repeat( auto-fill, minmax( 280px, 1fr ) );
+}
+
+.mdds-account-course {
+	border: 1px solid var(--mdds-border);
+	border-radius: var(--mdds-radius);
+	padding: 18px;
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+}
+
+.mdds-account-course-head {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 8px;
+}
+
+.mdds-account-course-title {
+	font-weight: 700;
+	font-size: 1.1rem;
+	text-decoration: none;
+}
+
+.mdds-account-current {
+	margin: 0;
+	color: var(--mdds-muted);
+}
+
+.mdds-account-course .mdds-button {
+	margin-top: auto;
+	text-align: center;
+}
+
+.mdds-grades-table {
+	width: 100%;
+	border-collapse: collapse;
+}
+
+.mdds-grades-table th,
+.mdds-grades-table td {
+	text-align: start;
+	padding: 10px 12px;
+	border-bottom: 1px solid var(--mdds-border);
+}
+
+.mdds-grade.is-pass {
+	color: var(--mdds-success);
+	font-weight: 700;
+}
+
+.mdds-grade.is-fail {
+	color: var(--mdds-error);
+	font-weight: 700;
+}
+
+.mdds-account-settings {
+	max-width: 460px;
+	display: flex;
+	flex-direction: column;
+	gap: 14px;
+}
+
+.mdds-account-settings input {
+	width: 100%;
+	padding: 10px;
+	border: 1px solid var(--mdds-border);
+	border-radius: 8px;
+	font: inherit;
+}
+
+/* Q&A --------------------------------------------------------------------- */
+.mdds-qa-intro {
+	color: var(--mdds-muted);
+}
+
+.mdds-qa-form {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+	align-items: flex-start;
+	margin: 16px 0 24px;
+}
+
+.mdds-qa-form .mdds-task-answer {
+	width: 100%;
+}
+
+.mdds-qa-threads {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+	display: flex;
+	flex-direction: column;
+	gap: 16px;
+}
+
+.mdds-qa-thread {
+	border: 1px solid var(--mdds-border);
+	border-radius: var(--mdds-radius);
+	padding: 16px;
+}
+
+.mdds-qa-message {
+	padding: 6px 0;
+}
+
+.mdds-qa-author {
+	font-weight: 700;
+	margin: 0 0 4px;
+}
+
+.mdds-qa-date {
+	font-weight: 400;
+	color: var(--mdds-muted);
+	font-size: 0.85rem;
+	margin-inline-start: 8px;
+}
+
+.mdds-qa-badge {
+	background: var(--mdds-accent);
+	color: #fff;
+	border-radius: 999px;
+	padding: 1px 8px;
+	font-size: 0.75rem;
+}
+
+.mdds-qa-replies {
+	list-style: none;
+	margin: 8px 0 0;
+	padding: 12px 16px;
+	border-inline-start: 3px solid var(--mdds-accent);
+	background: #f8fafc;
+	border-radius: 8px;
+}
+
+.mdds-qa-reply-form {
+	margin-top: 12px;
+}
+
 /* Accessibility helpers --------------------------------------------------- */
 .screen-reader-text {
 	position: absolute !important;

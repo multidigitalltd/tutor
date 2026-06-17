@@ -30,7 +30,7 @@ final class Ajax {
 	 * Hook into WordPress.
 	 */
 	public function register(): void {
-		add_action( 'wp_ajax_mdds_save_answer', array( $this, 'save_answer' ) );
+		add_action( 'wp_ajax_mdds_save_answers', array( $this, 'save_answers' ) );
 		add_action( 'wp_ajax_mdds_mark_complete', array( $this, 'mark_complete' ) );
 		add_action( 'wp_ajax_mdds_submit_quiz', array( $this, 'submit_quiz' ) );
 	}
@@ -95,77 +95,86 @@ final class Ajax {
 	}
 
 	/**
-	 * Save a task answer (text + optional file uploads).
+	 * Save every task answer for a chapter at once (text + optional files).
+	 *
+	 * The learner submits the whole chapter questionnaire with a single button;
+	 * each task's textarea is named answer_<index> and file input file_<index>.
 	 */
-	public function save_answer(): void {
+	public function save_answers(): void {
 		$ctx     = $this->guard();
 		$user_id = $ctx['user_id'];
 		$unit_id = $ctx['unit_id'];
 
 		$chapter_id = isset( $_POST['chapter_id'] ) ? absint( wp_unslash( $_POST['chapter_id'] ) ) : 0;
-		$task_index = isset( $_POST['task_index'] ) ? absint( wp_unslash( $_POST['task_index'] ) ) : 0;
-
 		$this->assert_chapter_in_unit( $chapter_id, $unit_id );
 		$this->assert_chapter_unlocked( $user_id, $unit_id, $chapter_id );
 
 		$tasks = Data::get_tasks( $chapter_id );
-		if ( ! isset( $tasks[ $task_index ] ) ) {
-			wp_send_json_error( array( 'message' => __( 'משימה לא קיימת.', 'md-deschool' ) ), 400 );
+		if ( empty( $tasks ) ) {
+			wp_send_json_error( array( 'message' => __( 'אין משימות בפרק זה.', 'md-deschool' ) ), 400 );
 		}
 
-		$text = isset( $_POST['answer'] ) ? sanitize_textarea_field( wp_unslash( $_POST['answer'] ) ) : '';
+		$result = array();
+		foreach ( $tasks as $index => $task ) {
+			$index = (int) $index;
+			$field = 'answer_' . $index;
+			$text  = isset( $_POST[ $field ] ) ? sanitize_textarea_field( wp_unslash( $_POST[ $field ] ) ) : '';
 
-		// Keep previously stored files, append new uploads.
-		$existing = Data::get_task_answer( $user_id, $chapter_id, $task_index );
-		$files    = $existing['files'];
+			// Keep previously stored files, append a new upload for this task.
+			$existing = Data::get_task_answer( $user_id, $chapter_id, $index );
+			$files    = $existing['files'];
 
-		if ( ! empty( $tasks[ $task_index ]['allow_file'] ) && ! empty( $_FILES['file'] ) ) {
-			$uploaded = $this->handle_upload( $chapter_id, $user_id );
-			if ( $uploaded > 0 ) {
-				$files[] = $uploaded;
+			$file_field = 'file_' . $index;
+			if ( ! empty( $task['allow_file'] ) && ! empty( $_FILES[ $file_field ]['name'] ) ) {
+				$uploaded = $this->handle_upload( $file_field, $chapter_id, $user_id );
+				if ( $uploaded > 0 ) {
+					$files[] = $uploaded;
+				}
 			}
-		}
 
-		Data::save_task_answer( $user_id, $chapter_id, $task_index, $text, $files );
+			Data::save_task_answer( $user_id, $chapter_id, $index, $text, $files );
 
-		$file_links = array();
-		foreach ( $files as $attachment_id ) {
-			$file_links[] = array(
-				'name' => wp_basename( (string) get_attached_file( $attachment_id ) ),
-				'url'  => wp_get_attachment_url( $attachment_id ),
-			);
+			$links = array();
+			foreach ( $files as $attachment_id ) {
+				$links[] = array(
+					'name' => wp_basename( (string) get_attached_file( $attachment_id ) ),
+					'url'  => wp_get_attachment_url( $attachment_id ),
+				);
+			}
+			$result[ $index ] = $links;
 		}
 
 		wp_send_json_success(
 			array(
-				'message' => __( 'התשובה נשמרה', 'md-deschool' ),
-				'files'   => $file_links,
+				'message' => __( 'התשובות נשמרו בהצלחה', 'md-deschool' ),
+				'files'   => $result,
 			)
 		);
 	}
 
 	/**
-	 * Handle a single secure file upload and attach it.
+	 * Handle a single secure file upload from a named field and attach it.
 	 *
-	 * @param int $chapter_id Chapter ID (used as post parent).
-	 * @param int $user_id    Uploading user.
+	 * @param string $field      $_FILES field name.
+	 * @param int    $chapter_id Chapter ID (used as post parent).
+	 * @param int    $user_id    Uploading user.
 	 * @return int Attachment ID (0 on failure).
 	 */
-	private function handle_upload( int $chapter_id, int $user_id ): int {
-		if ( ! isset( $_FILES['file'] ) || ! is_array( $_FILES['file'] ) ) {
+	private function handle_upload( string $field, int $chapter_id, int $user_id ): int {
+		if ( ! isset( $_FILES[ $field ] ) || ! is_array( $_FILES[ $field ] ) ) {
 			return 0;
 		}
 
 		// Validate size before doing any work.
-		$size = isset( $_FILES['file']['size'] ) ? absint( $_FILES['file']['size'] ) : 0;
+		$size = isset( $_FILES[ $field ]['size'] ) ? absint( $_FILES[ $field ]['size'] ) : 0;
 		if ( $size <= 0 || $size > self::MAX_UPLOAD ) {
 			wp_send_json_error( array( 'message' => __( 'הקובץ גדול מדי או ריק.', 'md-deschool' ) ), 400 );
 		}
 
 		// Allowed types only (no PHP / executables).
 		$allowed = $this->allowed_mimes();
-		$name    = isset( $_FILES['file']['name'] ) ? sanitize_file_name( wp_unslash( $_FILES['file']['name'] ) ) : '';
-		$check   = wp_check_filetype_and_ext( isset( $_FILES['file']['tmp_name'] ) ? sanitize_text_field( wp_unslash( $_FILES['file']['tmp_name'] ) ) : '', $name, $allowed );
+		$name    = isset( $_FILES[ $field ]['name'] ) ? sanitize_file_name( wp_unslash( $_FILES[ $field ]['name'] ) ) : '';
+		$check   = wp_check_filetype_and_ext( isset( $_FILES[ $field ]['tmp_name'] ) ? sanitize_text_field( wp_unslash( $_FILES[ $field ]['tmp_name'] ) ) : '', $name, $allowed );
 
 		if ( empty( $check['ext'] ) || empty( $check['type'] ) || ! in_array( $check['type'], $allowed, true ) ) {
 			wp_send_json_error( array( 'message' => __( 'סוג הקובץ אינו נתמך.', 'md-deschool' ) ), 400 );
@@ -177,7 +186,7 @@ final class Ajax {
 
 		add_filter( 'upload_mimes', array( $this, 'restrict_mimes' ) );
 		$attachment_id = media_handle_upload(
-			'file',
+			$field,
 			$chapter_id,
 			array(
 				'post_author' => $user_id,

@@ -60,40 +60,33 @@
 	}
 
 	/* ------------------------------------------------------------------ */
-	/* Task answer saving                                                 */
+	/* Task answers — one submit for the whole chapter questionnaire        */
 	/* ------------------------------------------------------------------ */
 	function initTasks() {
-		document.querySelectorAll( '[data-mdds-task]' ).forEach( function ( task ) {
-			var form = task.querySelector( '[data-mdds-task-form]' );
-			if ( ! form ) {
-				return;
-			}
-
+		document.querySelectorAll( '[data-mdds-tasks-form]' ).forEach( function ( form ) {
 			form.addEventListener( 'submit', function ( event ) {
 				event.preventDefault();
 
-				var fb     = task.querySelector( '[data-mdds-task-feedback]' );
+				var fb     = form.querySelector( '[data-mdds-tasks-feedback]' );
 				var submit = form.querySelector( 'button[type="submit"]' );
 				var body   = new FormData( form );
-				body.append( 'chapter_id', task.getAttribute( 'data-chapter' ) );
-				body.append( 'task_index', task.getAttribute( 'data-index' ) );
+				body.append( 'chapter_id', form.getAttribute( 'data-chapter' ) );
 
 				if ( submit ) {
 					submit.disabled = true;
 				}
 				feedback( fb, i18n.saving || 'Saving…', 'pending' );
 
-				post( 'mdds_save_answer', body ).then( function ( res ) {
+				post( 'mdds_save_answers', body ).then( function ( res ) {
 					if ( submit ) {
 						submit.disabled = false;
 					}
 					if ( res && res.success ) {
 						feedback( fb, ( res.data && res.data.message ) || i18n.saved, 'success' );
-						renderFiles( task, res.data && res.data.files );
-						var fileInput = form.querySelector( 'input[type="file"]' );
-						if ( fileInput ) {
-							fileInput.value = '';
-						}
+						renderAllFiles( form, res.data && res.data.files );
+						form.querySelectorAll( 'input[type="file"]' ).forEach( function ( input ) {
+							input.value = '';
+						} );
 					} else {
 						feedback( fb, ( res && res.data && res.data.message ) || i18n.error, 'error' );
 					}
@@ -104,6 +97,24 @@
 					feedback( fb, i18n.error, 'error' );
 				} );
 			} );
+		} );
+	}
+
+	/**
+	 * Re-render every task's uploaded-files list from the bulk response.
+	 *
+	 * @param {HTMLElement} form         Chapter tasks form.
+	 * @param {Object}      filesByIndex Map of task index -> file descriptors.
+	 */
+	function renderAllFiles( form, filesByIndex ) {
+		if ( ! filesByIndex ) {
+			return;
+		}
+		Object.keys( filesByIndex ).forEach( function ( index ) {
+			var task = form.querySelector( '[data-mdds-task][data-index="' + index + '"]' );
+			if ( task ) {
+				renderFiles( task, filesByIndex[ index ] );
+			}
 		} );
 	}
 
@@ -485,10 +496,55 @@
 		} );
 	}
 
+	/* ------------------------------------------------------------------ */
+	/* Q&A with the instructor                                            */
+	/* ------------------------------------------------------------------ */
+	function initQA() {
+		document.querySelectorAll( '[data-mdds-qa-form]' ).forEach( function ( form ) {
+			form.addEventListener( 'submit', function ( event ) {
+				event.preventDefault();
+
+				var fb     = form.querySelector( '[data-mdds-qa-feedback]' );
+				var submit = form.querySelector( 'button[type="submit"]' );
+				var field  = form.querySelector( 'textarea[name="message"]' );
+				var message = field ? field.value.trim() : '';
+				if ( '' === message ) {
+					return;
+				}
+
+				if ( submit ) {
+					submit.disabled = true;
+				}
+				feedback( fb, i18n.saving || 'Saving…', 'pending' );
+
+				post( 'mdds_qa_post', {
+					message: message,
+					parent: form.getAttribute( 'data-parent' ) || '0'
+				} ).then( function ( res ) {
+					if ( res && res.success ) {
+						feedback( fb, ( res.data && res.data.message ) || i18n.saved, 'success' );
+						window.location.reload();
+					} else {
+						if ( submit ) {
+							submit.disabled = false;
+						}
+						feedback( fb, ( res && res.data && res.data.message ) || i18n.error, 'error' );
+					}
+				} ).catch( function () {
+					if ( submit ) {
+						submit.disabled = false;
+					}
+					feedback( fb, i18n.error, 'error' );
+				} );
+			} );
+		} );
+	}
+
 	document.addEventListener( 'DOMContentLoaded', function () {
 		initStepper();
 		initTasks();
 		initComplete();
 		initQuiz();
+		initQA();
 	} );
 }() );

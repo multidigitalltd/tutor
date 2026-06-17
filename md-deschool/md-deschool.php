@@ -3,7 +3,7 @@
  * Plugin Name:       DeSchool
  * Plugin URI:        https://multidigital.co.il/
  * Description:        יחידות תוכן לימודיות (וידאו, מצגת, משימות, מבחן סיכום וייעוץ אישי) עם בקרת גישה מבוססת WooCommerce. פותח לפי תקן Multi Digital.
- * Version:           1.3.0
+ * Version:           1.4.0
  * Requires at least: 6.4
  * Requires PHP:      8.3
  * Author:            Multi Digital
@@ -25,7 +25,7 @@ defined( 'ABSPATH' ) || exit;
 /**
  * Core plugin constants.
  */
-define( 'MDDS_VERSION', '1.3.0' );
+define( 'MDDS_VERSION', '1.4.0' );
 define( 'MDDS_FILE', __FILE__ );
 define( 'MDDS_PATH', plugin_dir_path( __FILE__ ) );
 define( 'MDDS_URL', plugin_dir_url( __FILE__ ) );

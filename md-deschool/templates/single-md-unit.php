@@ -12,6 +12,7 @@ declare( strict_types=1 );
 use MultiDigital\DeSchool\Data;
 use MultiDigital\DeSchool\Frontend\Access_Control;
 use MultiDigital\DeSchool\Frontend\Template_Loader;
+use MultiDigital\DeSchool\Frontend\QA;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -32,32 +33,34 @@ while ( have_posts() ) :
 	<main id="mdds-main" class="mdds-unit" dir="auto">
 		<article class="mdds-unit-inner">
 
-			<?php
-			Template_Loader::get_part(
-				'unit-header',
-				array(
-					'unit_id'    => $unit_id,
-					'progress'   => $progress,
-					'can_access' => $can_access,
-				)
-			);
-
-			Template_Loader::get_part( 'lecturer', array( 'unit_id' => $unit_id ) );
-			?>
-
 			<?php if ( ! $can_access ) : ?>
 
 				<?php
 				Template_Loader::get_part(
-					'locked',
+					'sales',
 					array(
 						'unit_id'  => $unit_id,
 						'chapters' => $chapters,
 					)
 				);
+
+				Template_Loader::get_part( 'lecturer', array( 'unit_id' => $unit_id ) );
 				?>
 
 			<?php else : ?>
+
+				<?php
+				Template_Loader::get_part(
+					'unit-header',
+					array(
+						'unit_id'    => $unit_id,
+						'progress'   => $progress,
+						'can_access' => $can_access,
+					)
+				);
+
+				Template_Loader::get_part( 'lecturer', array( 'unit_id' => $unit_id ) );
+				?>
 
 				<?php
 				$sequential   = Data::is_sequential( $unit_id );
@@ -87,6 +90,7 @@ while ( have_posts() ) :
 				$has_quiz    = ! empty( $questions );
 				$quiz_locked = $sequential && ! $all_complete;
 				$quiz_index  = $total; // Quiz is the panel after the chapters.
+				$qa_index    = $total + ( $has_quiz ? 1 : 0 ); // Q&A is the final panel.
 
 				// No incomplete chapter found: land on the quiz if it's ready, else the first chapter.
 				if ( -1 === $current ) {
@@ -131,6 +135,16 @@ while ( have_posts() ) :
 										</button>
 									</li>
 								<?php endif; ?>
+
+								<li class="mdds-step mdds-step-qa">
+									<button type="button" class="mdds-step-link"
+										data-mdds-step="<?php echo esc_attr( (string) $qa_index ); ?>"
+										data-target="mdds-qa-panel">
+										<span class="mdds-step-index" aria-hidden="true">?</span>
+										<span class="mdds-step-name"><?php esc_html_e( 'שאלות ותשובות', 'md-deschool' ); ?></span>
+										<span class="mdds-step-state" aria-hidden="true"></span>
+									</button>
+								</li>
 							</ol>
 						</nav>
 					</aside>
@@ -178,6 +192,10 @@ while ( have_posts() ) :
 								<?php
 							endif;
 							?>
+
+							<div id="mdds-qa-panel" class="mdds-qa-wrap" data-mdds-panel data-index="<?php echo esc_attr( (string) $qa_index ); ?>" data-locked="0" tabindex="-1">
+								<?php QA::render( $unit_id, $user_id ); ?>
+							</div>
 						</div>
 					</div>
 

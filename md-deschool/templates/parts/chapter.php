@@ -121,23 +121,29 @@ $section_cls .= $locked ? ' is-locked' : '';
 		<?php if ( ! empty( $tasks ) ) : ?>
 			<div class="mdds-chapter-tasks">
 				<h3><?php esc_html_e( 'שאלות / משימות הפרק', 'md-deschool' ); ?></h3>
-				<?php
-				foreach ( $tasks as $task_index => $task ) {
-					Template_Loader::get_part(
-						'task',
-						array(
-							'unit_id'    => $unit_id,
-							'chapter_id' => $chapter_id,
-							'task'       => (array) $task,
-							'index'      => (int) $task_index,
-							'answer'     => $user_id > 0 ? Data::get_task_answer( $user_id, $chapter_id, (int) $task_index ) : array(
-								'text'  => '',
-								'files' => array(),
-							),
-						)
-					);
-				}
-				?>
+				<form class="mdds-tasks-form" data-mdds-tasks-form data-chapter="<?php echo esc_attr( (string) $chapter_id ); ?>" enctype="multipart/form-data">
+					<?php
+					foreach ( $tasks as $task_index => $task ) {
+						Template_Loader::get_part(
+							'task',
+							array(
+								'unit_id'    => $unit_id,
+								'chapter_id' => $chapter_id,
+								'task'       => (array) $task,
+								'index'      => (int) $task_index,
+								'answer'     => $user_id > 0 ? Data::get_task_answer( $user_id, $chapter_id, (int) $task_index ) : array(
+									'text'  => '',
+									'files' => array(),
+								),
+							)
+						);
+					}
+					?>
+					<div class="mdds-tasks-actions">
+						<button type="submit" class="mdds-button mdds-tasks-submit"><?php esc_html_e( 'אישור ושליחת התשובות', 'md-deschool' ); ?></button>
+						<span class="mdds-task-feedback" data-mdds-tasks-feedback role="status" aria-live="polite"></span>
+					</div>
+				</form>
 			</div>
 		<?php endif; ?>
 

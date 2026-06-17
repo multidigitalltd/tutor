@@ -30,8 +30,8 @@ final class Render {
 	public static function video( int $chapter_id, string $title ): string {
 		$embed = (string) get_post_meta( $chapter_id, Data::META_VIDEO_EMBED, true );
 		if ( '' !== $embed ) {
-			// Already sanitised to safe iframes on save.
-			return '<div class="mdds-video-embed">' . $embed . '</div>';
+			// Already sanitised to safe iframes on save; harden YouTube privacy.
+			return '<div class="mdds-video-embed">' . self::harden_embed( $embed ) . '</div>';
 		}
 
 		$file_id = (int) get_post_meta( $chapter_id, Data::META_VIDEO_FILE, true );
@@ -49,9 +49,19 @@ final class Render {
 
 		$url = (string) get_post_meta( $chapter_id, Data::META_VIDEO_URL, true );
 		if ( '' !== $url ) {
+			// Build a privacy-friendly, unbranded player for known providers.
+			$privacy = self::privacy_embed_url( $url );
+			if ( '' !== $privacy ) {
+				return sprintf(
+					'<div class="mdds-video-embed"><iframe src="%1$s" title="%2$s" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe></div>',
+					esc_url( $privacy ),
+					esc_attr( $title )
+				);
+			}
+
 			$oembed = wp_oembed_get( $url );
 			if ( $oembed ) {
-				return '<div class="mdds-video-embed">' . $oembed . '</div>';
+				return '<div class="mdds-video-embed">' . self::harden_embed( $oembed ) . '</div>';
 			}
 
 			return sprintf(
@@ -62,6 +72,104 @@ final class Render {
 		}
 
 		return '';
+	}
+
+	/**
+	 * Build an unbranded, privacy-friendly embed URL for known providers.
+	 *
+	 * YouTube → youtube-nocookie.com with rel/modestbranding so the player
+	 * does not advertise YouTube; Vimeo → player without the byline/portrait.
+	 *
+	 * @param string $url Source URL.
+	 * @return string Embed URL, or '' if the provider is unknown.
+	 */
+	private static function privacy_embed_url( string $url ): string {
+		$youtube = self::youtube_id( $url );
+		if ( '' !== $youtube ) {
+			return add_query_arg(
+				array(
+					'rel'            => 0,
+					'modestbranding' => 1,
+					'playsinline'    => 1,
+					'iv_load_policy' => 3,
+				),
+				'https://www.youtube-nocookie.com/embed/' . rawurlencode( $youtube )
+			);
+		}
+
+		$vimeo = self::vimeo_id( $url );
+		if ( '' !== $vimeo ) {
+			return add_query_arg(
+				array(
+					'byline'   => 0,
+					'portrait' => 0,
+					'title'    => 0,
+					'dnt'      => 1,
+				),
+				'https://player.vimeo.com/video/' . rawurlencode( $vimeo )
+			);
+		}
+
+		return '';
+	}
+
+	/**
+	 * Extract a YouTube video ID from a URL.
+	 *
+	 * @param string $url URL.
+	 * @return string Video ID or ''.
+	 */
+	private static function youtube_id( string $url ): string {
+		if ( preg_match( '~(?:youtube\.com/(?:watch\?(?:.*&)?v=|embed/|shorts/|v/)|youtu\.be/|youtube-nocookie\.com/embed/)([A-Za-z0-9_-]{11})~i', $url, $m ) ) {
+			return $m[1];
+		}
+
+		return '';
+	}
+
+	/**
+	 * Extract a Vimeo video ID from a URL.
+	 *
+	 * @param string $url URL.
+	 * @return string Video ID or ''.
+	 */
+	private static function vimeo_id( string $url ): string {
+		if ( preg_match( '~vimeo\.com/(?:video/)?(\d+)~i', $url, $m ) ) {
+			return $m[1];
+		}
+
+		return '';
+	}
+
+	/**
+	 * Harden a raw embed/oEmbed iframe: prefer the no-cookie YouTube host and
+	 * strip the YouTube branding parameters.
+	 *
+	 * @param string $html Embed HTML.
+	 * @return string
+	 */
+	private static function harden_embed( string $html ): string {
+		$html = str_replace(
+			array( 'https://www.youtube.com/embed/', 'https://youtube.com/embed/' ),
+			'https://www.youtube-nocookie.com/embed/',
+			$html
+		);
+
+		// Nudge the player to hide related videos / branding when no query is set.
+		$html = preg_replace_callback(
+			'~(youtube-nocookie\.com/embed/[A-Za-z0-9_-]{11})(\?[^"\'\s]*)?~i',
+			static function ( array $m ): string {
+				$base  = $m[1];
+				$query = isset( $m[2] ) ? ltrim( $m[2], '?' ) : '';
+				parse_str( $query, $params );
+				$params['rel']            = '0';
+				$params['modestbranding'] = '1';
+				return $base . '?' . http_build_query( $params );
+			},
+			$html
+		);
+
+		return (string) $html;
 	}
 
 	/**

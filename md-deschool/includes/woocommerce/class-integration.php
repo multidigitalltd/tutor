@@ -173,6 +173,43 @@ final class Integration {
 	}
 
 	/**
+	 * Get the formatted price HTML for the unit's access product.
+	 *
+	 * @param int $unit_id Unit ID.
+	 * @return string Price HTML (may contain markup), or ''.
+	 */
+	public static function get_price_html( int $unit_id ): string {
+		$product_id = (int) get_post_meta( $unit_id, Data::META_PRODUCT_ID, true );
+		if ( $product_id <= 0 || ! function_exists( 'wc_get_product' ) ) {
+			return '';
+		}
+
+		$product = wc_get_product( $product_id );
+
+		return $product ? (string) $product->get_price_html() : '';
+	}
+
+	/**
+	 * Get a direct add-to-cart URL for the unit's access product.
+	 *
+	 * @param int $unit_id Unit ID.
+	 * @return string
+	 */
+	public static function get_add_to_cart_url( int $unit_id ): string {
+		$product_id = (int) get_post_meta( $unit_id, Data::META_PRODUCT_ID, true );
+		if ( $product_id <= 0 || ! function_exists( 'wc_get_product' ) ) {
+			return '';
+		}
+
+		$product = wc_get_product( $product_id );
+		if ( ! $product ) {
+			return '';
+		}
+
+		return add_query_arg( 'add-to-cart', $product_id, $product->get_permalink() );
+	}
+
+	/**
 	 * Get the add-to-cart URL for the unit's consultation product.
 	 *
 	 * @param int $unit_id Unit ID.
