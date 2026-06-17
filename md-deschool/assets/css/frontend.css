@@ -13,6 +13,12 @@
 	--mdds-success: #15803d;
 	--mdds-error: #b91c1c;
 	--mdds-radius: 10px;
+	/* Typography — override these in one place to control all DeSchool fonts.
+	   Defaults inherit the theme font; e.g. set --mdds-font: "Heebo", sans-serif. */
+	--mdds-font: inherit;
+	--mdds-font-size: inherit;
+	font-family: var(--mdds-font);
+	font-size: var(--mdds-font-size);
 	max-width: 920px;
 	margin-inline: auto;
 	padding: 24px 16px 64px;
