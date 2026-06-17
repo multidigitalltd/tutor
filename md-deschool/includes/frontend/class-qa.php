@@ -30,8 +30,149 @@ final class QA {
 	public function register(): void {
 		add_action( 'wp_ajax_mdds_qa_post', array( $this, 'post_message' ) );
 
+		// Central admin screen for instructors to read/answer every question.
+		add_action( 'admin_menu', array( $this, 'admin_menu' ) );
+		add_action( 'admin_post_mdds_qa_admin_reply', array( $this, 'admin_reply' ) );
+
 		// Keep Q&A out of normal comment counts and feeds.
 		add_filter( 'comment_feed_where', array( $this, 'exclude_from_feed' ) );
+	}
+
+	/**
+	 * Register the admin Q&A inbox under the DeSchool menu.
+	 */
+	public function admin_menu(): void {
+		add_submenu_page(
+			'edit.php?post_type=' . Data::POST_TYPE_UNIT,
+			__( 'שאלות ותשובות', 'md-deschool' ),
+			__( 'שאלות ותשובות', 'md-deschool' ),
+			'edit_posts',
+			'mdds-qa',
+			array( $this, 'render_admin' )
+		);
+	}
+
+	/**
+	 * Render the admin Q&A inbox: every question across all courses, with a
+	 * reply box for each.
+	 */
+	public function render_admin(): void {
+		if ( ! current_user_can( 'edit_posts' ) ) {
+			return;
+		}
+
+		$questions = get_comments(
+			array(
+				'type'    => self::COMMENT_TYPE,
+				'parent'  => 0,
+				'status'  => 'approve',
+				'orderby' => 'comment_date_gmt',
+				'order'   => 'DESC',
+			)
+		);
+		?>
+		<div class="wrap">
+			<h1><?php esc_html_e( 'שאלות ותשובות מהלומדים', 'md-deschool' ); ?></h1>
+
+			<?php
+			// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- read-only flag after redirect.
+			if ( isset( $_GET['mdds_qa_replied'] ) ) {
+				echo '<div class="notice notice-success is-dismissible"><p>' . esc_html__( 'התשובה נשלחה.', 'md-deschool' ) . '</p></div>';
+			}
+
+			if ( empty( $questions ) ) {
+				echo '<p>' . esc_html__( 'אין עדיין שאלות.', 'md-deschool' ) . '</p>';
+			}
+
+			foreach ( $questions as $question ) {
+				$unit_id = (int) $question->comment_post_ID;
+				$replies = get_comments(
+					array(
+						'parent'  => (int) $question->comment_ID,
+						'type'    => self::COMMENT_TYPE,
+						'status'  => 'approve',
+						'orderby' => 'comment_date_gmt',
+						'order'   => 'ASC',
+					)
+				);
+				?>
+				<div class="mdds-qa-admin-card" style="background:#fff;border:1px solid #dcdcde;border-radius:6px;padding:16px;margin:0 0 16px;max-width:820px;">
+					<p style="margin:0 0 4px;">
+						<strong><?php echo esc_html( $question->comment_author ); ?></strong>
+						&mdash; <a href="<?php echo esc_url( (string) get_edit_post_link( $unit_id ) ); ?>"><?php echo esc_html( get_the_title( $unit_id ) ); ?></a>
+						<span style="color:#787c82;"> · <?php echo esc_html( self::format_date( $question ) ); ?></span>
+					</p>
+					<div style="margin:0 0 10px;"><?php echo wp_kses_post( wpautop( $question->comment_content ) ); ?></div>
+
+					<?php foreach ( $replies as $reply ) : ?>
+						<div style="margin:0 0 8px;padding:8px 12px;background:#f6f7f7;border-inline-start:3px solid #2271b1;border-radius:4px;">
+							<strong><?php echo esc_html( $reply->comment_author ); ?></strong>
+							<span style="color:#787c82;"> · <?php echo esc_html( self::format_date( $reply ) ); ?></span>
+							<div><?php echo wp_kses_post( wpautop( $reply->comment_content ) ); ?></div>
+						</div>
+					<?php endforeach; ?>
+
+					<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" style="margin-top:10px;">
+						<input type="hidden" name="action" value="mdds_qa_admin_reply" />
+						<input type="hidden" name="parent" value="<?php echo esc_attr( (string) $question->comment_ID ); ?>" />
+						<?php wp_nonce_field( 'mdds_qa_admin', 'mdds_qa_admin_nonce' ); ?>
+						<textarea name="message" rows="2" class="widefat" placeholder="<?php esc_attr_e( 'כתבו תשובה ללומד…', 'md-deschool' ); ?>" required></textarea>
+						<p><button type="submit" class="button button-primary"><?php esc_html_e( 'שליחת תשובה', 'md-deschool' ); ?></button></p>
+					</form>
+				</div>
+				<?php
+			}
+			?>
+		</div>
+		<?php
+	}
+
+	/**
+	 * Handle an instructor reply submitted from the admin inbox.
+	 */
+	public function admin_reply(): void {
+		if ( ! isset( $_POST['mdds_qa_admin_nonce'] ) || ! wp_verify_nonce( sanitize_key( wp_unslash( $_POST['mdds_qa_admin_nonce'] ) ), 'mdds_qa_admin' ) ) {
+			wp_die( esc_html__( 'בדיקת האבטחה נכשלה.', 'md-deschool' ) );
+		}
+		if ( ! current_user_can( 'edit_posts' ) ) {
+			wp_die( esc_html__( 'אין הרשאה.', 'md-deschool' ) );
+		}
+
+		$parent  = isset( $_POST['parent'] ) ? absint( wp_unslash( $_POST['parent'] ) ) : 0;
+		$message = isset( $_POST['message'] ) ? sanitize_textarea_field( wp_unslash( $_POST['message'] ) ) : '';
+		$question = $parent > 0 ? get_comment( $parent ) : null;
+
+		$redirect = add_query_arg(
+			array(
+				'post_type' => Data::POST_TYPE_UNIT,
+				'page'      => 'mdds-qa',
+			),
+			admin_url( 'edit.php' )
+		);
+
+		if ( '' !== $message && $question instanceof \WP_Comment && self::COMMENT_TYPE === $question->comment_type ) {
+			$user = wp_get_current_user();
+			$reply_id = wp_insert_comment(
+				array(
+					'comment_post_ID'      => (int) $question->comment_post_ID,
+					'comment_parent'       => $parent,
+					'comment_content'      => $message,
+					'comment_type'         => self::COMMENT_TYPE,
+					'user_id'              => (int) $user->ID,
+					'comment_author'       => $user->display_name,
+					'comment_author_email' => $user->user_email,
+					'comment_approved'     => 1,
+				)
+			);
+
+			if ( $reply_id ) {
+				self::notify_student( $question, $message );
+				$redirect = add_query_arg( 'mdds_qa_replied', '1', $redirect );
+			}
+		}
+
+		wp_safe_redirect( $redirect );
+		exit;
 	}
 
 	/**
@@ -228,12 +369,38 @@ final class QA {
 			wp_send_json_error( array( 'message' => __( 'שמירת ההודעה נכשלה.', 'md-deschool' ) ), 500 );
 		}
 
-		// Notify the instructor when a learner asks a new question.
 		if ( 0 === $parent && ! $moderator ) {
+			// Learner asked a new question → notify the instructor.
 			self::notify_instructor( $unit_id, $message );
+		} elseif ( $parent > 0 && $moderator && isset( $parent_comment ) ) {
+			// Instructor answered → notify the learner who asked.
+			self::notify_student( $parent_comment, $message );
 		}
 
 		wp_send_json_success( array( 'message' => __( 'ההודעה נשלחה', 'md-deschool' ) ) );
+	}
+
+	/**
+	 * Email the learner when the instructor answers their question.
+	 *
+	 * @param \WP_Comment $question The original question comment.
+	 * @param string      $message  The reply text.
+	 */
+	private static function notify_student( \WP_Comment $question, string $message ): void {
+		$student = (int) $question->user_id > 0 ? get_userdata( (int) $question->user_id ) : false;
+		if ( ! $student || empty( $student->user_email ) ) {
+			return;
+		}
+
+		$unit_id = (int) $question->comment_post_ID;
+		$subject = sprintf(
+			/* translators: %s: course title */
+			__( 'התקבלה תשובה לשאלתך בקורס: %s', 'md-deschool' ),
+			get_the_title( $unit_id )
+		);
+		$body = $message . "\n\n" . Data::get_learn_url( $unit_id );
+
+		wp_mail( $student->user_email, $subject, $body );
 	}
 
 	/**

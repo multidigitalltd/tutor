@@ -748,9 +748,10 @@
 					onStateChange: function ( e ) {
 						var st = e.data;
 						setPlaying( 1 === st );
-						// Reveal the video only while it is playing/buffering; the
-						// cover hides every YouTube screen the rest of the time.
-						wrap.classList.toggle( 'is-active', 1 === st || 3 === st );
+						// Reveal the video ONLY while it is actually playing. During
+						// buffering/cued/paused/ended our opaque cover stays up, so
+						// YouTube's loading screen and title bar never flash through.
+						wrap.classList.toggle( 'is-active', 1 === st );
 						if ( 0 === st && timer ) {
 							tick();
 						}

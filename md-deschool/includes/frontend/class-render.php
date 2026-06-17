@@ -30,15 +30,14 @@ final class Render {
 	public static function video( int $chapter_id, string $title ): string {
 		$embed = (string) get_post_meta( $chapter_id, Data::META_VIDEO_EMBED, true );
 		if ( '' !== trim( $embed ) ) {
-			// A bare YouTube/Vimeo URL pasted into the embed box.
-			if ( false === stripos( $embed, '<iframe' ) ) {
-				$built = self::provider_player( trim( $embed ), $title );
-				if ( '' !== $built ) {
-					return $built;
-				}
+			// Route any YouTube/Vimeo embed — whether pasted as a URL or as full
+			// <iframe> code — to the custom player (extracts the video ID).
+			$built = self::provider_player( trim( $embed ), $title );
+			if ( '' !== $built ) {
+				return $built;
 			}
 
-			// A full iframe embed code: sanitise + reduce branding.
+			// Unknown provider iframe: sanitise and output as-is.
 			return '<div class="mdds-video-embed">' . self::harden_embed( $embed ) . '</div>';
 		}
 
