@@ -658,6 +658,7 @@
 			var player;
 			var timer;
 			var seeking = false;
+			var hasPlayed = false;
 
 			cover.addEventListener( 'click', function () {
 				if ( player ) {
@@ -688,6 +689,9 @@
 				}
 				var state = player.getPlayerState();
 				if ( 1 === state ) {
+					// Show our cover immediately so YouTube's pause overlay
+					// (title/suggestions) never flashes before the state event.
+					wrap.classList.remove( 'is-active' );
 					player.pauseVideo();
 				} else {
 					player.playVideo();
@@ -747,11 +751,15 @@
 					},
 					onStateChange: function ( e ) {
 						var st = e.data;
+						if ( 1 === st ) {
+							hasPlayed = true;
+						}
 						setPlaying( 1 === st );
-						// Reveal the video ONLY while it is actually playing. During
-						// buffering/cued/paused/ended our opaque cover stays up, so
-						// YouTube's loading screen and title bar never flash through.
-						wrap.classList.toggle( 'is-active', 1 === st );
+						// Reveal the video while playing, and during buffering only
+						// AFTER playback has already started (so the initial YouTube
+						// loading screen stays hidden, but mid-play seeks don't flash
+						// our cover). Paused/ended keep the cover up.
+						wrap.classList.toggle( 'is-active', 1 === st || ( 3 === st && hasPlayed ) );
 						if ( 0 === st && timer ) {
 							tick();
 						}
