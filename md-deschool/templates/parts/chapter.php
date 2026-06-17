@@ -37,9 +37,9 @@ if ( ! $chapter instanceof WP_Post ) {
 	return;
 }
 
-$chapter_id  = (int) $chapter->ID;
-$is_last     = ( $total > 0 && $index >= $total - 1 );
-$section_cls = 'mdds-chapter';
+$chapter_id   = (int) $chapter->ID;
+$is_last      = ( $total > 0 && $index >= $total - 1 );
+$section_cls  = 'mdds-chapter';
 $section_cls .= $completed ? ' is-completed' : '';
 $section_cls .= $locked ? ' is-locked' : '';
 ?>

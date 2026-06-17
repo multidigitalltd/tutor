@@ -46,11 +46,11 @@ final class Integration {
 	/**
 	 * Render a product <select> for a given meta key.
 	 *
-	 * @param string         $name     Field name / meta key.
-	 * @param string         $label    Field label.
-	 * @param int            $selected Currently selected product ID.
-	 * @param string         $empty    Empty-option label.
-	 * @param \WP_Post[]     $products Product posts.
+	 * @param string     $name     Field name / meta key.
+	 * @param string     $label    Field label.
+	 * @param int        $selected Currently selected product ID.
+	 * @param string     $empty    Empty-option label.
+	 * @param \WP_Post[] $products Product posts.
 	 */
 	private function product_select( string $name, string $label, int $selected, string $empty, array $products ): void {
 		$id = 'mdds-' . sanitize_key( $name );
@@ -77,7 +77,7 @@ final class Integration {
 	public function render( \WP_Post $post ): void {
 		wp_nonce_field( self::NONCE_ACTION, self::NONCE_NAME );
 
-		$access_product = (int) get_post_meta( $post->ID, Data::META_PRODUCT_ID, true );
+		$access_product  = (int) get_post_meta( $post->ID, Data::META_PRODUCT_ID, true );
 		$consult_product = (int) get_post_meta( $post->ID, Data::META_CONSULT_PRODUCT, true );
 
 		$products = get_posts(

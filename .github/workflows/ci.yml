@@ -37,8 +37,6 @@ jobs:
   phpcs:
     name: WordPress Coding Standards
     runs-on: ubuntu-latest
-    # Informational: surfaces standards violations without blocking the PR.
-    continue-on-error: true
     steps:
       - uses: actions/checkout@v4
 

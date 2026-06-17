@@ -101,11 +101,11 @@ final class Unit_Metaboxes {
 	 * @param \WP_Post $post Current post.
 	 */
 	public function render_quiz( \WP_Post $post ): void {
-		$questions   = Data::get_quiz_questions( $post->ID );
-		$pass        = (int) get_post_meta( $post->ID, Data::META_QUIZ_PASS, true );
-		$show        = (bool) get_post_meta( $post->ID, Data::META_QUIZ_SHOW, true );
-		$retry       = (bool) get_post_meta( $post->ID, Data::META_QUIZ_RETRY, true );
-		$quiz_title  = (string) get_post_meta( $post->ID, Data::META_QUIZ_TITLE, true );
+		$questions  = Data::get_quiz_questions( $post->ID );
+		$pass       = (int) get_post_meta( $post->ID, Data::META_QUIZ_PASS, true );
+		$show       = (bool) get_post_meta( $post->ID, Data::META_QUIZ_SHOW, true );
+		$retry      = (bool) get_post_meta( $post->ID, Data::META_QUIZ_RETRY, true );
+		$quiz_title = (string) get_post_meta( $post->ID, Data::META_QUIZ_TITLE, true );
 		?>
 		<?php Field_Renderer::text( Data::META_QUIZ_TITLE, __( 'כותרת המבחן', 'md-deschool' ), $quiz_title ); ?>
 		<?php Field_Renderer::text( Data::META_QUIZ_PASS, __( 'ציון מעבר (%)', 'md-deschool' ), (string) ( $pass > 0 ? $pass : 70 ), 'number' ); ?>
@@ -143,12 +143,12 @@ final class Unit_Metaboxes {
 	 * @param bool                $template Whether this is the JS template (index placeholder).
 	 */
 	private function render_quiz_row( int $index, array $question, bool $template = false ): void {
-		$key      = $template ? '__index__' : (string) $index;
-		$text     = isset( $question['question'] ) ? (string) $question['question'] : '';
-		$answers  = isset( $question['answers'] ) && is_array( $question['answers'] ) ? $question['answers'] : array( '', '', '', '' );
-		$answers  = array_pad( array_slice( $answers, 0, 4 ), 4, '' );
-		$correct  = isset( $question['correct'] ) ? (int) $question['correct'] : 0;
-		$base     = 'mdds_quiz[' . $key . ']';
+		$key     = $template ? '__index__' : (string) $index;
+		$text    = isset( $question['question'] ) ? (string) $question['question'] : '';
+		$answers = isset( $question['answers'] ) && is_array( $question['answers'] ) ? $question['answers'] : array( '', '', '', '' );
+		$answers = array_pad( array_slice( $answers, 0, 4 ), 4, '' );
+		$correct = isset( $question['correct'] ) ? (int) $question['correct'] : 0;
+		$base    = 'mdds_quiz[' . $key . ']';
 		?>
 		<div class="mdds-repeater-item" data-mdds-repeater-item>
 			<p class="mdds-field">
@@ -228,7 +228,7 @@ final class Unit_Metaboxes {
 			return;
 		}
 
-		$raw       = wp_unslash( $_POST['mdds_quiz'] ); // phpcs:ignore WordPress.Security.ValidatedSanitized -- sanitised per field below.
+		$raw       = wp_unslash( $_POST['mdds_quiz'] ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- sanitised per field below.
 		$questions = array();
 
 		foreach ( (array) $raw as $row ) {

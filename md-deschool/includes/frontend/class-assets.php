@@ -64,13 +64,13 @@ final class Assets {
 				'nonce'   => wp_create_nonce( Ajax::NONCE_ACTION ),
 				'unitId'  => $unit_id,
 				'i18n'    => array(
-					'saving'      => __( 'שומר…', 'md-deschool' ),
-					'saved'       => __( 'נשמר בהצלחה', 'md-deschool' ),
-					'error'       => __( 'אירעה שגיאה, נסו שוב', 'md-deschool' ),
-					'uploading'   => __( 'מעלה קובץ…', 'md-deschool' ),
-					'fileTooBig'  => __( 'הקובץ גדול מדי', 'md-deschool' ),
-					'completed'   => __( 'הפרק הושלם', 'md-deschool' ),
-					'markDone'    => __( 'סימון כהושלם והמשך', 'md-deschool' ),
+					'saving'     => __( 'שומר…', 'md-deschool' ),
+					'saved'      => __( 'נשמר בהצלחה', 'md-deschool' ),
+					'error'      => __( 'אירעה שגיאה, נסו שוב', 'md-deschool' ),
+					'uploading'  => __( 'מעלה קובץ…', 'md-deschool' ),
+					'fileTooBig' => __( 'הקובץ גדול מדי', 'md-deschool' ),
+					'completed'  => __( 'הפרק הושלם', 'md-deschool' ),
+					'markDone'   => __( 'סימון כהושלם והמשך', 'md-deschool' ),
 				),
 			)
 		);

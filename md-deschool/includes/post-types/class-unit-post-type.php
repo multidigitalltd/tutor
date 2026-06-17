@@ -40,19 +40,19 @@ final class Unit_Post_Type {
 		register_post_type(
 			Data::POST_TYPE_UNIT,
 			array(
-				'labels'            => $labels,
-				'public'            => true,
-				'has_archive'       => true,
-				'show_in_rest'      => true,
-				'menu_icon'         => 'dashicons-welcome-learn-more',
-				'menu_position'     => 26,
-				'rewrite'           => array(
+				'labels'          => $labels,
+				'public'          => true,
+				'has_archive'     => true,
+				'show_in_rest'    => true,
+				'menu_icon'       => 'dashicons-welcome-learn-more',
+				'menu_position'   => 26,
+				'rewrite'         => array(
 					'slug'       => 'unit',
 					'with_front' => false,
 				),
-				'supports'          => array( 'title', 'editor', 'thumbnail', 'excerpt', 'author' ),
-				'capability_type'   => 'post',
-				'map_meta_cap'      => true,
+				'supports'        => array( 'title', 'editor', 'thumbnail', 'excerpt', 'author' ),
+				'capability_type' => 'post',
+				'map_meta_cap'    => true,
 			)
 		);
 	}

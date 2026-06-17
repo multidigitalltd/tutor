@@ -134,12 +134,12 @@ final class Chapter_Metaboxes {
 	 * @param bool                $template Whether this is the JS template.
 	 */
 	private function render_task_row( int $index, array $task, bool $template = false ): void {
-		$key       = $template ? '__index__' : (string) $index;
-		$title     = isset( $task['title'] ) ? (string) $task['title'] : '';
-		$text      = isset( $task['instruction'] ) ? (string) $task['instruction'] : '';
-		$label     = isset( $task['button_label'] ) ? (string) $task['button_label'] : '';
-		$allow     = isset( $task['allow_file'] ) ? (bool) $task['allow_file'] : true;
-		$base      = 'mdds_tasks[' . $key . ']';
+		$key   = $template ? '__index__' : (string) $index;
+		$title = isset( $task['title'] ) ? (string) $task['title'] : '';
+		$text  = isset( $task['instruction'] ) ? (string) $task['instruction'] : '';
+		$label = isset( $task['button_label'] ) ? (string) $task['button_label'] : '';
+		$allow = isset( $task['allow_file'] ) ? (bool) $task['allow_file'] : true;
+		$base  = 'mdds_tasks[' . $key . ']';
 		?>
 		<div class="mdds-repeater-item" data-mdds-repeater-item>
 			<p class="mdds-field">
@@ -206,7 +206,7 @@ final class Chapter_Metaboxes {
 		$video_url = isset( $_POST[ Data::META_VIDEO_URL ] ) ? esc_url_raw( wp_unslash( $_POST[ Data::META_VIDEO_URL ] ) ) : '';
 		update_post_meta( $post_id, Data::META_VIDEO_URL, $video_url );
 
-		$video_embed = isset( $_POST[ Data::META_VIDEO_EMBED ] ) ? $this->sanitize_embed( wp_unslash( $_POST[ Data::META_VIDEO_EMBED ] ) ) : '';
+		$video_embed = isset( $_POST[ Data::META_VIDEO_EMBED ] ) ? $this->sanitize_embed( wp_unslash( $_POST[ Data::META_VIDEO_EMBED ] ) ) : ''; // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- sanitised in sanitize_embed().
 		update_post_meta( $post_id, Data::META_VIDEO_EMBED, $video_embed );
 
 		update_post_meta( $post_id, Data::META_VIDEO_FILE, isset( $_POST[ Data::META_VIDEO_FILE ] ) ? absint( wp_unslash( $_POST[ Data::META_VIDEO_FILE ] ) ) : 0 );
@@ -215,7 +215,7 @@ final class Chapter_Metaboxes {
 		update_post_meta( $post_id, Data::META_PRES_FILE, isset( $_POST[ Data::META_PRES_FILE ] ) ? absint( wp_unslash( $_POST[ Data::META_PRES_FILE ] ) ) : 0 );
 		$pres_url = isset( $_POST[ Data::META_PRES_URL ] ) ? esc_url_raw( wp_unslash( $_POST[ Data::META_PRES_URL ] ) ) : '';
 		update_post_meta( $post_id, Data::META_PRES_URL, $pres_url );
-		$pres_embed = isset( $_POST[ Data::META_PRES_EMBED ] ) ? $this->sanitize_embed( wp_unslash( $_POST[ Data::META_PRES_EMBED ] ) ) : '';
+		$pres_embed = isset( $_POST[ Data::META_PRES_EMBED ] ) ? $this->sanitize_embed( wp_unslash( $_POST[ Data::META_PRES_EMBED ] ) ) : ''; // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- sanitised in sanitize_embed().
 		update_post_meta( $post_id, Data::META_PRES_EMBED, $pres_embed );
 
 		// Tasks.
@@ -233,7 +233,7 @@ final class Chapter_Metaboxes {
 			return;
 		}
 
-		$raw   = wp_unslash( $_POST['mdds_tasks'] ); // phpcs:ignore WordPress.Security.ValidatedSanitized -- sanitised per field below.
+		$raw   = wp_unslash( $_POST['mdds_tasks'] ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- sanitised per field below.
 		$tasks = array();
 
 		foreach ( (array) $raw as $row ) {

@@ -23,16 +23,16 @@ final class Chapter_Post_Type {
 	 */
 	public function register(): void {
 		$labels = array(
-			'name'               => __( 'פרקים', 'md-deschool' ),
-			'singular_name'      => __( 'פרק', 'md-deschool' ),
-			'menu_name'          => __( 'פרקים', 'md-deschool' ),
-			'add_new'            => __( 'הוספת פרק', 'md-deschool' ),
-			'add_new_item'       => __( 'הוספת פרק', 'md-deschool' ),
-			'edit_item'          => __( 'עריכת פרק', 'md-deschool' ),
-			'new_item'           => __( 'פרק חדש', 'md-deschool' ),
-			'search_items'       => __( 'חיפוש פרקים', 'md-deschool' ),
-			'not_found'          => __( 'לא נמצאו פרקים', 'md-deschool' ),
-			'all_items'          => __( 'כל הפרקים', 'md-deschool' ),
+			'name'          => __( 'פרקים', 'md-deschool' ),
+			'singular_name' => __( 'פרק', 'md-deschool' ),
+			'menu_name'     => __( 'פרקים', 'md-deschool' ),
+			'add_new'       => __( 'הוספת פרק', 'md-deschool' ),
+			'add_new_item'  => __( 'הוספת פרק', 'md-deschool' ),
+			'edit_item'     => __( 'עריכת פרק', 'md-deschool' ),
+			'new_item'      => __( 'פרק חדש', 'md-deschool' ),
+			'search_items'  => __( 'חיפוש פרקים', 'md-deschool' ),
+			'not_found'     => __( 'לא נמצאו פרקים', 'md-deschool' ),
+			'all_items'     => __( 'כל הפרקים', 'md-deschool' ),
 		);
 
 		register_post_type(

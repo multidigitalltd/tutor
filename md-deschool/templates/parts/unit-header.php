@@ -58,7 +58,7 @@ $percent  = $total > 0 ? (int) round( ( $done / $total ) * 100 ) : 0;
 	<?php endif; ?>
 
 	<?php
-	$content = apply_filters( 'the_content', get_post_field( 'post_content', $unit_id ) );
+	$content = apply_filters( 'the_content', get_post_field( 'post_content', $unit_id ) ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- applying WordPress core filter.
 	if ( '' !== trim( wp_strip_all_tags( $content ) ) ) :
 		?>
 		<div class="mdds-unit-description"><?php echo wp_kses_post( $content ); ?></div>

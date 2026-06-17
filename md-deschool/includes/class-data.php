@@ -22,7 +22,8 @@ final class Data {
 	public const POST_TYPE_UNIT    = 'mdds_unit';
 	public const POST_TYPE_CHAPTER = 'mdds_chapter';
 
-	/* ---------------------------------------------------------------------
+	/*
+	---------------------------------------------------------------------
 	 * Unit meta keys.
 	 * ------------------------------------------------------------------- */
 	public const META_SHORT_DESC      = '_mdds_short_description';
@@ -45,24 +46,26 @@ final class Data {
 	public const META_PRODUCT_ID      = '_mdds_product_id';
 	public const META_SEQUENTIAL      = '_mdds_sequential';
 
-	/* ---------------------------------------------------------------------
+	/*
+	---------------------------------------------------------------------
 	 * Chapter meta keys.
 	 * ------------------------------------------------------------------- */
-	public const META_CHAPTER_DESC      = '_mdds_chapter_description';
-	public const META_VIDEO_EMBED       = '_mdds_video_embed';
-	public const META_VIDEO_URL         = '_mdds_video_url';
-	public const META_VIDEO_FILE        = '_mdds_video_file_id';
-	public const META_PRES_FILE         = '_mdds_presentation_file_id';
-	public const META_PRES_URL          = '_mdds_presentation_url';
-	public const META_PRES_EMBED        = '_mdds_presentation_embed';
-	public const META_TASKS             = '_mdds_tasks';
+	public const META_CHAPTER_DESC = '_mdds_chapter_description';
+	public const META_VIDEO_EMBED  = '_mdds_video_embed';
+	public const META_VIDEO_URL    = '_mdds_video_url';
+	public const META_VIDEO_FILE   = '_mdds_video_file_id';
+	public const META_PRES_FILE    = '_mdds_presentation_file_id';
+	public const META_PRES_URL     = '_mdds_presentation_url';
+	public const META_PRES_EMBED   = '_mdds_presentation_embed';
+	public const META_TASKS        = '_mdds_tasks';
 
-	/* ---------------------------------------------------------------------
+	/*
+	---------------------------------------------------------------------
 	 * User meta keys (progress).
 	 * ------------------------------------------------------------------- */
-	public const UMETA_COMPLETED  = '_mdds_completed_chapters';
-	public const UMETA_ANSWERS    = '_mdds_task_answers';
-	public const UMETA_QUIZ       = '_mdds_quiz_results';
+	public const UMETA_COMPLETED = '_mdds_completed_chapters';
+	public const UMETA_ANSWERS   = '_mdds_task_answers';
+	public const UMETA_QUIZ      = '_mdds_quiz_results';
 
 	/**
 	 * Get the ordered chapters that belong to a unit.
@@ -154,7 +157,8 @@ final class Data {
 		return array_map( 'absint', $users );
 	}
 
-	/* ---------------------------------------------------------------------
+	/*
+	---------------------------------------------------------------------
 	 * Sequential learning (drip) helpers.
 	 * ------------------------------------------------------------------- */
 
@@ -214,7 +218,8 @@ final class Data {
 		return $progress['total'] > 0 && $progress['completed'] >= $progress['total'];
 	}
 
-	/* ---------------------------------------------------------------------
+	/*
+	---------------------------------------------------------------------
 	 * User progress.
 	 * ------------------------------------------------------------------- */
 
@@ -338,9 +343,9 @@ final class Data {
 	/**
 	 * Save a quiz result for a unit.
 	 *
-	 * @param int                  $user_id User ID.
-	 * @param int                  $unit_id Unit ID.
-	 * @param array<string,mixed>  $result  Result payload.
+	 * @param int                 $user_id User ID.
+	 * @param int                 $unit_id Unit ID.
+	 * @param array<string,mixed> $result  Result payload.
 	 */
 	public static function save_quiz_result( int $user_id, int $unit_id, array $result ): void {
 		$all             = get_user_meta( $user_id, self::UMETA_QUIZ, true );
