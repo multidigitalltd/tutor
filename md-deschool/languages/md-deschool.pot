@@ -3,7 +3,7 @@
 # This file is distributed under the same license as the DeSchool plugin.
 msgid ""
 msgstr ""
-"Project-Id-Version: DeSchool 1.5.0\n"
+"Project-Id-Version: DeSchool 1.6.0\n"
 "Report-Msgid-Bugs-To: https://multidigital.co.il/\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -397,6 +397,9 @@ msgstr ""
 msgid "למידה רציפה (פתיחת פרק רק לאחר השלמת הקודם)"
 msgstr ""
 
+msgid "מבחן"
+msgstr ""
+
 msgid "מבחן הסיכום נעול"
 msgstr ""
 
@@ -404,6 +407,9 @@ msgid "מבחן סיכום"
 msgstr ""
 
 msgid "מבחן סיכום (בוחן אמריקאי)"
+msgstr ""
+
+msgid "מבחן סיכום (רשות)"
 msgstr ""
 
 msgid "מבנה הלמידה"
@@ -473,6 +479,9 @@ msgid "נדרשת התחברות."
 msgstr ""
 
 msgid "ניסיון חוזר"
+msgstr ""
+
+msgid "ניתן להוסיף שאלות לבוחן הסיכום. אפשר גם לדלג ולהוסיף מאוחר יותר בעורך."
 msgstr ""
 
 msgid "נשמר בהצלחה"
@@ -719,6 +728,9 @@ msgid "תיאור קצר"
 msgstr ""
 
 msgid "תיאור קצר (מופיע מתחת לכותרת)"
+msgstr ""
+
+msgid "תמונת הקורס"
 msgstr ""
 
 msgid "תמונת מרצה"

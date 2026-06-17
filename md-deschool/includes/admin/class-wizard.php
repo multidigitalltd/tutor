@@ -82,6 +82,7 @@ final class Wizard {
 
 		wp_enqueue_style( 'mdds-admin', MDDS_URL . 'assets/css/admin.css', array(), MDDS_VERSION );
 		wp_enqueue_script( 'mdds-admin', MDDS_URL . 'assets/js/admin.js', array(), MDDS_VERSION, true );
+		wp_enqueue_media();
 	}
 
 	/**
@@ -105,7 +106,8 @@ final class Wizard {
 				<ol class="mdds-wizard-steps" data-mdds-wizard-dots>
 					<li data-step="0" class="is-active"><?php esc_html_e( 'פרטי הקורס', 'md-deschool' ); ?></li>
 					<li data-step="1"><?php esc_html_e( 'פרקים', 'md-deschool' ); ?></li>
-					<li data-step="2"><?php esc_html_e( 'סיום', 'md-deschool' ); ?></li>
+					<li data-step="2"><?php esc_html_e( 'מבחן', 'md-deschool' ); ?></li>
+					<li data-step="3"><?php esc_html_e( 'סיום', 'md-deschool' ); ?></li>
 				</ol>
 
 				<section class="mdds-wizard-panel is-active" data-mdds-wizard-step="0">
@@ -122,6 +124,7 @@ final class Wizard {
 						<label for="mdds-wiz-includes"><strong><?php esc_html_e( 'מה כולל הקורס (שורה לכל נקודה)', 'md-deschool' ); ?></strong></label>
 						<textarea id="mdds-wiz-includes" name="mdds_includes" rows="4" class="widefat"></textarea>
 					</p>
+					<?php Field_Renderer::media( 'mdds_thumb', __( 'תמונת הקורס', 'md-deschool' ), 0, __( 'בחירת תמונה', 'md-deschool' ) ); ?>
 					<p class="mdds-field">
 						<label>
 							<input type="checkbox" name="mdds_sequential" value="1" />
@@ -158,6 +161,25 @@ final class Wizard {
 				</section>
 
 				<section class="mdds-wizard-panel" data-mdds-wizard-step="2">
+					<h2><?php esc_html_e( 'מבחן סיכום (רשות)', 'md-deschool' ); ?></h2>
+					<p class="description"><?php esc_html_e( 'ניתן להוסיף שאלות לבוחן הסיכום. אפשר גם לדלג ולהוסיף מאוחר יותר בעורך.', 'md-deschool' ); ?></p>
+
+					<p class="mdds-field">
+						<label for="mdds-wiz-pass"><strong><?php esc_html_e( 'ציון מעבר (%)', 'md-deschool' ); ?></strong></label>
+						<input type="number" id="mdds-wiz-pass" name="mdds_quiz_pass" value="70" min="0" max="100" class="small-text" />
+					</p>
+
+					<div class="mdds-repeater" data-mdds-repeater="wizquiz">
+						<div class="mdds-repeater-items" data-mdds-repeater-items></div>
+						<button type="button" class="button button-secondary" data-mdds-repeater-add><?php esc_html_e( 'הוספת שאלה', 'md-deschool' ); ?></button>
+					</div>
+
+					<script type="text/template" data-mdds-repeater-template="wizquiz">
+						<?php $this->render_quiz_row( 0, true ); ?>
+					</script>
+				</section>
+
+				<section class="mdds-wizard-panel" data-mdds-wizard-step="3">
 					<h2><?php esc_html_e( 'סיום ויצירה', 'md-deschool' ); ?></h2>
 					<p><?php esc_html_e( 'הקורס והפרקים ייווצרו, ותועברו לעורך הקורס להשלמת התכנים (וידאו, מצגות, מבחן סיכום, אזור ייעוץ וכו\').', 'md-deschool' ); ?></p>
 					<p>
@@ -198,6 +220,36 @@ final class Wizard {
 				<input type="url" name="<?php echo esc_attr( $base . '[video_url]' ); ?>" class="widefat" placeholder="https://" />
 			</p>
 			<button type="button" class="button-link mdds-repeater-remove" data-mdds-repeater-remove><?php esc_html_e( 'הסרת פרק', 'md-deschool' ); ?></button>
+			<hr />
+		</div>
+		<?php
+	}
+
+	/**
+	 * Render a single quiz-question input row.
+	 *
+	 * @param int  $index    Row index.
+	 * @param bool $template Whether this is the JS template (placeholder index).
+	 */
+	private function render_quiz_row( int $index, bool $template = false ): void {
+		$key  = $template ? '__index__' : (string) $index;
+		$base = 'mdds_quiz[' . $key . ']';
+		?>
+		<div class="mdds-repeater-item" data-mdds-repeater-item>
+			<p class="mdds-field">
+				<label><strong><?php esc_html_e( 'שאלה', 'md-deschool' ); ?></strong></label>
+				<textarea name="<?php echo esc_attr( $base . '[question]' ); ?>" rows="2" class="widefat"></textarea>
+			</p>
+			<fieldset class="mdds-answers">
+				<legend><?php esc_html_e( 'תשובות (סמנו את הנכונה)', 'md-deschool' ); ?></legend>
+				<?php for ( $a = 0; $a < 4; $a++ ) : ?>
+					<label class="mdds-answer-row">
+						<input type="radio" name="<?php echo esc_attr( $base . '[correct]' ); ?>" value="<?php echo esc_attr( (string) $a ); ?>" <?php checked( 0, $a ); ?> />
+						<input type="text" name="<?php echo esc_attr( $base . '[answers][]' ); ?>" class="widefat" placeholder="<?php echo esc_attr( sprintf( /* translators: %d: answer number */ __( 'תשובה %d', 'md-deschool' ), $a + 1 ) ); ?>" />
+					</label>
+				<?php endfor; ?>
+			</fieldset>
+			<button type="button" class="button-link mdds-repeater-remove" data-mdds-repeater-remove><?php esc_html_e( 'הסרת שאלה', 'md-deschool' ); ?></button>
 			<hr />
 		</div>
 		<?php
@@ -247,7 +299,13 @@ final class Wizard {
 			update_post_meta( $unit_id, Data::META_PRODUCT_ID, $product_id );
 		}
 
+		$thumb_id = isset( $_POST['mdds_thumb'] ) ? absint( wp_unslash( $_POST['mdds_thumb'] ) ) : 0;
+		if ( $thumb_id > 0 ) {
+			set_post_thumbnail( $unit_id, $thumb_id );
+		}
+
 		$this->create_chapters( $unit_id, $status );
+		$this->save_quiz( $unit_id );
 
 		wp_safe_redirect( add_query_arg( 'mdds_wizard_done', '1', (string) get_edit_post_link( $unit_id, 'url' ) ) );
 		exit;
@@ -303,6 +361,61 @@ final class Wizard {
 			}
 
 			++$order;
+		}
+	}
+
+	/**
+	 * Sanitise and persist the optional summary quiz from the wizard.
+	 *
+	 * @param int $unit_id Unit ID.
+	 */
+	private function save_quiz( int $unit_id ): void {
+		$pass = isset( $_POST['mdds_quiz_pass'] ) ? absint( wp_unslash( $_POST['mdds_quiz_pass'] ) ) : 70; // phpcs:ignore WordPress.Security.NonceVerification.Missing -- nonce verified in create().
+		update_post_meta( $unit_id, Data::META_QUIZ_PASS, min( 100, $pass ) );
+
+		if ( ! isset( $_POST['mdds_quiz'] ) || ! is_array( $_POST['mdds_quiz'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Missing -- nonce verified in create().
+			return;
+		}
+
+		$raw       = wp_unslash( $_POST['mdds_quiz'] ); // phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- nonce verified in create(); sanitised per field below.
+		$questions = array();
+
+		foreach ( (array) $raw as $row ) {
+			if ( ! is_array( $row ) ) {
+				continue;
+			}
+
+			$question = isset( $row['question'] ) ? sanitize_textarea_field( (string) $row['question'] ) : '';
+
+			$answers = array();
+			if ( isset( $row['answers'] ) && is_array( $row['answers'] ) ) {
+				foreach ( $row['answers'] as $answer ) {
+					$answer = sanitize_text_field( (string) $answer );
+					if ( '' !== $answer ) {
+						$answers[] = $answer;
+					}
+				}
+			}
+
+			if ( '' === $question || count( $answers ) < 2 ) {
+				continue;
+			}
+
+			$correct = isset( $row['correct'] ) ? absint( $row['correct'] ) : 0;
+			if ( $correct > count( $answers ) - 1 ) {
+				$correct = 0;
+			}
+
+			$questions[] = array(
+				'question' => $question,
+				'answers'  => array_values( $answers ),
+				'correct'  => $correct,
+			);
+		}
+
+		if ( ! empty( $questions ) ) {
+			update_post_meta( $unit_id, Data::META_QUIZ_QUESTIONS, $questions );
+			update_post_meta( $unit_id, Data::META_QUIZ_SHOW, 1 );
 		}
 	}
 
