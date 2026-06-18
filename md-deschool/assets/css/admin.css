@@ -57,3 +57,192 @@
 .mdds-repeater-remove:hover {
 	color: #8a2424;
 }
+
+/* Section headings inside metaboxes -------------------------------------- */
+.mdds-field + hr,
+.postbox .inside > hr {
+	margin: 18px 0 12px;
+	border: 0;
+	border-top: 1px solid #dcdcde;
+}
+
+.postbox .inside > h4 {
+	margin: 16px 0 8px;
+	font-size: 13px;
+	text-transform: uppercase;
+	letter-spacing: 0.02em;
+	color: #1d2327;
+}
+
+/* Chapters overview table ------------------------------------------------ */
+.mdds-chapters-table {
+	margin-top: 8px;
+}
+
+.mdds-chapters-table .mdds-col-order {
+	width: 56px;
+}
+
+.mdds-chapters-table .mdds-col-tasks {
+	width: 80px;
+}
+
+.mdds-chapters-table .mdds-col-actions {
+	width: 90px;
+}
+
+.mdds-chapters-actions {
+	margin-top: 14px;
+}
+
+/* Status badges ---------------------------------------------------------- */
+.mdds-status-badge {
+	display: inline-block;
+	padding: 2px 10px;
+	border-radius: 999px;
+	font-size: 11px;
+	font-weight: 600;
+	line-height: 1.6;
+}
+
+.mdds-status-badge.is-publish {
+	background: #edfaef;
+	color: #15803d;
+}
+
+.mdds-status-badge.is-draft {
+	background: #f0f0f1;
+	color: #50575e;
+}
+
+.mdds-status-badge.is-pending,
+.mdds-status-badge.is-future {
+	background: #fef8ee;
+	color: #8a6d1b;
+}
+
+.mdds-status-badge.is-private {
+	background: #f3eefb;
+	color: #5b2bb3;
+}
+
+/* Quick-guide checklist -------------------------------------------------- */
+.mdds-guide-list {
+	margin: 0 0 12px;
+	padding: 0;
+	list-style: none;
+	counter-reset: none;
+}
+
+.mdds-guide-item {
+	display: flex;
+	align-items: flex-start;
+	gap: 8px;
+	padding: 6px 0;
+	border-bottom: 1px solid #f0f0f1;
+}
+
+.mdds-guide-item:last-child {
+	border-bottom: 0;
+}
+
+.mdds-guide-check {
+	flex: 0 0 auto;
+	width: 20px;
+	height: 20px;
+	display: grid;
+	place-items: center;
+	border-radius: 50%;
+	font-size: 12px;
+	font-weight: 700;
+}
+
+.mdds-guide-item.is-done .mdds-guide-check {
+	background: #15803d;
+	color: #fff;
+}
+
+.mdds-guide-item.is-todo .mdds-guide-check {
+	background: #f0f0f1;
+	color: #787c82;
+}
+
+.mdds-guide-item.is-done > span:last-child {
+	color: #50575e;
+}
+
+.mdds-guide-optional {
+	color: #787c82;
+	font-style: normal;
+	font-size: 11px;
+}
+
+.mdds-guide-note {
+	margin: 10px 0;
+	padding: 8px 10px;
+	background: #f6f7f7;
+	border-inline-start: 3px solid #2271b1;
+	border-radius: 3px;
+	color: #50575e;
+}
+
+/* Create-course wizard --------------------------------------------------- */
+.mdds-wizard {
+	max-width: 760px;
+	background: #fff;
+	border: 1px solid #dcdcde;
+	border-radius: 6px;
+	padding: 20px 24px;
+	margin-top: 16px;
+}
+
+.mdds-wizard-steps {
+	display: flex;
+	gap: 8px;
+	list-style: none;
+	margin: 0 0 20px;
+	padding: 0;
+	counter-reset: mdds-step;
+}
+
+.mdds-wizard-steps li {
+	flex: 1 1 0;
+	text-align: center;
+	padding: 10px 8px;
+	border-radius: 6px;
+	background: #f0f0f1;
+	color: #787c82;
+	font-weight: 600;
+	font-size: 13px;
+	counter-increment: mdds-step;
+}
+
+.mdds-wizard-steps li::before {
+	content: counter( mdds-step ) ". ";
+}
+
+.mdds-wizard-steps li.is-active {
+	background: #2271b1;
+	color: #fff;
+}
+
+.mdds-wizard-panel {
+	display: none;
+}
+
+.mdds-wizard-panel.is-active {
+	display: block;
+}
+
+.mdds-wizard-nav {
+	display: flex;
+	justify-content: space-between;
+	gap: 12px;
+	margin-top: 20px;
+	padding-top: 16px;
+	border-top: 1px solid #f0f0f1;
+}
+
+.mdds-wizard-nav [data-mdds-wizard-next] {
+	margin-inline-start: auto;
+}

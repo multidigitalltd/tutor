@@ -1,0 +1,794 @@
+# DeSchool — translation template.
+# Copyright (C) 2026 Multi Digital
+msgid ""
+msgstr ""
+"Project-Id-Version: DeSchool 1.17.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"X-Domain: md-deschool\n"
+
+msgid "%1$d מתוך %2$d פרקים הושלמו"
+msgstr ""
+
+msgid "%d פרק"
+msgstr ""
+
+msgid "%d פרק בקורס"
+msgstr ""
+
+msgid "(רשות)"
+msgstr ""
+
+msgid "+ הוספת פרק"
+msgstr ""
+
+msgid "+ הוספת פרק חדש"
+msgstr ""
+
+msgid "DeSchool"
+msgstr ""
+
+msgid "WooCommerce"
+msgstr ""
+
+msgid "או קובץ וידאו מהמדיה"
+msgstr ""
+
+msgid "או קוד הטמעה (iframe)"
+msgstr ""
+
+msgid "או קוד הטמעת מצגת"
+msgstr ""
+
+msgid "או קישור למצגת"
+msgstr ""
+
+msgid "אזור אישי"
+msgstr ""
+
+msgid "אזור ייעוץ אישי"
+msgstr ""
+
+msgid "אימייל"
+msgstr ""
+
+msgid "אין הרשאה."
+msgstr ""
+
+msgid "אין לך גישה לקורס זה."
+msgstr ""
+
+msgid "אין לך הרשאה."
+msgstr ""
+
+msgid "אין לך הרשאת גישה ליחידה זו."
+msgstr ""
+
+msgid "אין משימות בפרק זה."
+msgstr ""
+
+msgid "אין עדיין שאלות."
+msgstr ""
+
+msgid "אין קורסים זמינים כרגע."
+msgstr ""
+
+msgid "אין שאלות במבחן."
+msgstr ""
+
+msgid "אירעה שגיאה, נסו שוב"
+msgstr ""
+
+msgid "אישור ושליחת התשובות"
+msgstr ""
+
+msgid "אפשרות לניסיון חוזר"
+msgstr ""
+
+msgid "אשף יצירת קורס"
+msgstr ""
+
+msgid "בדיקת האבטחה נכשלה."
+msgstr ""
+
+msgid "בחירת וידאו"
+msgstr ""
+
+msgid "בחירת קובץ"
+msgstr ""
+
+msgid "בחירת תמונה"
+msgstr ""
+
+msgid "בחרו יחידת תוכן והורידו קובץ CSV עם כל התשובות שהוגשו."
+msgstr ""
+
+msgid "בנו קורס חדש בכמה שלבים. בסיום תועברו לעורך הרגיל להשלמת פרטים (וידאו, מצגות, מבחן ועוד)."
+msgstr ""
+
+msgid "האזור האישי שלי"
+msgstr ""
+
+msgid "הבא"
+msgstr ""
+
+msgid "הגדרות"
+msgstr ""
+
+msgid "הגדרת מבחן סיכום (אופציונלי)"
+msgstr ""
+
+msgid "הדפדפן שלך אינו תומך בנגן הווידאו."
+msgstr ""
+
+msgid "ההגדרות נשמרו בהצלחה."
+msgstr ""
+
+msgid "ההודעה נשלחה"
+msgstr ""
+
+msgid "הוסיפו את פרקי הקורס. ניתן להוסיף וידאו, מצגות ומשימות מפורטות בעורך לאחר היצירה."
+msgstr ""
+
+msgid "הוספת יחידה"
+msgstr ""
+
+msgid "הוספת יחידת תוכן"
+msgstr ""
+
+msgid "הוספת פרק"
+msgstr ""
+
+msgid "הוספת פרקים (וידאו / מצגת / משימות לכל פרק)"
+msgstr ""
+
+msgid "הוספת שאלה"
+msgstr ""
+
+msgid "הוספת שאלה / משימה"
+msgstr ""
+
+msgid "הורדת מצגת"
+msgstr ""
+
+msgid "הושלם"
+msgstr ""
+
+msgid "המשך לקורס"
+msgstr ""
+
+msgid "הנחיה / טקסט המשימה"
+msgstr ""
+
+msgid "הסדר בין הפרקים נקבע בשדה \"סדר\" בתיבת מאפייני העמוד."
+msgstr ""
+
+msgid "הסרה"
+msgstr ""
+
+msgid "הסרת פרק"
+msgstr ""
+
+msgid "הסרת שאלה"
+msgstr ""
+
+msgid "העלאת הקובץ נכשלה."
+msgstr ""
+
+msgid "הפעלה"
+msgstr ""
+
+msgid "הפעלת אזור הייעוץ ביחידה זו"
+msgstr ""
+
+msgid "הפעלת מצב מיקוד"
+msgstr ""
+
+msgid "הפרק הבא"
+msgstr ""
+
+msgid "הפרק הבא: %s"
+msgstr ""
+
+msgid "הפרק הושלם"
+msgstr ""
+
+msgid "הפרק הקודם"
+msgstr ""
+
+msgid "הצגת התשובות הנכונות בסיום"
+msgstr ""
+
+msgid "הציון שלך: %1$d%% (%2$d מתוך %3$d)"
+msgstr ""
+
+msgid "הקובץ גדול מדי"
+msgstr ""
+
+msgid "הקובץ גדול מדי או ריק."
+msgstr ""
+
+msgid "הקודם"
+msgstr ""
+
+msgid "הקורס והפרקים ייווצרו, ותועברו לעורך הקורס להשלמת התכנים (וידאו, מצגות, מבחן סיכום, אזור ייעוץ וכו')."
+msgstr ""
+
+msgid "הקורס נוצר בהצלחה! השלימו כאן את התכנים (וידאו, מצגות, מבחן ועוד)."
+msgstr ""
+
+msgid "הקורסים שלי"
+msgstr ""
+
+msgid "הקורסים שלנו"
+msgstr ""
+
+msgid "השאלה שלך"
+msgstr ""
+
+msgid "השהיה"
+msgstr ""
+
+msgid "השלימו את כל פרקי היחידה כדי לפתוח את מבחן הסיכום."
+msgstr ""
+
+msgid "השתקה"
+msgstr ""
+
+msgid "התחלת הקורס"
+msgstr ""
+
+msgid "התיאור המלא של היחידה נכתב בעורך התוכן הראשי למעלה."
+msgstr ""
+
+msgid "התנתקות"
+msgstr ""
+
+msgid "התקבלה תשובה לשאלתך בקורס: %s"
+msgstr ""
+
+msgid "התקדמות ביחידה"
+msgstr ""
+
+msgid "התקדמות בקורס"
+msgstr ""
+
+msgid "התשובה נשלחה."
+msgstr ""
+
+msgid "התשובה שלך"
+msgstr ""
+
+msgid "התשובות נשמרו בהצלחה"
+msgstr ""
+
+msgid "וידאו הפרק"
+msgstr ""
+
+msgid "חיפוש יחידות"
+msgstr ""
+
+msgid "חיפוש פרקים"
+msgstr ""
+
+msgid "טיוטה"
+msgstr ""
+
+msgid "טיפ: ניתן להפעיל \"למידה רציפה\" בתיבת פרטי היחידה לפתיחת פרקים בהדרגה."
+msgstr ""
+
+msgid "טקסט הכפתור"
+msgstr ""
+
+msgid "טקסט הסבר"
+msgstr ""
+
+msgid "טקסט כפתור השמירה (ברירת מחדל: שמירת תשובה)"
+msgstr ""
+
+msgid "יחידה זו כוללת את הפרקים הבאים:"
+msgstr ""
+
+msgid "יחידה לא תקינה."
+msgstr ""
+
+msgid "יחידות התוכן שלי"
+msgstr ""
+
+msgid "יחידות תוכן"
+msgstr ""
+
+msgid "יחידת התוכן"
+msgstr ""
+
+msgid "יחידת תוכן"
+msgstr ""
+
+msgid "יחידת תוכן חדשה"
+msgstr ""
+
+msgid "ייצוא CSV"
+msgstr ""
+
+msgid "ייצוא תשובות"
+msgstr ""
+
+msgid "ייצוא תשובות לומדים"
+msgstr ""
+
+msgid "יצירת הקורס"
+msgstr ""
+
+msgid "יצירת הקורס נכשלה. ודאו שמילאתם שם קורס ונסו שוב."
+msgstr ""
+
+msgid "יש להשלים את הפרקים הקודמים תחילה."
+msgstr ""
+
+msgid "יש להשלים את כל הפרקים לפני המבחן."
+msgstr ""
+
+msgid "יש להתחבר כדי לצפות באזור האישי שלך."
+msgstr ""
+
+msgid "יש להתחבר כדי לצפות ביחידות שלך."
+msgstr ""
+
+msgid "יש לך גישה"
+msgstr ""
+
+msgid "יש לכם שאלה? כתבו אותה כאן והמנחה יחזור אליכם."
+msgstr ""
+
+msgid "יש לכתוב הודעה."
+msgstr ""
+
+msgid "יש לשמור את היחידה (טיוטה) לפני הוספת פרקים."
+msgstr ""
+
+msgid "כבר ביצעת את המבחן."
+msgstr ""
+
+msgid "כבר רכשתי — כניסה"
+msgstr ""
+
+msgid "כותרת"
+msgstr ""
+
+msgid "כותרת המבחן"
+msgstr ""
+
+msgid "כותרת הפרק"
+msgstr ""
+
+msgid "כותרת פנימית (אופציונלי)"
+msgstr ""
+
+msgid "כל היחידות"
+msgstr ""
+
+msgid "כל הפרקים"
+msgstr ""
+
+msgid "כניסה לחשבון"
+msgstr ""
+
+msgid "כתבו כאן את התשובה שלכם…"
+msgstr ""
+
+msgid "כתבו כאן את שאלתכם…"
+msgstr ""
+
+msgid "כתבו תשובה ללומד…"
+msgstr ""
+
+msgid "כתבו תשובה…"
+msgstr ""
+
+msgid "כתובת אימייל"
+msgstr ""
+
+msgid "לא נבחר קובץ"
+msgstr ""
+
+msgid "לא נמצאו יחידות"
+msgstr ""
+
+msgid "לא נמצאו יחידות בפח"
+msgstr ""
+
+msgid "לא נמצאו פרקים"
+msgstr ""
+
+msgid "לא עבר"
+msgstr ""
+
+msgid "לאפשר צירוף קובץ"
+msgstr ""
+
+msgid "להציג רק למי שסיים את כל הקורס"
+msgstr ""
+
+msgid "למידה רציפה (טפטוף תוכן): כל פרק נפתח רק לאחר השלמת הפרק הקודם, והמבחן נפתח רק לאחר השלמת כל הפרקים."
+msgstr ""
+
+msgid "למידה רציפה (פתיחת פרק רק לאחר השלמת הקודם)"
+msgstr ""
+
+msgid "לפרטים ולרכישה"
+msgstr ""
+
+msgid "מבחן"
+msgstr ""
+
+msgid "מבחן הסיכום נעול"
+msgstr ""
+
+msgid "מבחן סיכום"
+msgstr ""
+
+msgid "מבחן סיכום (בוחן אמריקאי)"
+msgstr ""
+
+msgid "מבחן סיכום (רשות)"
+msgstr ""
+
+msgid "מבנה הלמידה"
+msgstr ""
+
+msgid "מבנה הקורס"
+msgstr ""
+
+msgid "מדריך מהיר"
+msgstr ""
+
+msgid "מה כולל הקורס"
+msgstr ""
+
+msgid "מה כולל הקורס (שורה לכל נקודה)"
+msgstr ""
+
+msgid "מה כוללת היחידה"
+msgstr ""
+
+msgid "מה כוללת היחידה (שורה לכל נקודה)"
+msgstr ""
+
+msgid "מוצר WooCommerce שרכישתו פותחת גישה"
+msgstr ""
+
+msgid "מוצר ייעוץ מסובסד (לאזור הייעוץ)"
+msgstr ""
+
+msgid "מוצר שרכישתו פותחת גישה ליחידה"
+msgstr ""
+
+msgid "מזהה משתמש"
+msgstr ""
+
+msgid "מילוי כותרת, תיאור ו\"מה כוללת היחידה\""
+msgstr ""
+
+msgid "ממתין"
+msgstr ""
+
+msgid "מנחה"
+msgstr ""
+
+msgid "מסך מלא"
+msgstr ""
+
+msgid "מעבר במהלך הסרטון"
+msgstr ""
+
+msgid "מעבר לקורס"
+msgstr ""
+
+msgid "מעלה קובץ…"
+msgstr ""
+
+msgid "מצב פעיל: למידה רציפה (טפטוף) — פרקים נפתחים בזה אחר זה."
+msgstr ""
+
+msgid "מצגת הפרק"
+msgstr ""
+
+msgid "מרצה:"
+msgstr ""
+
+msgid "משימה"
+msgstr ""
+
+msgid "משימות"
+msgstr ""
+
+msgid "מתוזמן"
+msgstr ""
+
+msgid "נדרשת התחברות."
+msgstr ""
+
+msgid "ניסיון חוזר"
+msgstr ""
+
+msgid "ניתן להוסיף שאלות לבוחן הסיכום. אפשר גם לדלג ולהוסיף מאוחר יותר בעורך."
+msgstr ""
+
+msgid "נשמר בהצלחה"
+msgstr ""
+
+msgid "סגירת מצב מיקוד"
+msgstr ""
+
+msgid "סדר"
+msgstr ""
+
+msgid "סדר הפרקים נקבע לפי שדה \"סדר\" בכל פרק (תיבת \"מאפייני עמוד\"). גררו/עדכנו את הסדר שם."
+msgstr ""
+
+msgid "סוג הקובץ אינו נתמך."
+msgstr ""
+
+msgid "סטטוס"
+msgstr ""
+
+msgid "סיום"
+msgstr ""
+
+msgid "סיום ויצירה"
+msgstr ""
+
+msgid "סימון כהושלם והמשך"
+msgstr ""
+
+msgid "עבר"
+msgstr ""
+
+msgid "עדיין אין לך גישה ליחידות תוכן."
+msgstr ""
+
+msgid "עדיין אין לך גישה לקורסים."
+msgstr ""
+
+msgid "עדיין לא ביצעת מבחנים."
+msgstr ""
+
+msgid "עדיין לא נוספו פרקים ליחידה זו. כל פרק כולל וידאו, מצגת ומשימות משלו."
+msgstr ""
+
+msgid "עריכה"
+msgstr ""
+
+msgid "עריכת יחידת תוכן"
+msgstr ""
+
+msgid "עריכת פרק"
+msgstr ""
+
+msgid "פורסם"
+msgstr ""
+
+msgid "פעולות"
+msgstr ""
+
+msgid "פרטי"
+msgstr ""
+
+msgid "פרטי המרצה"
+msgstr ""
+
+msgid "פרטי הקורס"
+msgstr ""
+
+msgid "פרטי יחידת התוכן"
+msgstr ""
+
+msgid "פרק"
+msgstr ""
+
+msgid "פרק %1$d מתוך %2$d"
+msgstr ""
+
+msgid "פרק %d"
+msgstr ""
+
+msgid "פרק זה ייפתח לאחר השלמת הפרק הקודם."
+msgstr ""
+
+msgid "פרק חדש"
+msgstr ""
+
+msgid "פרק לא תקין."
+msgstr ""
+
+msgid "פרקי היחידה"
+msgstr ""
+
+msgid "פרקי הקורס"
+msgstr ""
+
+msgid "פרקים"
+msgstr ""
+
+msgid "ציון"
+msgstr ""
+
+msgid "ציון במבחן: %d%%"
+msgstr ""
+
+msgid "ציון מעבר (%)"
+msgstr ""
+
+msgid "ציון מעבר: %d%%"
+msgstr ""
+
+msgid "ציונים ומבחנים"
+msgstr ""
+
+msgid "צירוף קובץ (PDF, Word, PowerPoint, Excel, תמונה)"
+msgstr ""
+
+msgid "צפייה ביחידה"
+msgstr ""
+
+msgid "צפייה במצגת"
+msgstr ""
+
+msgid "קביעת פגישה עם המרצה"
+msgstr ""
+
+msgid "קבצים"
+msgstr ""
+
+msgid "קובץ מצגת (PDF)"
+msgstr ""
+
+msgid "קורס"
+msgstr ""
+
+msgid "קורס לא תקין."
+msgstr ""
+
+msgid "קישור הכפתור (יומן / טופס / מוצר / סליקה)"
+msgstr ""
+
+msgid "קישור וידאו (YouTube / Vimeo)"
+msgstr ""
+
+msgid "קישור להטמעה (YouTube / Vimeo / Bunny)"
+msgstr ""
+
+msgid "קישור לקביעת פגישה / טופס פנייה"
+msgstr ""
+
+msgid "רכישת היחידה"
+msgstr ""
+
+msgid "רכישת הקורס"
+msgstr ""
+
+msgid "רכישת פגישת ייעוץ מסובסדת"
+msgstr ""
+
+msgid "שאלה"
+msgstr ""
+
+msgid "שאלה %d"
+msgstr ""
+
+msgid "שאלה חדשה בקורס: %s"
+msgstr ""
+
+msgid "שאלה לא תקינה."
+msgstr ""
+
+msgid "שאלות / משימות הפרק"
+msgstr ""
+
+msgid "שאלות / משימות לאחר הפרק"
+msgstr ""
+
+msgid "שאלות הלומדים בקורס זה. ניתן להשיב לכל שאלה."
+msgstr ""
+
+msgid "שאלות המבחן"
+msgstr ""
+
+msgid "שאלות ותשובות"
+msgstr ""
+
+msgid "שאלות ותשובות מהלומדים"
+msgstr ""
+
+msgid "שאלות ותשובות עם המנחה"
+msgstr ""
+
+msgid "שומר…"
+msgstr ""
+
+msgid "שיוך ליחידת תוכן"
+msgstr ""
+
+msgid "שיוך מוצר WooCommerce לפתיחת גישה"
+msgstr ""
+
+msgid "שליחת המבחן"
+msgstr ""
+
+msgid "שליחת שאלה"
+msgstr ""
+
+msgid "שליחת תשובה"
+msgstr ""
+
+msgid "שם"
+msgstr ""
+
+msgid "שם המרצה"
+msgstr ""
+
+msgid "שם הקורס"
+msgstr ""
+
+msgid "שם לתצוגה"
+msgstr ""
+
+msgid "שמירת הגדרות"
+msgstr ""
+
+msgid "שמירת ההודעה נכשלה."
+msgstr ""
+
+msgid "תאריך"
+msgstr ""
+
+msgid "תוכן היחידה נעול"
+msgstr ""
+
+msgid "תוכן הפרק"
+msgstr ""
+
+msgid "תוצאה"
+msgstr ""
+
+msgid "תיאור הפרק"
+msgstr ""
+
+msgid "תיאור קצר"
+msgstr ""
+
+msgid "תיאור קצר (מופיע מתחת לכותרת)"
+msgstr ""
+
+msgid "תמונת הקורס"
+msgstr ""
+
+msgid "תמונת מרצה"
+msgstr ""
+
+msgid "תפקיד / טייטל"
+msgstr ""
+
+msgid "תצוגה מקדימה של הקורס"
+msgstr ""
+
+msgid "תשובה"
+msgstr ""
+
+msgid "תשובה %d"
+msgstr ""
+
+msgid "תשובות (סמנו את הנכונה)"
+msgstr ""
+
+msgid "— בחירת יחידה —"
+msgstr ""
+
+msgid "— ללא מוצר (גישה לעורכים בלבד) —"
+msgstr ""
+
+msgid "— ללא מוצר ייעוץ —"
+msgstr ""
+
+msgid "— ללא מוצר —"
+msgstr ""
+

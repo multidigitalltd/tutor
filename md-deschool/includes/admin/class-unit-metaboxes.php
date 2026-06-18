@@ -60,6 +60,14 @@ final class Unit_Metaboxes {
 			6
 		);
 		echo '<p class="description">' . esc_html__( 'התיאור המלא של היחידה נכתב בעורך התוכן הראשי למעלה.', 'md-deschool' ) . '</p>';
+
+		echo '<hr />';
+		echo '<h4>' . esc_html__( 'מבנה הלמידה', 'md-deschool' ) . '</h4>';
+		Field_Renderer::checkbox(
+			Data::META_SEQUENTIAL,
+			__( 'למידה רציפה (טפטוף תוכן): כל פרק נפתח רק לאחר השלמת הפרק הקודם, והמבחן נפתח רק לאחר השלמת כל הפרקים.', 'md-deschool' ),
+			(bool) get_post_meta( $post->ID, Data::META_SEQUENTIAL, true )
+		);
 	}
 
 	/**
@@ -81,6 +89,18 @@ final class Unit_Metaboxes {
 	 * @param \WP_Post $post Current post.
 	 */
 	public function render_consult( \WP_Post $post ): void {
+		Field_Renderer::checkbox(
+			Data::META_CONSULT_ENABLED,
+			__( 'הפעלת אזור הייעוץ ביחידה זו', 'md-deschool' ),
+			Data::is_consult_enabled( (int) $post->ID )
+		);
+		Field_Renderer::checkbox(
+			Data::META_CONSULT_ON_DONE,
+			__( 'להציג רק למי שסיים את כל הקורס', 'md-deschool' ),
+			Data::consult_after_complete( (int) $post->ID )
+		);
+		echo '<hr />';
+
 		Field_Renderer::text( Data::META_CONSULT_TITLE, __( 'כותרת', 'md-deschool' ), (string) get_post_meta( $post->ID, Data::META_CONSULT_TITLE, true ) );
 		Field_Renderer::textarea( Data::META_CONSULT_TEXT, __( 'טקסט הסבר', 'md-deschool' ), (string) get_post_meta( $post->ID, Data::META_CONSULT_TEXT, true ), 4 );
 		Field_Renderer::text( Data::META_CONSULT_LABEL, __( 'טקסט הכפתור', 'md-deschool' ), (string) get_post_meta( $post->ID, Data::META_CONSULT_LABEL, true ) );
@@ -93,11 +113,11 @@ final class Unit_Metaboxes {
 	 * @param \WP_Post $post Current post.
 	 */
 	public function render_quiz( \WP_Post $post ): void {
-		$questions   = Data::get_quiz_questions( $post->ID );
-		$pass        = (int) get_post_meta( $post->ID, Data::META_QUIZ_PASS, true );
-		$show        = (bool) get_post_meta( $post->ID, Data::META_QUIZ_SHOW, true );
-		$retry       = (bool) get_post_meta( $post->ID, Data::META_QUIZ_RETRY, true );
-		$quiz_title  = (string) get_post_meta( $post->ID, Data::META_QUIZ_TITLE, true );
+		$questions  = Data::get_quiz_questions( $post->ID );
+		$pass       = (int) get_post_meta( $post->ID, Data::META_QUIZ_PASS, true );
+		$show       = (bool) get_post_meta( $post->ID, Data::META_QUIZ_SHOW, true );
+		$retry      = (bool) get_post_meta( $post->ID, Data::META_QUIZ_RETRY, true );
+		$quiz_title = (string) get_post_meta( $post->ID, Data::META_QUIZ_TITLE, true );
 		?>
 		<?php Field_Renderer::text( Data::META_QUIZ_TITLE, __( 'כותרת המבחן', 'md-deschool' ), $quiz_title ); ?>
 		<?php Field_Renderer::text( Data::META_QUIZ_PASS, __( 'ציון מעבר (%)', 'md-deschool' ), (string) ( $pass > 0 ? $pass : 70 ), 'number' ); ?>
@@ -135,12 +155,12 @@ final class Unit_Metaboxes {
 	 * @param bool                $template Whether this is the JS template (index placeholder).
 	 */
 	private function render_quiz_row( int $index, array $question, bool $template = false ): void {
-		$key      = $template ? '__index__' : (string) $index;
-		$text     = isset( $question['question'] ) ? (string) $question['question'] : '';
-		$answers  = isset( $question['answers'] ) && is_array( $question['answers'] ) ? $question['answers'] : array( '', '', '', '' );
-		$answers  = array_pad( array_slice( $answers, 0, 4 ), 4, '' );
-		$correct  = isset( $question['correct'] ) ? (int) $question['correct'] : 0;
-		$base     = 'mdds_quiz[' . $key . ']';
+		$key     = $template ? '__index__' : (string) $index;
+		$text    = isset( $question['question'] ) ? (string) $question['question'] : '';
+		$answers = isset( $question['answers'] ) && is_array( $question['answers'] ) ? $question['answers'] : array( '', '', '', '' );
+		$answers = array_pad( array_slice( $answers, 0, 4 ), 4, '' );
+		$correct = isset( $question['correct'] ) ? (int) $question['correct'] : 0;
+		$base    = 'mdds_quiz[' . $key . ']';
 		?>
 		<div class="mdds-repeater-item" data-mdds-repeater-item>
 			<p class="mdds-field">
@@ -192,6 +212,13 @@ final class Unit_Metaboxes {
 		$this->update_url( $post_id, Data::META_CONSULT_URL );
 		$this->update_text( $post_id, Data::META_QUIZ_TITLE );
 
+		// Consultation banner visibility.
+		update_post_meta( $post_id, Data::META_CONSULT_ENABLED, isset( $_POST[ Data::META_CONSULT_ENABLED ] ) ? 1 : 0 );
+		update_post_meta( $post_id, Data::META_CONSULT_ON_DONE, isset( $_POST[ Data::META_CONSULT_ON_DONE ] ) ? 1 : 0 );
+
+		// Learning structure.
+		update_post_meta( $post_id, Data::META_SEQUENTIAL, isset( $_POST[ Data::META_SEQUENTIAL ] ) ? 1 : 0 );
+
 		// Lecturer image (attachment id).
 		$image = isset( $_POST[ Data::META_LECTURER_IMAGE ] ) ? absint( wp_unslash( $_POST[ Data::META_LECTURER_IMAGE ] ) ) : 0;
 		update_post_meta( $post_id, Data::META_LECTURER_IMAGE, $image );
@@ -217,7 +244,7 @@ final class Unit_Metaboxes {
 			return;
 		}
 
-		$raw       = wp_unslash( $_POST['mdds_quiz'] ); // phpcs:ignore WordPress.Security.ValidatedSanitized -- sanitised per field below.
+		$raw       = wp_unslash( $_POST['mdds_quiz'] ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- sanitised per field below.
 		$questions = array();
 
 		foreach ( (array) $raw as $row ) {

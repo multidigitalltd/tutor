@@ -22,7 +22,8 @@ final class Data {
 	public const POST_TYPE_UNIT    = 'mdds_unit';
 	public const POST_TYPE_CHAPTER = 'mdds_chapter';
 
-	/* ---------------------------------------------------------------------
+	/*
+	---------------------------------------------------------------------
 	 * Unit meta keys.
 	 * ------------------------------------------------------------------- */
 	public const META_SHORT_DESC      = '_mdds_short_description';
@@ -35,33 +36,38 @@ final class Data {
 	public const META_CONSULT_TITLE   = '_mdds_consult_title';
 	public const META_CONSULT_TEXT    = '_mdds_consult_text';
 	public const META_CONSULT_LABEL   = '_mdds_consult_button_label';
-	public const META_CONSULT_URL     = '_mdds_consult_button_url';
-	public const META_CONSULT_PRODUCT = '_mdds_consult_product_id';
+	public const META_CONSULT_URL      = '_mdds_consult_button_url';
+	public const META_CONSULT_PRODUCT  = '_mdds_consult_product_id';
+	public const META_CONSULT_ENABLED  = '_mdds_consult_enabled';
+	public const META_CONSULT_ON_DONE  = '_mdds_consult_after_complete';
 	public const META_QUIZ_TITLE      = '_mdds_quiz_title';
 	public const META_QUIZ_QUESTIONS  = '_mdds_quiz_questions';
 	public const META_QUIZ_PASS       = '_mdds_quiz_pass_score';
 	public const META_QUIZ_SHOW       = '_mdds_quiz_show_correct';
 	public const META_QUIZ_RETRY      = '_mdds_quiz_allow_retry';
 	public const META_PRODUCT_ID      = '_mdds_product_id';
+	public const META_SEQUENTIAL      = '_mdds_sequential';
 
-	/* ---------------------------------------------------------------------
+	/*
+	---------------------------------------------------------------------
 	 * Chapter meta keys.
 	 * ------------------------------------------------------------------- */
-	public const META_CHAPTER_DESC      = '_mdds_chapter_description';
-	public const META_VIDEO_EMBED       = '_mdds_video_embed';
-	public const META_VIDEO_URL         = '_mdds_video_url';
-	public const META_VIDEO_FILE        = '_mdds_video_file_id';
-	public const META_PRES_FILE         = '_mdds_presentation_file_id';
-	public const META_PRES_URL          = '_mdds_presentation_url';
-	public const META_PRES_EMBED        = '_mdds_presentation_embed';
-	public const META_TASKS             = '_mdds_tasks';
+	public const META_CHAPTER_DESC = '_mdds_chapter_description';
+	public const META_VIDEO_EMBED  = '_mdds_video_embed';
+	public const META_VIDEO_URL    = '_mdds_video_url';
+	public const META_VIDEO_FILE   = '_mdds_video_file_id';
+	public const META_PRES_FILE    = '_mdds_presentation_file_id';
+	public const META_PRES_URL     = '_mdds_presentation_url';
+	public const META_PRES_EMBED   = '_mdds_presentation_embed';
+	public const META_TASKS        = '_mdds_tasks';
 
-	/* ---------------------------------------------------------------------
+	/*
+	---------------------------------------------------------------------
 	 * User meta keys (progress).
 	 * ------------------------------------------------------------------- */
-	public const UMETA_COMPLETED  = '_mdds_completed_chapters';
-	public const UMETA_ANSWERS    = '_mdds_task_answers';
-	public const UMETA_QUIZ       = '_mdds_quiz_results';
+	public const UMETA_COMPLETED = '_mdds_completed_chapters';
+	public const UMETA_ANSWERS   = '_mdds_task_answers';
+	public const UMETA_QUIZ      = '_mdds_quiz_results';
 
 	/**
 	 * Get the ordered chapters that belong to a unit.
@@ -81,7 +87,7 @@ final class Data {
 				'post_type'              => self::POST_TYPE_CHAPTER,
 				'post_parent'            => $unit_id,
 				'post_status'            => 'publish',
-				'posts_per_page'         => 200,
+				'posts_per_page'         => -1,
 				'orderby'                => array(
 					'menu_order' => 'ASC',
 					'date'       => 'ASC',
@@ -153,7 +159,128 @@ final class Data {
 		return array_map( 'absint', $users );
 	}
 
-	/* ---------------------------------------------------------------------
+	/*
+	---------------------------------------------------------------------
+	 * Sequential learning (drip) helpers.
+	 * ------------------------------------------------------------------- */
+
+	/**
+	 * Whether a unit uses sequential (drip) learning.
+	 *
+	 * In sequential mode every chapter unlocks only once the preceding chapter
+	 * has been completed, and the summary quiz unlocks only after every chapter
+	 * is completed.
+	 *
+	 * @param int $unit_id Unit ID.
+	 */
+	public static function is_sequential( int $unit_id ): bool {
+		return (bool) get_post_meta( $unit_id, self::META_SEQUENTIAL, true );
+	}
+
+	/**
+	 * URL of a unit's learning interface (the /learn/ endpoint).
+	 *
+	 * @param int $unit_id Unit ID.
+	 * @return string
+	 */
+	public static function get_learn_url( int $unit_id ): string {
+		return trailingslashit( (string) get_permalink( $unit_id ) ) . 'learn/';
+	}
+
+	/**
+	 * Read a boolean meta that defaults to true when never saved.
+	 *
+	 * @param int    $unit_id Unit ID.
+	 * @param string $key     Meta key.
+	 */
+	private static function bool_meta_default_true( int $unit_id, string $key ): bool {
+		$value = get_post_meta( $unit_id, $key, true );
+
+		return '' === $value ? true : (bool) $value;
+	}
+
+	/**
+	 * Whether the consultation banner is enabled for a unit (default: yes).
+	 *
+	 * @param int $unit_id Unit ID.
+	 */
+	public static function is_consult_enabled( int $unit_id ): bool {
+		return self::bool_meta_default_true( $unit_id, self::META_CONSULT_ENABLED );
+	}
+
+	/**
+	 * Whether the consultation banner shows only after course completion
+	 * (default: yes).
+	 *
+	 * @param int $unit_id Unit ID.
+	 */
+	public static function consult_after_complete( int $unit_id ): bool {
+		return self::bool_meta_default_true( $unit_id, self::META_CONSULT_ON_DONE );
+	}
+
+	/**
+	 * Whether the consultation banner should be shown to the current viewer.
+	 *
+	 * @param int $unit_id Unit ID.
+	 * @param int $user_id User ID.
+	 */
+	public static function should_show_consultation( int $unit_id, int $user_id ): bool {
+		if ( ! self::is_consult_enabled( $unit_id ) ) {
+			return false;
+		}
+
+		if ( self::consult_after_complete( $unit_id ) ) {
+			return $user_id > 0 && self::all_chapters_completed( $user_id, $unit_id );
+		}
+
+		return true;
+	}
+
+	/**
+	 * Whether a chapter is unlocked for a user.
+	 *
+	 * Non-sequential units always return true. In sequential units a chapter is
+	 * unlocked only when every chapter ordered before it is completed. The first
+	 * chapter is always unlocked.
+	 *
+	 * @param int             $user_id    User ID.
+	 * @param int             $unit_id    Unit ID.
+	 * @param int             $chapter_id Chapter being checked.
+	 * @param \WP_Post[]|null $chapters   Optional pre-fetched ordered chapters.
+	 */
+	public static function is_chapter_unlocked( int $user_id, int $unit_id, int $chapter_id, ?array $chapters = null ): bool {
+		if ( ! self::is_sequential( $unit_id ) ) {
+			return true;
+		}
+
+		$chapters = null !== $chapters ? $chapters : self::get_chapters( $unit_id );
+
+		foreach ( $chapters as $chapter ) {
+			if ( (int) $chapter->ID === $chapter_id ) {
+				return true; // Every earlier chapter was completed.
+			}
+			if ( $user_id <= 0 || ! self::is_chapter_completed( $user_id, (int) $chapter->ID ) ) {
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	/**
+	 * Whether the user has completed every chapter of a unit.
+	 *
+	 * @param int $user_id User ID.
+	 * @param int $unit_id Unit ID.
+	 */
+	public static function all_chapters_completed( int $user_id, int $unit_id ): bool {
+		$progress = self::get_progress( $user_id, $unit_id );
+
+		return $progress['total'] > 0 && $progress['completed'] >= $progress['total'];
+	}
+
+	/*
+	---------------------------------------------------------------------
 	 * User progress.
 	 * ------------------------------------------------------------------- */
 
@@ -198,12 +325,16 @@ final class Data {
 	 * @return array{completed:int,total:int}
 	 */
 	public static function get_progress( int $user_id, int $unit_id ): array {
-		$chapters  = self::get_chapters( $unit_id );
-		$total     = count( $chapters );
-		$completed = 0;
+		$chapters = self::get_chapters( $unit_id );
+		$total    = count( $chapters );
 
+		// Read the completed list once instead of per-chapter lookups.
+		$completed_list = get_user_meta( $user_id, self::UMETA_COMPLETED, true );
+		$completed_list = is_array( $completed_list ) ? array_map( 'absint', $completed_list ) : array();
+
+		$completed = 0;
 		foreach ( $chapters as $chapter ) {
-			if ( self::is_chapter_completed( $user_id, (int) $chapter->ID ) ) {
+			if ( in_array( (int) $chapter->ID, $completed_list, true ) ) {
 				++$completed;
 			}
 		}
@@ -273,9 +404,9 @@ final class Data {
 	/**
 	 * Save a quiz result for a unit.
 	 *
-	 * @param int                  $user_id User ID.
-	 * @param int                  $unit_id Unit ID.
-	 * @param array<string,mixed>  $result  Result payload.
+	 * @param int                 $user_id User ID.
+	 * @param int                 $unit_id Unit ID.
+	 * @param array<string,mixed> $result  Result payload.
 	 */
 	public static function save_quiz_result( int $user_id, int $unit_id, array $result ): void {
 		$all             = get_user_meta( $user_id, self::UMETA_QUIZ, true );

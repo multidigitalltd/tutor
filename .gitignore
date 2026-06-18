@@ -1,0 +1,9 @@
+# Build artifacts
+*.zip
+
+# Dependencies
+/vendor/
+
+# OS / editor cruft
+.DS_Store
+Thumbs.db

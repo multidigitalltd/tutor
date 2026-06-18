@@ -19,6 +19,44 @@
 	line-height: 1.6;
 }
 
+/* Learning mode: wider container so the sidebar + video use the space.
+   Want full width? override: .mdds-unit--learning { max-width: none; } */
+.mdds-unit--learning {
+	max-width: 1180px;
+}
+
+/* Focus mode: distraction-free full-screen study. The course area becomes a
+   fixed overlay covering the theme header/footer — works on any theme. */
+.mdds-course-toolbar {
+	display: flex;
+	justify-content: flex-end;
+	margin-bottom: 12px;
+}
+
+body.mdds-focus {
+	overflow: hidden;
+}
+
+body.mdds-focus .mdds-unit--learning {
+	position: fixed;
+	inset: 0;
+	z-index: 99990;
+	max-width: none;
+	margin: 0;
+	overflow: auto;
+	-webkit-overflow-scrolling: touch;
+	background: #fff;
+	padding: 20px clamp( 16px, 4vw, 48px ) 64px;
+}
+
+body.mdds-focus .mdds-course-toolbar {
+	position: sticky;
+	top: 0;
+	background: #fff;
+	padding: 8px 0;
+	z-index: 1;
+}
+
 .mdds-unit *:focus-visible {
 	outline: 3px solid var(--mdds-accent);
 	outline-offset: 2px;
@@ -68,6 +106,16 @@
 .mdds-unit-title {
 	margin: 16px 0 8px;
 	font-size: clamp( 1.6rem, 4vw, 2.4rem );
+}
+
+/* Compact header (learning mode): tight, focuses on the course content. */
+.mdds-unit-header.is-compact {
+	margin-bottom: 8px;
+}
+
+.mdds-unit-header.is-compact .mdds-unit-title {
+	margin-top: 0;
+	font-size: clamp( 1.3rem, 3vw, 1.8rem );
 }
 
 .mdds-unit-subtitle {
@@ -134,7 +182,35 @@
 	margin: 2px 0 8px;
 }
 
-/* Chapter nav ------------------------------------------------------------- */
+/* Compact instructor line (learning mode). */
+.mdds-lecturer-compact {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	margin: 0 0 16px;
+	color: var(--mdds-muted);
+}
+
+.mdds-lecturer-compact img {
+	width: 36px;
+	height: 36px;
+	border-radius: 50%;
+	object-fit: cover;
+}
+
+.mdds-lecturer-compact-label {
+	margin-inline-end: 4px;
+}
+
+.mdds-lecturer-compact strong {
+	color: inherit;
+}
+
+.mdds-lecturer-compact-role::before {
+	content: " · ";
+}
+
+/* Chapter nav (LMS stepper) ----------------------------------------------- */
 .mdds-chapter-nav {
 	background: #f8fafc;
 	border: 1px solid var(--mdds-border);
@@ -145,6 +221,302 @@
 
 .mdds-chapter-nav h2 {
 	margin-top: 0;
+}
+
+.mdds-chapter-list {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+	counter-reset: none;
+}
+
+.mdds-step-link {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	width: 100%;
+	text-align: start;
+	background: #fff;
+	border: 1px solid var(--mdds-border);
+	border-radius: var(--mdds-radius);
+	padding: 10px 14px;
+	font: inherit;
+	color: inherit;
+	cursor: pointer;
+	transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.mdds-step-link:hover:not([disabled]) {
+	border-color: var(--mdds-accent);
+}
+
+.mdds-step.is-current .mdds-step-link {
+	border-color: var(--mdds-accent);
+	background: #eff6ff;
+}
+
+.mdds-step-link[disabled] {
+	cursor: not-allowed;
+	opacity: 0.6;
+}
+
+.mdds-step-index {
+	flex: 0 0 auto;
+	width: 28px;
+	height: 28px;
+	border-radius: 50%;
+	background: var(--mdds-border);
+	color: var(--mdds-muted);
+	display: grid;
+	place-items: center;
+	font-weight: 700;
+	font-size: 0.9rem;
+}
+
+.mdds-step.is-completed .mdds-step-index {
+	background: var(--mdds-success);
+	color: #fff;
+}
+
+.mdds-step.is-current .mdds-step-index {
+	background: var(--mdds-accent);
+	color: #fff;
+}
+
+.mdds-step-name {
+	flex: 1 1 auto;
+}
+
+.mdds-step-state {
+	flex: 0 0 auto;
+	font-size: 0.9rem;
+}
+
+.mdds-step.is-completed .mdds-step-state::before {
+	content: "\2713"; /* check mark */
+	color: var(--mdds-success);
+	font-weight: 700;
+}
+
+.mdds-step.is-locked .mdds-step-state::before {
+	content: "\1F512"; /* lock */
+}
+
+/* Stepper transitions ----------------------------------------------------- */
+.mdds-chapters.is-enhanced .mdds-chapter.is-active {
+	animation: mdds-step-in 0.25s ease;
+}
+
+@keyframes mdds-step-in {
+	from { opacity: 0; transform: translateY( 8px ); }
+	to   { opacity: 1; transform: none; }
+}
+
+/* Chapter footer navigation ----------------------------------------------- */
+.mdds-chapter-nav-buttons {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 12px;
+	flex-wrap: wrap;
+	margin-top: 20px;
+}
+
+.mdds-chapter-nav-buttons .mdds-mark-complete {
+	margin-inline: auto;
+}
+
+/* Locked chapter (drip) --------------------------------------------------- */
+.mdds-chapter.is-locked {
+	border-style: dashed;
+	background: #f8fafc;
+}
+
+.mdds-chapter-locked {
+	text-align: center;
+	padding: 24px 0;
+	color: var(--mdds-muted);
+}
+
+.mdds-chapter-locked-text::before {
+	content: "\1F512 ";
+}
+
+/* Locked quiz (drip) ------------------------------------------------------ */
+.mdds-quiz-locked {
+	border: 1px dashed var(--mdds-border);
+	border-radius: var(--mdds-radius);
+	padding: 24px;
+	margin: 32px 0;
+	text-align: center;
+	color: var(--mdds-muted);
+	background: #f8fafc;
+}
+
+/* Course layout (sidebar outline + content) ------------------------------- */
+.mdds-course-layout {
+	display: grid;
+	grid-template-columns: 300px minmax( 0, 1fr );
+	gap: 28px;
+	align-items: start;
+	margin-top: 24px;
+}
+
+.mdds-course-sidebar {
+	position: sticky;
+	top: 24px;
+	max-height: calc( 100vh - 48px );
+	overflow-y: auto;
+}
+
+.mdds-course-sidebar .mdds-chapter-nav {
+	margin: 0;
+}
+
+.mdds-course-outline-title {
+	margin: 0 0 12px;
+	font-size: 1.1rem;
+}
+
+.mdds-sidebar-account {
+	margin: 12px 0 0;
+	text-align: center;
+}
+
+.mdds-sidebar-account a {
+	font-weight: 600;
+	text-decoration: none;
+}
+
+.mdds-course-main {
+	min-width: 0;
+}
+
+.mdds-course-main .mdds-chapter,
+.mdds-course-main .mdds-quiz {
+	margin-top: 0;
+}
+
+/* On narrow screens the outline collapses above the content. */
+@media ( max-width: 880px ) {
+	.mdds-course-layout {
+		grid-template-columns: 1fr;
+	}
+
+	.mdds-course-sidebar {
+		position: static;
+		max-height: none;
+	}
+}
+
+/* Course catalog / archive ------------------------------------------------ */
+.mdds-courses-header {
+	margin-bottom: 24px;
+}
+
+.mdds-courses-title {
+	font-size: clamp( 1.6rem, 4vw, 2.4rem );
+	margin: 0 0 8px;
+}
+
+.mdds-courses-grid {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	display: grid;
+	gap: 24px;
+	grid-template-columns: repeat( auto-fill, minmax( 280px, 1fr ) );
+}
+
+.mdds-course-card {
+	display: flex;
+	flex-direction: column;
+	border: 1px solid var(--mdds-border);
+	border-radius: var(--mdds-radius);
+	overflow: hidden;
+	background: #fff;
+	transition: box-shadow 0.15s ease, transform 0.15s ease;
+}
+
+.mdds-course-card:hover {
+	box-shadow: 0 8px 24px rgba( 15, 23, 42, 0.08 );
+	transform: translateY( -2px );
+}
+
+.mdds-course-card-media {
+	display: block;
+	aspect-ratio: 16 / 9;
+	background: #eef2f7;
+}
+
+.mdds-course-card-media img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	display: block;
+}
+
+.mdds-course-card-placeholder {
+	display: block;
+	width: 100%;
+	height: 100%;
+	background: linear-gradient( 135deg, #e2e8f0, #cbd5e1 );
+}
+
+.mdds-course-card-body {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+	padding: 16px 18px 18px;
+	flex: 1 1 auto;
+}
+
+.mdds-course-card-title {
+	margin: 0;
+	font-size: 1.2rem;
+}
+
+.mdds-course-card-title a {
+	text-decoration: none;
+	color: inherit;
+}
+
+.mdds-course-card-desc {
+	margin: 0;
+	color: var(--mdds-muted);
+}
+
+.mdds-course-card-meta {
+	margin: 0;
+	font-size: 0.9rem;
+	color: var(--mdds-muted);
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	flex-wrap: wrap;
+}
+
+.mdds-course-card-badge {
+	background: var(--mdds-success);
+	color: #fff;
+	border-radius: 999px;
+	padding: 2px 10px;
+	font-size: 0.8rem;
+	font-weight: 600;
+}
+
+.mdds-course-card .mdds-button {
+	margin-top: auto;
+	text-align: center;
+}
+
+@media ( prefers-reduced-motion: reduce ) {
+	.mdds-course-card {
+		transition: none;
+	}
 }
 
 /* Chapter ----------------------------------------------------------------- */
@@ -202,6 +574,46 @@
 	border: 0;
 }
 
+/* Plyr media player (YouTube / Vimeo / HTML5) ----------------------------- */
+.mdds-plyr {
+	margin: 16px 0;
+	border-radius: var(--mdds-radius);
+	overflow: hidden;
+}
+
+/* Fallback sizing before Plyr enhances (or if it fails to load). */
+.mdds-plyr .plyr__video-embed {
+	position: relative;
+	aspect-ratio: 16 / 9;
+}
+
+.mdds-plyr .plyr__video-embed iframe {
+	position: absolute;
+	inset: 0;
+	width: 100%;
+	height: 100%;
+	border: 0;
+}
+
+/* Theme Plyr to match the plugin accent. */
+.mdds-plyr,
+.mdds-plyr-video {
+	--plyr-color-main: var(--mdds-accent, #1d4ed8);
+	--plyr-border-radius: var(--mdds-radius, 10px);
+}
+
+/* Hide YouTube's own chrome (title bar top, logo/suggested bottom) by scaling
+   the iframe so those edges fall outside the cropped player area. The video is
+   centred and fills the visible area — no zoom, no content loss. */
+.mdds-plyr .plyr__video-wrapper {
+	overflow: hidden;
+}
+
+.mdds-plyr .plyr--youtube iframe {
+	top: -50%;
+	height: 200% !important;
+}
+
 .mdds-video-file {
 	width: 100%;
 	border-radius: var(--mdds-radius);
@@ -255,6 +667,47 @@
 
 .mdds-task-feedback.is-error {
 	color: var(--mdds-error);
+}
+
+/* File upload field ------------------------------------------------------- */
+.mdds-task-file label {
+	display: block;
+	margin-bottom: 6px;
+	font-weight: 600;
+}
+
+.mdds-task-file input[type="file"] {
+	font: inherit;
+	color: var(--mdds-muted);
+	max-width: 100%;
+}
+
+.mdds-task-file input[type="file"]::file-selector-button {
+	font: inherit;
+	font-weight: 600;
+	cursor: pointer;
+	margin-inline-end: 12px;
+	padding: 8px 16px;
+	border-radius: var(--mdds-radius);
+	border: 2px solid var(--mdds-accent);
+	background: var(--mdds-accent);
+	color: var(--mdds-accent-contrast);
+	transition: filter 0.15s ease;
+}
+
+.mdds-task-file input[type="file"]::file-selector-button:hover {
+	filter: brightness( 0.92 );
+}
+
+/* Tasks submit row -------------------------------------------------------- */
+.mdds-tasks-actions {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	flex-wrap: wrap;
+	margin-top: 12px;
+	padding-top: 12px;
+	border-top: 1px solid var(--mdds-border);
 }
 
 /* Quiz -------------------------------------------------------------------- */
@@ -392,6 +845,327 @@
 	color: var(--mdds-error);
 }
 
+/* Sales / landing page ---------------------------------------------------- */
+.mdds-sales {
+	padding-bottom: 96px; /* room for the sticky buy bar */
+}
+
+.mdds-sales-hero {
+	display: grid;
+	grid-template-columns: minmax( 0, 1.1fr ) minmax( 0, 1fr );
+	gap: 32px;
+	align-items: start;
+	margin: 16px 0 24px;
+}
+
+.mdds-sales-image {
+	width: 100%;
+	height: auto;
+	border-radius: var(--mdds-radius);
+	display: block;
+	aspect-ratio: 16 / 9;
+	object-fit: cover;
+}
+
+.mdds-sales-name {
+	margin: 0 0 8px;
+	font-size: clamp( 1.6rem, 4vw, 2.4rem );
+}
+
+.mdds-sales-subtitle {
+	font-size: 1.15rem;
+	color: var(--mdds-muted);
+	margin: 0 0 16px;
+}
+
+.mdds-sales-includes ul {
+	padding-inline-start: 1.3em;
+	margin: 8px 0 16px;
+}
+
+.mdds-sales-includes li {
+	margin-bottom: 6px;
+}
+
+.mdds-sales-meta {
+	color: var(--mdds-muted);
+	font-weight: 600;
+}
+
+.mdds-sales-cta {
+	display: flex;
+	align-items: center;
+	gap: 16px;
+	flex-wrap: wrap;
+	margin-top: 16px;
+	padding: 16px;
+	border: 1px solid var(--mdds-border);
+	border-radius: var(--mdds-radius);
+	background: #f8fafc;
+}
+
+.mdds-sales-price {
+	font-size: 1.6rem;
+	font-weight: 800;
+	color: var(--mdds-accent);
+}
+
+.mdds-sales-description {
+	margin-top: 24px;
+}
+
+/* Sticky purchase bar ----------------------------------------------------- */
+.mdds-buybar {
+	position: fixed;
+	inset-inline: 0;
+	bottom: 0;
+	z-index: 50;
+	background: #ffffff;
+	border-top: 1px solid var(--mdds-border);
+	box-shadow: 0 -6px 24px rgba( 15, 23, 42, 0.1 );
+	padding: 10px 16px;
+}
+
+.mdds-buybar-inner {
+	max-width: 920px;
+	margin-inline: auto;
+	display: flex;
+	align-items: center;
+	gap: 16px;
+	flex-wrap: wrap;
+}
+
+.mdds-buybar-title {
+	font-weight: 700;
+	flex: 1 1 auto;
+	min-width: 0;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.mdds-buybar-price {
+	font-weight: 800;
+	color: var(--mdds-accent);
+}
+
+.mdds-buybar .mdds-button {
+	margin-inline-start: auto;
+}
+
+@media ( max-width: 880px ) {
+	.mdds-sales-hero {
+		grid-template-columns: 1fr;
+	}
+
+	.mdds-buybar-title {
+		display: none;
+	}
+}
+
+/* Personal area (tabs) ---------------------------------------------------- */
+.mdds-account-notice {
+	background: #f0fdf4;
+	border: 1px solid var(--mdds-success);
+	color: var(--mdds-success);
+	border-radius: var(--mdds-radius);
+	padding: 10px 14px;
+}
+
+.mdds-tabs .mdds-tab-radio {
+	position: absolute;
+	opacity: 0;
+	pointer-events: none;
+}
+
+.mdds-tabs-nav {
+	display: flex;
+	gap: 4px;
+	flex-wrap: wrap;
+	border-bottom: 2px solid var(--mdds-border);
+	margin-bottom: 20px;
+}
+
+.mdds-tab-label {
+	padding: 10px 18px;
+	cursor: pointer;
+	font-weight: 600;
+	border: 2px solid transparent;
+	border-bottom: none;
+	border-radius: var(--mdds-radius) var(--mdds-radius) 0 0;
+	color: var(--mdds-muted);
+}
+
+.mdds-tab-label:hover {
+	color: var(--mdds-accent);
+}
+
+.mdds-tab-panel {
+	display: none;
+}
+
+#mdds-tab-courses:checked ~ .mdds-tabs-nav .mdds-tab-label--courses,
+#mdds-tab-grades:checked ~ .mdds-tabs-nav .mdds-tab-label--grades,
+#mdds-tab-settings:checked ~ .mdds-tabs-nav .mdds-tab-label--settings {
+	color: var(--mdds-accent);
+	border-color: var(--mdds-border);
+	border-bottom-color: #fff;
+	background: #fff;
+}
+
+#mdds-tab-courses:checked ~ .mdds-tabs-body .mdds-tab-panel--courses,
+#mdds-tab-grades:checked ~ .mdds-tabs-body .mdds-tab-panel--grades,
+#mdds-tab-settings:checked ~ .mdds-tabs-body .mdds-tab-panel--settings {
+	display: block;
+}
+
+.mdds-account-courses {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+	display: grid;
+	gap: 16px;
+	grid-template-columns: repeat( auto-fill, minmax( 280px, 1fr ) );
+}
+
+.mdds-account-course {
+	border: 1px solid var(--mdds-border);
+	border-radius: var(--mdds-radius);
+	padding: 18px;
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+}
+
+.mdds-account-course-head {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 8px;
+}
+
+.mdds-account-course-title {
+	font-weight: 700;
+	font-size: 1.1rem;
+	text-decoration: none;
+}
+
+.mdds-account-current {
+	margin: 0;
+	color: var(--mdds-muted);
+}
+
+.mdds-account-course .mdds-button {
+	margin-top: auto;
+	text-align: center;
+}
+
+.mdds-grades-table {
+	width: 100%;
+	border-collapse: collapse;
+}
+
+.mdds-grades-table th,
+.mdds-grades-table td {
+	text-align: start;
+	padding: 10px 12px;
+	border-bottom: 1px solid var(--mdds-border);
+}
+
+.mdds-grade.is-pass {
+	color: var(--mdds-success);
+	font-weight: 700;
+}
+
+.mdds-grade.is-fail {
+	color: var(--mdds-error);
+	font-weight: 700;
+}
+
+.mdds-account-settings {
+	max-width: 460px;
+	display: flex;
+	flex-direction: column;
+	gap: 14px;
+}
+
+.mdds-account-settings input {
+	width: 100%;
+	padding: 10px;
+	border: 1px solid var(--mdds-border);
+	border-radius: 8px;
+	font: inherit;
+}
+
+/* Q&A --------------------------------------------------------------------- */
+.mdds-qa-intro {
+	color: var(--mdds-muted);
+}
+
+.mdds-qa-form {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+	align-items: flex-start;
+	margin: 16px 0 24px;
+}
+
+.mdds-qa-form .mdds-task-answer {
+	width: 100%;
+}
+
+.mdds-qa-threads {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+	display: flex;
+	flex-direction: column;
+	gap: 16px;
+}
+
+.mdds-qa-thread {
+	border: 1px solid var(--mdds-border);
+	border-radius: var(--mdds-radius);
+	padding: 16px;
+}
+
+.mdds-qa-message {
+	padding: 6px 0;
+}
+
+.mdds-qa-author {
+	font-weight: 700;
+	margin: 0 0 4px;
+}
+
+.mdds-qa-date {
+	font-weight: 400;
+	color: var(--mdds-muted);
+	font-size: 0.85rem;
+	margin-inline-start: 8px;
+}
+
+.mdds-qa-badge {
+	background: var(--mdds-accent);
+	color: #fff;
+	border-radius: 999px;
+	padding: 1px 8px;
+	font-size: 0.75rem;
+}
+
+.mdds-qa-replies {
+	list-style: none;
+	margin: 8px 0 0;
+	padding: 12px 16px;
+	border-inline-start: 3px solid var(--mdds-accent);
+	background: #f8fafc;
+	border-radius: 8px;
+}
+
+.mdds-qa-reply-form {
+	margin-top: 12px;
+}
+
 /* Accessibility helpers --------------------------------------------------- */
 .screen-reader-text {
 	position: absolute !important;
@@ -409,6 +1183,10 @@
 	.mdds-progress-fill,
 	.mdds-button {
 		transition: none;
+	}
+
+	.mdds-chapters.is-enhanced .mdds-chapter.is-active {
+		animation: none;
 	}
 }
 

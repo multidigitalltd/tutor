@@ -46,11 +46,11 @@ final class Integration {
 	/**
 	 * Render a product <select> for a given meta key.
 	 *
-	 * @param string         $name     Field name / meta key.
-	 * @param string         $label    Field label.
-	 * @param int            $selected Currently selected product ID.
-	 * @param string         $empty    Empty-option label.
-	 * @param \WP_Post[]     $products Product posts.
+	 * @param string     $name     Field name / meta key.
+	 * @param string     $label    Field label.
+	 * @param int        $selected Currently selected product ID.
+	 * @param string     $empty    Empty-option label.
+	 * @param \WP_Post[] $products Product posts.
 	 */
 	private function product_select( string $name, string $label, int $selected, string $empty, array $products ): void {
 		$id = 'mdds-' . sanitize_key( $name );
@@ -77,7 +77,7 @@ final class Integration {
 	public function render( \WP_Post $post ): void {
 		wp_nonce_field( self::NONCE_ACTION, self::NONCE_NAME );
 
-		$access_product = (int) get_post_meta( $post->ID, Data::META_PRODUCT_ID, true );
+		$access_product  = (int) get_post_meta( $post->ID, Data::META_PRODUCT_ID, true );
 		$consult_product = (int) get_post_meta( $post->ID, Data::META_CONSULT_PRODUCT, true );
 
 		$products = get_posts(
@@ -170,6 +170,43 @@ final class Integration {
 		}
 
 		return (string) $product->get_permalink();
+	}
+
+	/**
+	 * Get the formatted price HTML for the unit's access product.
+	 *
+	 * @param int $unit_id Unit ID.
+	 * @return string Price HTML (may contain markup), or ''.
+	 */
+	public static function get_price_html( int $unit_id ): string {
+		$product_id = (int) get_post_meta( $unit_id, Data::META_PRODUCT_ID, true );
+		if ( $product_id <= 0 || ! function_exists( 'wc_get_product' ) ) {
+			return '';
+		}
+
+		$product = wc_get_product( $product_id );
+
+		return $product ? (string) $product->get_price_html() : '';
+	}
+
+	/**
+	 * Get a direct add-to-cart URL for the unit's access product.
+	 *
+	 * @param int $unit_id Unit ID.
+	 * @return string
+	 */
+	public static function get_add_to_cart_url( int $unit_id ): string {
+		$product_id = (int) get_post_meta( $unit_id, Data::META_PRODUCT_ID, true );
+		if ( $product_id <= 0 || ! function_exists( 'wc_get_product' ) ) {
+			return '';
+		}
+
+		$product = wc_get_product( $product_id );
+		if ( ! $product ) {
+			return '';
+		}
+
+		return add_query_arg( 'add-to-cart', $product_id, $product->get_permalink() );
 	}
 
 	/**

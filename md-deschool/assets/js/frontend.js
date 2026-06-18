@@ -60,40 +60,33 @@
 	}
 
 	/* ------------------------------------------------------------------ */
-	/* Task answer saving                                                 */
+	/* Task answers — one submit for the whole chapter questionnaire        */
 	/* ------------------------------------------------------------------ */
 	function initTasks() {
-		document.querySelectorAll( '[data-mdds-task]' ).forEach( function ( task ) {
-			var form = task.querySelector( '[data-mdds-task-form]' );
-			if ( ! form ) {
-				return;
-			}
-
+		document.querySelectorAll( '[data-mdds-tasks-form]' ).forEach( function ( form ) {
 			form.addEventListener( 'submit', function ( event ) {
 				event.preventDefault();
 
-				var fb     = task.querySelector( '[data-mdds-task-feedback]' );
+				var fb     = form.querySelector( '[data-mdds-tasks-feedback]' );
 				var submit = form.querySelector( 'button[type="submit"]' );
 				var body   = new FormData( form );
-				body.append( 'chapter_id', task.getAttribute( 'data-chapter' ) );
-				body.append( 'task_index', task.getAttribute( 'data-index' ) );
+				body.append( 'chapter_id', form.getAttribute( 'data-chapter' ) );
 
 				if ( submit ) {
 					submit.disabled = true;
 				}
 				feedback( fb, i18n.saving || 'Saving…', 'pending' );
 
-				post( 'mdds_save_answer', body ).then( function ( res ) {
+				post( 'mdds_save_answers', body ).then( function ( res ) {
 					if ( submit ) {
 						submit.disabled = false;
 					}
 					if ( res && res.success ) {
 						feedback( fb, ( res.data && res.data.message ) || i18n.saved, 'success' );
-						renderFiles( task, res.data && res.data.files );
-						var fileInput = form.querySelector( 'input[type="file"]' );
-						if ( fileInput ) {
-							fileInput.value = '';
-						}
+						renderAllFiles( form, res.data && res.data.files );
+						form.querySelectorAll( 'input[type="file"]' ).forEach( function ( input ) {
+							input.value = '';
+						} );
 					} else {
 						feedback( fb, ( res && res.data && res.data.message ) || i18n.error, 'error' );
 					}
@@ -104,6 +97,24 @@
 					feedback( fb, i18n.error, 'error' );
 				} );
 			} );
+		} );
+	}
+
+	/**
+	 * Re-render every task's uploaded-files list from the bulk response.
+	 *
+	 * @param {HTMLElement} form         Chapter tasks form.
+	 * @param {Object}      filesByIndex Map of task index -> file descriptors.
+	 */
+	function renderAllFiles( form, filesByIndex ) {
+		if ( ! filesByIndex ) {
+			return;
+		}
+		Object.keys( filesByIndex ).forEach( function ( index ) {
+			var task = form.querySelector( '[data-mdds-task][data-index="' + index + '"]' );
+			if ( task ) {
+				renderFiles( task, filesByIndex[ index ] );
+			}
 		} );
 	}
 
@@ -133,6 +144,118 @@
 	}
 
 	/* ------------------------------------------------------------------ */
+	/* Chapter stepper (LMS-style one-chapter-at-a-time navigation)       */
+	/* ------------------------------------------------------------------ */
+	var stepper = null;
+
+	/**
+	 * Whether the user prefers reduced motion.
+	 *
+	 * @return {boolean}
+	 */
+	function reducedMotion() {
+		return !! ( window.matchMedia && window.matchMedia( '(prefers-reduced-motion: reduce)' ).matches );
+	}
+
+	function initStepper() {
+		var container = document.querySelector( '[data-mdds-stepper]' );
+		if ( ! container ) {
+			return;
+		}
+
+		var steps = Array.prototype.slice.call( container.querySelectorAll( '[data-mdds-panel]' ) );
+		var links = Array.prototype.slice.call( document.querySelectorAll( '[data-mdds-step]' ) );
+		var nav   = document.querySelector( '[data-mdds-step-nav]' );
+		if ( ! steps.length ) {
+			return;
+		}
+
+		var current = parseInt( container.getAttribute( 'data-current' ), 10 ) || 0;
+
+		function unlocked( index ) {
+			return !! steps[ index ] && steps[ index ].getAttribute( 'data-locked' ) !== '1';
+		}
+
+		function show( index, focusStep ) {
+			if ( index < 0 || index >= steps.length || ! unlocked( index ) ) {
+				return;
+			}
+			current = index;
+
+			steps.forEach( function ( step, i ) {
+				var active = i === index;
+				step.classList.toggle( 'is-active', active );
+				if ( active ) {
+					step.removeAttribute( 'hidden' );
+				} else {
+					step.setAttribute( 'hidden', 'hidden' );
+				}
+			} );
+
+			links.forEach( function ( link ) {
+				var li        = link.closest( '.mdds-step' );
+				var isCurrent = parseInt( link.getAttribute( 'data-mdds-step' ), 10 ) === index;
+				link.setAttribute( 'aria-current', isCurrent ? 'step' : 'false' );
+				if ( li ) {
+					li.classList.toggle( 'is-current', isCurrent );
+				}
+			} );
+
+			if ( false !== focusStep && steps[ index ].focus ) {
+				steps[ index ].focus( { preventScroll: true } );
+			}
+			var anchor = nav || steps[ index ];
+			if ( anchor && anchor.scrollIntoView ) {
+				anchor.scrollIntoView( { behavior: reducedMotion() ? 'auto' : 'smooth', block: 'start' } );
+			}
+		}
+
+		function next() {
+			for ( var i = current + 1; i < steps.length; i++ ) {
+				if ( unlocked( i ) ) {
+					show( i );
+					return;
+				}
+			}
+		}
+
+		function prev() {
+			for ( var i = current - 1; i >= 0; i-- ) {
+				if ( unlocked( i ) ) {
+					show( i );
+					return;
+				}
+			}
+		}
+
+		links.forEach( function ( link ) {
+			link.addEventListener( 'click', function () {
+				show( parseInt( link.getAttribute( 'data-mdds-step' ), 10 ) );
+			} );
+		} );
+
+		container.querySelectorAll( '[data-mdds-next]' ).forEach( function ( btn ) {
+			btn.addEventListener( 'click', next );
+		} );
+
+		container.querySelectorAll( '[data-mdds-prev]' ).forEach( function ( btn ) {
+			btn.addEventListener( 'click', prev );
+		} );
+
+		container.classList.add( 'is-enhanced' );
+		stepper = {
+			show: show,
+			next: next,
+			unlocked: unlocked,
+			steps: steps,
+			links: links
+		};
+
+		// Render the initial step without stealing focus on page load.
+		show( current, false );
+	}
+
+	/* ------------------------------------------------------------------ */
 	/* Mark chapter complete                                              */
 	/* ------------------------------------------------------------------ */
 	function initComplete() {
@@ -147,26 +270,71 @@
 					completed: nextState ? '1' : '0'
 				} ).then( function ( res ) {
 					button.disabled = false;
-					if ( res && res.success ) {
-						button.setAttribute( 'aria-pressed', nextState ? 'true' : 'false' );
-						button.textContent = nextState ? ( i18n.completed || 'Completed' ) : ( i18n.markDone || 'Mark complete' );
-						var section = button.closest( '.mdds-chapter' );
-						if ( section ) {
-							section.classList.toggle( 'is-completed', nextState );
-							var status = section.querySelector( '[data-mdds-chapter-status]' );
-							if ( status ) {
-								status.hidden = ! nextState;
-							}
+					if ( ! res || ! res.success ) {
+						return;
+					}
+
+					button.setAttribute( 'aria-pressed', nextState ? 'true' : 'false' );
+					button.textContent = nextState ? ( i18n.completed || 'Completed' ) : ( i18n.markDone || 'Mark complete' );
+
+					var section = button.closest( '[data-mdds-chapter]' );
+					if ( section ) {
+						section.classList.toggle( 'is-completed', nextState );
+						section.setAttribute( 'data-completed', nextState ? '1' : '0' );
+						var status = section.querySelector( '[data-mdds-chapter-status]' );
+						if ( status ) {
+							status.hidden = ! nextState;
 						}
-						updateProgress( res.data && res.data.progress );
-					} else {
-						button.disabled = false;
+						updateStepStatus( section.getAttribute( 'data-index' ), nextState );
+					}
+
+					updateProgress( res.data && res.data.progress );
+
+					if ( ! nextState ) {
+						return; // Un-marking: stay put.
+					}
+
+					var sequential = button.getAttribute( 'data-sequential' ) === '1';
+					var isLast     = button.getAttribute( 'data-last' ) === '1';
+
+					// Sequential mode may need to reveal freshly-dripped content
+					// (next chapter or the summary quiz) that was withheld server-side.
+					if ( sequential ) {
+						var index    = section ? parseInt( section.getAttribute( 'data-index' ), 10 ) : -1;
+						var nextStep = stepper && stepper.steps[ index + 1 ];
+						var revealNext = nextStep && nextStep.getAttribute( 'data-locked' ) === '1';
+						var revealQuiz = !! ( res.data && res.data.all_complete ) && document.querySelector( '.mdds-quiz-locked' );
+						if ( revealNext || revealQuiz ) {
+							window.location.reload();
+							return;
+						}
+					}
+
+					if ( ! isLast && stepper ) {
+						stepper.next();
 					}
 				} ).catch( function () {
 					button.disabled = false;
 				} );
 			} );
 		} );
+	}
+
+	/**
+	 * Reflect a chapter's completion state in the step navigation.
+	 *
+	 * @param {string|number} index     Chapter index.
+	 * @param {boolean}       completed Completion state.
+	 */
+	function updateStepStatus( index, completed ) {
+		if ( null === index || 'undefined' === typeof index ) {
+			return;
+		}
+		var link = document.querySelector( '[data-mdds-step="' + index + '"]' );
+		var li   = link && link.closest( '.mdds-step' );
+		if ( li ) {
+			li.classList.toggle( 'is-completed', !! completed );
+		}
 	}
 
 	/**
@@ -328,9 +496,118 @@
 		} );
 	}
 
+	/* ------------------------------------------------------------------ */
+	/* Q&A with the instructor                                            */
+	/* ------------------------------------------------------------------ */
+	function initQA() {
+		document.querySelectorAll( '[data-mdds-qa-form]' ).forEach( function ( form ) {
+			form.addEventListener( 'submit', function ( event ) {
+				event.preventDefault();
+
+				var fb     = form.querySelector( '[data-mdds-qa-feedback]' );
+				var submit = form.querySelector( 'button[type="submit"]' );
+				var field  = form.querySelector( 'textarea[name="message"]' );
+				var message = field ? field.value.trim() : '';
+				if ( '' === message ) {
+					return;
+				}
+
+				if ( submit ) {
+					submit.disabled = true;
+				}
+				feedback( fb, i18n.saving || 'Saving…', 'pending' );
+
+				post( 'mdds_qa_post', {
+					message: message,
+					parent: form.getAttribute( 'data-parent' ) || '0'
+				} ).then( function ( res ) {
+					if ( res && res.success ) {
+						feedback( fb, ( res.data && res.data.message ) || i18n.saved, 'success' );
+						window.location.reload();
+					} else {
+						if ( submit ) {
+							submit.disabled = false;
+						}
+						feedback( fb, ( res && res.data && res.data.message ) || i18n.error, 'error' );
+					}
+				} ).catch( function () {
+					if ( submit ) {
+						submit.disabled = false;
+					}
+					feedback( fb, i18n.error, 'error' );
+				} );
+			} );
+		} );
+	}
+
+	/* ------------------------------------------------------------------ */
+	/* Video: Plyr player (wraps YouTube/Vimeo/HTML5 with a custom skin)  */
+	/* ------------------------------------------------------------------ */
+	function initVideo() {
+		if ( typeof window.Plyr === 'undefined' ) {
+			// Plyr unavailable: the embedded iframe/video still plays natively.
+			return;
+		}
+
+		var options = {
+			// Self-hosted icon sprite so play/fullscreen/etc. icons always render
+			// (no CDN dependency that a network policy could block).
+			iconUrl: data.plyrIconUrl || '',
+			blankVideo: '',
+			youtube: { noCookie: false, rel: 0, showinfo: 0, iv_load_policy: 3, modestbranding: 1, playsinline: 1 },
+			vimeo: { byline: false, portrait: false, title: false },
+			controls: [ 'play-large', 'play', 'progress', 'current-time', 'mute', 'volume', 'captions', 'fullscreen' ]
+		};
+
+		document.querySelectorAll( '.mdds-plyr .plyr__video-embed' ).forEach( function ( el ) {
+			new window.Plyr( el, options );
+		} );
+		document.querySelectorAll( 'video.mdds-plyr-video' ).forEach( function ( el ) {
+			new window.Plyr( el, options );
+		} );
+	}
+
+	/* ------------------------------------------------------------------ */
+	/* Focus mode: full-screen, distraction-free study (hides header/footer) */
+	/* ------------------------------------------------------------------ */
+	function initFocus() {
+		var toggles = document.querySelectorAll( '[data-mdds-focus-toggle]' );
+		if ( ! toggles.length ) {
+			return;
+		}
+
+		function setFocus( on ) {
+			document.body.classList.toggle( 'mdds-focus', on );
+			toggles.forEach( function ( btn ) {
+				btn.setAttribute( 'aria-pressed', on ? 'true' : 'false' );
+				btn.textContent = on ? ( i18n.exitFocus || 'Exit focus mode' ) : ( i18n.focus || 'Focus mode' );
+			} );
+		}
+
+		toggles.forEach( function ( btn ) {
+			btn.addEventListener( 'click', function () {
+				setFocus( ! document.body.classList.contains( 'mdds-focus' ) );
+			} );
+		} );
+
+		document.addEventListener( 'keydown', function ( event ) {
+			if ( 'Escape' === event.key && document.body.classList.contains( 'mdds-focus' ) ) {
+				setFocus( false );
+			}
+		} );
+	}
+
+	/* ------------------------------------------------------------------ */
+	/* Boot                                                               */
+	/* ------------------------------------------------------------------ */
 	document.addEventListener( 'DOMContentLoaded', function () {
-		initTasks();
-		initComplete();
-		initQuiz();
+		// Run each independently so one failure cannot disable the rest.
+		[ initVideo, initStepper, initTasks, initComplete, initQuiz, initQA, initFocus ].forEach( function ( fn ) {
+			try {
+				fn();
+			} catch ( e ) {
+				// Fail silently; progressive enhancement.
+			}
+		} );
 	} );
 }() );

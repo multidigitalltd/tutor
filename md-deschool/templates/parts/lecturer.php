@@ -14,6 +14,7 @@ use MultiDigital\DeSchool\Data;
 defined( 'ABSPATH' ) || exit;
 
 $unit_id = (int) ( $args['unit_id'] ?? 0 );
+$compact = (bool) ( $args['compact'] ?? false );
 
 $name  = (string) get_post_meta( $unit_id, Data::META_LECTURER_NAME, true );
 $title = (string) get_post_meta( $unit_id, Data::META_LECTURER_TITLE, true );
@@ -22,6 +23,38 @@ $link  = (string) get_post_meta( $unit_id, Data::META_LECTURER_LINK, true );
 $image = (int) get_post_meta( $unit_id, Data::META_LECTURER_IMAGE, true );
 
 if ( '' === $name && '' === $bio && 0 === $image ) {
+	return;
+}
+
+// Compact (learning) mode: a small "instructor: name" line only.
+if ( $compact ) {
+	if ( '' === $name ) {
+		return;
+	}
+	?>
+	<p class="mdds-lecturer-compact">
+		<?php if ( $image > 0 ) : ?>
+			<?php
+			echo wp_get_attachment_image(
+				$image,
+				'thumbnail',
+				false,
+				array(
+					'loading' => 'lazy',
+					'alt'     => $name,
+				)
+			);
+			?>
+		<?php endif; ?>
+		<span class="mdds-lecturer-compact-text">
+			<span class="mdds-lecturer-compact-label"><?php esc_html_e( 'מרצה:', 'md-deschool' ); ?></span>
+			<strong><?php echo esc_html( $name ); ?></strong>
+			<?php if ( '' !== $title ) : ?>
+				<span class="mdds-lecturer-compact-role"><?php echo esc_html( $title ); ?></span>
+			<?php endif; ?>
+		</span>
+	</p>
+	<?php
 	return;
 }
 ?>
