@@ -4,7 +4,7 @@ Tags: lms, courses, woocommerce, quiz, learning
 Requires at least: 6.4
 Tested up to: 6.5
 Requires PHP: 8.3
-Stable tag: 1.15.4
+Stable tag: 1.16.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -39,6 +39,9 @@ DeSchool מאפשר לבנות "יחידות תוכן" לימודיות גנרי
 5. צרו עמוד "אזור אישי" עם השורטקוד [deschool_account], ועמוד קטלוג (לא חובה) עם [deschool_courses]. ארכיון הקורסים זמין גם בכתובת /unit/.
 
 == Changelog ==
+
+= 1.16.0 =
+* חדש: כפתור "מצב מיקוד" במצב למידה — הופך את אזור הקורס למסך מלא נטול הסחות (מסתיר הידר/פוטר של ערכת הנושא) בכל ערכת נושא. יציאה בלחיצה חוזרת או במקש Esc.
 
 = 1.15.4 =
 * שיפור: מצב הלמידה (/learn/) משתמש בקונטיינר רחב יותר (עד 1180px) כדי שסרגל הצד והווידאו ינצלו את הרוחב. דף המכירה נשאר בעמודה נוחה (920px). ניתן לעקוף ל-רוחב מלא ב-CSS.

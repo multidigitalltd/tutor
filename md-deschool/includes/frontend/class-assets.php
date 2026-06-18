@@ -105,6 +105,8 @@ final class Assets {
 					'seek'       => __( 'מעבר במהלך הסרטון', 'md-deschool' ),
 					'mute'       => __( 'השתקה', 'md-deschool' ),
 					'fullscreen' => __( 'מסך מלא', 'md-deschool' ),
+					'focus'      => __( 'מצב מיקוד', 'md-deschool' ),
+					'exitFocus'  => __( 'יציאה ממצב מיקוד', 'md-deschool' ),
 				),
 			)
 		);

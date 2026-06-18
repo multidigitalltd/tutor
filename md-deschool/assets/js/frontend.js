@@ -568,11 +568,41 @@
 	}
 
 	/* ------------------------------------------------------------------ */
+	/* Focus mode: full-screen, distraction-free study (hides header/footer) */
+	/* ------------------------------------------------------------------ */
+	function initFocus() {
+		var toggles = document.querySelectorAll( '[data-mdds-focus-toggle]' );
+		if ( ! toggles.length ) {
+			return;
+		}
+
+		function setFocus( on ) {
+			document.body.classList.toggle( 'mdds-focus', on );
+			toggles.forEach( function ( btn ) {
+				btn.setAttribute( 'aria-pressed', on ? 'true' : 'false' );
+				btn.textContent = on ? ( i18n.exitFocus || 'Exit focus mode' ) : ( i18n.focus || 'Focus mode' );
+			} );
+		}
+
+		toggles.forEach( function ( btn ) {
+			btn.addEventListener( 'click', function () {
+				setFocus( ! document.body.classList.contains( 'mdds-focus' ) );
+			} );
+		} );
+
+		document.addEventListener( 'keydown', function ( event ) {
+			if ( 'Escape' === event.key && document.body.classList.contains( 'mdds-focus' ) ) {
+				setFocus( false );
+			}
+		} );
+	}
+
+	/* ------------------------------------------------------------------ */
 	/* Boot                                                               */
 	/* ------------------------------------------------------------------ */
 	document.addEventListener( 'DOMContentLoaded', function () {
 		// Run each independently so one failure cannot disable the rest.
-		[ initVideo, initStepper, initTasks, initComplete, initQuiz, initQA ].forEach( function ( fn ) {
+		[ initVideo, initStepper, initTasks, initComplete, initQuiz, initQA, initFocus ].forEach( function ( fn ) {
 			try {
 				fn();
 			} catch ( e ) {

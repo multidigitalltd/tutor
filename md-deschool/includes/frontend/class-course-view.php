@@ -153,6 +153,12 @@ final class Course_View {
 					}
 					?>
 
+					<div class="mdds-course-toolbar">
+						<button type="button" class="mdds-button mdds-button-outline mdds-focus-toggle" data-mdds-focus-toggle aria-pressed="false">
+							<?php esc_html_e( 'מצב מיקוד', 'md-deschool' ); ?>
+						</button>
+					</div>
+
 					<div class="mdds-course-layout">
 
 						<aside class="mdds-course-sidebar" aria-label="<?php esc_attr_e( 'מבנה הקורס', 'md-deschool' ); ?>">
