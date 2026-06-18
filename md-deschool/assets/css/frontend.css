@@ -526,6 +526,29 @@
 	--plyr-border-radius: var(--mdds-radius, 10px);
 }
 
+/* Hide YouTube's own paused/title overlay: opaque cover while paused, plus a
+   permanent top title-mask — layered above the iframe but below Plyr's UI. */
+.mdds-plyr .plyr .mdds-yt-cover {
+	position: absolute;
+	inset: 0;
+	z-index: 1;
+	background: #000;
+}
+
+.mdds-plyr .plyr.mdds-is-playing .mdds-yt-cover {
+	display: none;
+}
+
+.mdds-plyr .plyr .mdds-yt-titlemask {
+	position: absolute;
+	top: 0;
+	inset-inline: 0;
+	height: 72px;
+	z-index: 1;
+	pointer-events: none;
+	background: linear-gradient( to bottom, rgba( 0, 0, 0, 0.95 ) 0, rgba( 0, 0, 0, 0.55 ) 34px, rgba( 0, 0, 0, 0 ) 72px );
+}
+
 .mdds-video-file {
 	width: 100%;
 	border-radius: var(--mdds-radius);
