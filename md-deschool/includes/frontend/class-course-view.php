@@ -98,8 +98,8 @@ final class Course_View {
 				<?php else : ?>
 
 					<?php
-					// Learning mode: a compact header (title + progress only) and no
-					// marketing intro/lecturer, so the course content is the focus.
+					// Learning mode: a compact header (title + progress) and a short
+					// instructor line, so the course content stays the focus.
 					Template_Loader::get_part(
 						'unit-header',
 						array(
@@ -107,6 +107,14 @@ final class Course_View {
 							'progress'   => $progress,
 							'can_access' => $can_access,
 							'compact'    => true,
+						)
+					);
+
+					Template_Loader::get_part(
+						'lecturer',
+						array(
+							'unit_id' => $unit_id,
+							'compact' => true,
 						)
 					);
 

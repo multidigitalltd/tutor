@@ -2,7 +2,7 @@
 # Copyright (C) 2026 Multi Digital
 msgid ""
 msgstr ""
-"Project-Id-Version: DeSchool 1.14.0\n"
+"Project-Id-Version: DeSchool 1.15.1\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "X-Domain: md-deschool\n"
 
@@ -481,6 +481,9 @@ msgid "מצב פעיל: למידה רציפה (טפטוף) — פרקים נפת
 msgstr ""
 
 msgid "מצגת הפרק"
+msgstr ""
+
+msgid "מרצה:"
 msgstr ""
 
 msgid "משימה"

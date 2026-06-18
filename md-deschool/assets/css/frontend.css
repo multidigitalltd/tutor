@@ -144,6 +144,34 @@
 	margin: 2px 0 8px;
 }
 
+/* Compact instructor line (learning mode). */
+.mdds-lecturer-compact {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	margin: 0 0 16px;
+	color: var(--mdds-muted);
+}
+
+.mdds-lecturer-compact img {
+	width: 36px;
+	height: 36px;
+	border-radius: 50%;
+	object-fit: cover;
+}
+
+.mdds-lecturer-compact-label {
+	margin-inline-end: 4px;
+}
+
+.mdds-lecturer-compact strong {
+	color: inherit;
+}
+
+.mdds-lecturer-compact-role::before {
+	content: " · ";
+}
+
 /* Chapter nav (LMS stepper) ----------------------------------------------- */
 .mdds-chapter-nav {
 	background: #f8fafc;

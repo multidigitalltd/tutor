@@ -4,7 +4,7 @@ Tags: lms, courses, woocommerce, quiz, learning
 Requires at least: 6.4
 Tested up to: 6.5
 Requires PHP: 8.3
-Stable tag: 1.15.0
+Stable tag: 1.15.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -39,6 +39,10 @@ DeSchool מאפשר לבנות "יחידות תוכן" לימודיות גנרי
 5. צרו עמוד "אזור אישי" עם השורטקוד [deschool_account], ועמוד קטלוג (לא חובה) עם [deschool_courses]. ארכיון הקורסים זמין גם בכתובת /unit/.
 
 == Changelog ==
+
+= 1.15.1 =
+* שיפור: במצב למידה מוצגת שורת מרצה מצומצמת (תמונה + שם + תפקיד).
+* תיקון: אייקוני הפקדים של נגן Plyr (הפעלה, מסך מלא וכו') נטענים כעת כראוי — הוגדר iconUrl ל-SVG מה-CDN.
 
 = 1.15.0 =
 * שיפור: במצב למידה (/learn/) לרוכש מחובר מוצגת כותרת מצומצמת (שם הקורס + התקדמות בלבד) — ללא תיאור הקורס, "מה כוללת היחידה", תמונה גדולה וכרטיס מרצה — כך שתוכן הקורס גבוה וממוקד. דף המכירה נותר מלא.
