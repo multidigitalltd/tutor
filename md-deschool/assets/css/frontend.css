@@ -498,56 +498,20 @@
 	border: 0;
 }
 
-/* Click-to-play facade (hides the video source until play) ---------------- */
-.mdds-video-facade {
-	background: radial-gradient( circle at center, #1e293b, #0f172a );
-	cursor: pointer;
+/* Plyr media player (YouTube / Vimeo / HTML5) ----------------------------- */
+.mdds-plyr {
+	margin: 16px 0;
+	border-radius: var(--mdds-radius);
+	overflow: hidden;
 }
 
-.mdds-video-play {
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	background: transparent;
-	cursor: pointer;
-	padding: 0;
-}
-
-.mdds-video-play-icon {
-	width: 76px;
-	height: 76px;
-	border-radius: 50%;
-	background: rgba( 15, 23, 42, 0.78 );
-	border: 3px solid #fff;
+/* Fallback sizing before Plyr enhances (or if it fails to load). */
+.mdds-plyr .plyr__video-embed {
 	position: relative;
-	transition: transform 0.15s ease, background 0.15s ease;
+	aspect-ratio: 16 / 9;
 }
 
-.mdds-video-facade:hover .mdds-video-play-icon,
-.mdds-video-play:focus-visible .mdds-video-play-icon {
-	background: var(--mdds-accent);
-	transform: scale( 1.05 );
-}
-
-.mdds-video-play-icon::after {
-	content: "";
-	position: absolute;
-	top: 50%;
-	left: 50%;
-	transform: translate( -35%, -50% );
-	border-style: solid;
-	border-width: 13px 0 13px 22px;
-	border-color: transparent transparent transparent #fff;
-}
-
-/* Custom YouTube player (no provider chrome shown while playing) ----------- */
-.mdds-yt {
-	background: #000;
-	cursor: default;
-}
-
-.mdds-yt .mdds-yt-host,
-.mdds-yt iframe {
+.mdds-plyr .plyr__video-embed iframe {
 	position: absolute;
 	inset: 0;
 	width: 100%;
@@ -555,128 +519,11 @@
 	border: 0;
 }
 
-.mdds-yt-overlay {
-	position: absolute;
-	inset: 0;
-	width: 100%;
-	height: 100%;
-	background: transparent;
-	border: 0;
-	cursor: pointer;
-	z-index: 2;
-}
-
-.mdds-yt .mdds-yt-controls {
-	position: absolute;
-	inset-inline: 0;
-	bottom: 0;
-	top: auto;
-	height: auto;
-	width: 100%;
-	display: flex;
-	align-items: center;
-	gap: 10px;
-	padding: 10px 12px;
-	background: linear-gradient( to top, rgba( 0, 0, 0, 0.75 ), rgba( 0, 0, 0, 0 ) );
-	z-index: 6;
-	opacity: 0;
-	transition: opacity 0.2s ease;
-}
-
-.mdds-yt:hover .mdds-yt-controls,
-.mdds-yt:focus-within .mdds-yt-controls,
-.mdds-yt:not(.is-playing) .mdds-yt-controls {
-	opacity: 1;
-}
-
-.mdds-yt-btn {
-	flex: 0 0 auto;
-	width: 36px;
-	height: 36px;
-	display: grid;
-	place-items: center;
-	padding: 0;
-	border: 0;
-	border-radius: 6px;
-	background: transparent;
-	color: #fff;
-	cursor: pointer;
-	font-size: 15px;
-	line-height: 1;
-}
-
-.mdds-yt-btn:hover {
-	background: rgba( 255, 255, 255, 0.18 );
-}
-
-.mdds-yt-toggle::before {
-	content: "\25B6"; /* play triangle */
-}
-
-.mdds-yt.is-playing .mdds-yt-toggle::before {
-	content: "\2759\2759"; /* two bars (pause) */
-	letter-spacing: -2px;
-}
-
-.mdds-yt-mute::before {
-	content: "\1F50A";
-}
-
-.mdds-yt.is-muted .mdds-yt-mute::before {
-	content: "\1F507";
-}
-
-.mdds-yt-fs::before {
-	content: "\26F6";
-	font-size: 17px;
-}
-
-.mdds-yt-time {
-	flex: 0 0 auto;
-	color: #fff;
-	font-size: 12px;
-	white-space: nowrap;
-	font-variant-numeric: tabular-nums;
-}
-
-.mdds-yt-seek {
-	flex: 1 1 auto;
-	accent-color: var(--mdds-accent);
-	cursor: pointer;
-	height: 4px;
-}
-
-/* Permanent top mask — hides the YouTube title bar (incl. on state change). */
-.mdds-yt-titlemask {
-	position: absolute;
-	top: 0;
-	inset-inline: 0;
-	height: 96px;
-	z-index: 3;
-	pointer-events: none;
-	background: linear-gradient( to bottom, rgba( 0, 0, 0, 0.96 ) 0, rgba( 0, 0, 0, 0.6 ) 42px, rgba( 0, 0, 0, 0 ) 96px );
-}
-
-/* Opaque cover — shown whenever the video is not actively playing, so the
-   YouTube init screen and pause overlay (title, logo, suggestions) never show. */
-.mdds-yt-cover {
-	position: absolute;
-	inset: 0;
-	width: 100%;
-	height: 100%;
-	z-index: 4;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	border: 0;
-	cursor: pointer;
-	background: radial-gradient( circle at center, #1e293b, #0f172a );
-	transition: opacity 0.25s ease;
-}
-
-.mdds-yt.is-active .mdds-yt-cover {
-	opacity: 0;
-	pointer-events: none;
+/* Theme Plyr to match the plugin accent. */
+.mdds-plyr,
+.mdds-plyr-video {
+	--plyr-color-main: var(--mdds-accent, #1d4ed8);
+	--plyr-border-radius: var(--mdds-radius, 10px);
 }
 
 .mdds-video-file {

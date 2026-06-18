@@ -46,7 +46,7 @@ final class Render {
 			$url = wp_get_attachment_url( $file_id );
 			if ( $url ) {
 				return sprintf(
-					'<video class="mdds-video-file" controls controlsList="nodownload" preload="metadata" playsinline width="100%%"><source src="%1$s" type="%2$s" />%3$s</video>',
+					'<video class="mdds-video-file mdds-plyr-video" controls controlsList="nodownload" preload="metadata" playsinline width="100%%"><source src="%1$s" type="%2$s" />%3$s</video>',
 					esc_url( $url ),
 					esc_attr( (string) get_post_mime_type( $file_id ) ),
 					esc_html__( 'הדפדפן שלך אינו תומך בנגן הווידאו.', 'md-deschool' )
@@ -73,10 +73,11 @@ final class Render {
 	}
 
 	/**
-	 * Build the appropriate facade player for a known provider URL.
+	 * Build a Plyr-enhanced player for a known provider URL.
 	 *
-	 * YouTube uses a fully custom player (no YouTube chrome shown while
-	 * playing); Vimeo uses a clean click-to-play iframe.
+	 * Plyr (the same player Tutor LMS uses) wraps YouTube/Vimeo with its own
+	 * skin and controls so the source provider's chrome is not shown. If Plyr
+	 * fails to load, the embedded iframe still plays natively.
 	 *
 	 * @param string $url   Source URL.
 	 * @param string $title Accessible title.
@@ -85,22 +86,25 @@ final class Render {
 	private static function provider_player( string $url, string $title ): string {
 		$youtube = self::youtube_id( $url );
 		if ( '' !== $youtube ) {
-			return self::facade_youtube( $youtube, $title );
+			$src = 'https://www.youtube.com/embed/' . rawurlencode( $youtube )
+				. '?rel=0&showinfo=0&iv_load_policy=3&modestbranding=1&playsinline=1&enablejsapi=1';
+
+			return sprintf(
+				'<div class="mdds-plyr"><div class="plyr__video-embed"><iframe src="%1$s" title="%2$s" allowfullscreen allowtransparency allow="autoplay; encrypted-media; picture-in-picture" referrerpolicy="strict-origin-when-cross-origin"></iframe></div></div>',
+				esc_url( $src ),
+				esc_attr( $title )
+			);
 		}
 
 		$vimeo = self::vimeo_id( $url );
 		if ( '' !== $vimeo ) {
-			return self::facade(
-				add_query_arg(
-					array(
-						'byline'   => 0,
-						'portrait' => 0,
-						'title'    => 0,
-						'dnt'      => 1,
-					),
-					'https://player.vimeo.com/video/' . rawurlencode( $vimeo )
-				),
-				$title
+			$src = 'https://player.vimeo.com/video/' . rawurlencode( $vimeo )
+				. '?loop=false&byline=false&portrait=false&title=false&transparent=0';
+
+			return sprintf(
+				'<div class="mdds-plyr"><div class="plyr__video-embed"><iframe src="%1$s" title="%2$s" allowfullscreen allowtransparency allow="autoplay; fullscreen; picture-in-picture" referrerpolicy="strict-origin-when-cross-origin"></iframe></div></div>',
+				esc_url( $src ),
+				esc_attr( $title )
 			);
 		}
 
@@ -119,49 +123,6 @@ final class Render {
 			'<div class="mdds-video-embed"><iframe src="%1$s" title="%2$s" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe></div>',
 			esc_url( $src ),
 			esc_attr( $title )
-		);
-	}
-
-	/**
-	 * Facade for a YouTube video that loads into a fully custom player
-	 * (no YouTube branding/controls shown), via the IFrame API on click.
-	 *
-	 * @param string $id    YouTube video ID.
-	 * @param string $title Accessible title.
-	 * @return string
-	 */
-	private static function facade_youtube( string $id, string $title ): string {
-		$noscript = 'https://www.youtube.com/embed/' . rawurlencode( $id ) . '?rel=0&modestbranding=1&playsinline=1';
-
-		return sprintf(
-			'<div class="mdds-video-embed mdds-video-facade" data-mdds-yt="%1$s">'
-			. '<button type="button" class="mdds-video-play" aria-label="%2$s"><span class="mdds-video-play-icon" aria-hidden="true"></span></button>'
-			. '<noscript><iframe src="%3$s" title="%2$s" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe></noscript>'
-			. '</div>',
-			esc_attr( $id ),
-			esc_attr( $title ),
-			esc_url( $noscript )
-		);
-	}
-
-	/**
-	 * Build a click-to-play facade that loads an iframe on click (Vimeo).
-	 *
-	 * @param string $src   Provider embed URL (without autoplay).
-	 * @param string $title Accessible title.
-	 * @return string
-	 */
-	private static function facade( string $src, string $title ): string {
-		$autoplay = add_query_arg( 'autoplay', 1, $src );
-
-		return sprintf(
-			'<div class="mdds-video-embed mdds-video-facade" data-mdds-video="%1$s">'
-			. '<button type="button" class="mdds-video-play" aria-label="%2$s"><span class="mdds-video-play-icon" aria-hidden="true"></span></button>'
-			. '<noscript><iframe src="%3$s" title="%2$s" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe></noscript>'
-			. '</div>',
-			esc_url( $autoplay ),
-			esc_attr( $title ),
-			esc_url( $src )
 		);
 	}
 

@@ -75,7 +75,12 @@ final class Assets {
 			return;
 		}
 
-		wp_enqueue_script( self::HANDLE, MDDS_URL . 'assets/js/frontend.js', array(), MDDS_VERSION, true );
+		// Plyr media player (same library Tutor LMS uses) — wraps YouTube/Vimeo
+		// with a custom skin so the provider's branding/chrome is not shown.
+		wp_enqueue_style( 'plyr', 'https://cdn.plyr.io/3.7.8/plyr.css', array(), '3.7.8' );
+		wp_enqueue_script( 'plyr', 'https://cdn.plyr.io/3.7.8/plyr.polyfilled.js', array(), '3.7.8', true );
+
+		wp_enqueue_script( self::HANDLE, MDDS_URL . 'assets/js/frontend.js', array( 'plyr' ), MDDS_VERSION, true );
 
 		wp_localize_script(
 			self::HANDLE,
