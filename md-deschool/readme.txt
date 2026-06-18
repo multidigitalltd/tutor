@@ -4,7 +4,7 @@ Tags: lms, courses, woocommerce, quiz, learning
 Requires at least: 6.4
 Tested up to: 6.5
 Requires PHP: 8.3
-Stable tag: 1.14.1
+Stable tag: 1.14.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -39,6 +39,9 @@ DeSchool מאפשר לבנות "יחידות תוכן" לימודיות גנרי
 5. צרו עמוד "אזור אישי" עם השורטקוד [deschool_account], ועמוד קטלוג (לא חובה) עם [deschool_courses]. ארכיון הקורסים זמין גם בכתובת /unit/.
 
 == Changelog ==
+
+= 1.14.2 =
+* תיקון נגן: אימוץ טכניקת ה-crop של Tutor LMS (הגדלת ה-iframe ל-200% וחיתוך הקצוות) — כותרת/לוגו/הצעות של יוטיוב נחתכים מחוץ למסגרת בכל מצב (ניגון והשהיה), ללא זום וללא איבוד תוכן. הוסרו הכיסויים הידניים.
 
 = 1.14.1 =
 * תיקון: חסימת שכבת ההשהיה של יוטיוב (כותרת/לוגו/"סרטונים נוספים") — מעל נגן Plyr נוסף כיסוי אטום בזמן השהיה ומסכת כותרת עליונה, כך שמסך ההשהיה של יוטיוב אינו נראה.

@@ -556,50 +556,10 @@
 		};
 
 		document.querySelectorAll( '.mdds-plyr .plyr__video-embed' ).forEach( function ( el ) {
-			var player = new window.Plyr( el, options );
-			maskProvider( player );
+			new window.Plyr( el, options );
 		} );
 		document.querySelectorAll( 'video.mdds-plyr-video' ).forEach( function ( el ) {
 			new window.Plyr( el, options );
-		} );
-	}
-
-	/**
-	 * Hide the provider's own paused/title overlay (YouTube shows its title,
-	 * logo and suggested videos on pause — even with controls=0). We layer an
-	 * opaque cover (shown while paused) and a top title-mask above the iframe
-	 * but below Plyr's own controls.
-	 *
-	 * @param {Object} player Plyr instance.
-	 */
-	function maskProvider( player ) {
-		if ( 'youtube' !== player.provider ) {
-			return;
-		}
-		var container = player.elements && player.elements.container;
-		if ( ! container ) {
-			return;
-		}
-
-		var cover = document.createElement( 'div' );
-		cover.className = 'mdds-yt-cover';
-		var mask = document.createElement( 'div' );
-		mask.className = 'mdds-yt-titlemask';
-		container.appendChild( cover );
-		container.appendChild( mask );
-
-		function setPlaying( isPlaying ) {
-			container.classList.toggle( 'mdds-is-playing', isPlaying );
-		}
-
-		player.on( 'playing', function () {
-			setPlaying( true );
-		} );
-		player.on( 'pause', function () {
-			setPlaying( false );
-		} );
-		player.on( 'ended', function () {
-			setPlaying( false );
 		} );
 	}
 

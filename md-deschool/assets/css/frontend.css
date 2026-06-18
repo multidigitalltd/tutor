@@ -526,27 +526,16 @@
 	--plyr-border-radius: var(--mdds-radius, 10px);
 }
 
-/* Hide YouTube's own paused/title overlay: opaque cover while paused, plus a
-   permanent top title-mask — layered above the iframe but below Plyr's UI. */
-.mdds-plyr .plyr .mdds-yt-cover {
-	position: absolute;
-	inset: 0;
-	z-index: 1;
-	background: #000;
+/* Hide YouTube's own chrome (title bar top, logo/suggested bottom) by scaling
+   the iframe so those edges fall outside the cropped player area. The video is
+   centred and fills the visible area — no zoom, no content loss. */
+.mdds-plyr .plyr__video-wrapper {
+	overflow: hidden;
 }
 
-.mdds-plyr .plyr.mdds-is-playing .mdds-yt-cover {
-	display: none;
-}
-
-.mdds-plyr .plyr .mdds-yt-titlemask {
-	position: absolute;
-	top: 0;
-	inset-inline: 0;
-	height: 72px;
-	z-index: 1;
-	pointer-events: none;
-	background: linear-gradient( to bottom, rgba( 0, 0, 0, 0.95 ) 0, rgba( 0, 0, 0, 0.55 ) 34px, rgba( 0, 0, 0, 0 ) 72px );
+.mdds-plyr .plyr--youtube iframe {
+	top: -50%;
+	height: 200% !important;
 }
 
 .mdds-video-file {
