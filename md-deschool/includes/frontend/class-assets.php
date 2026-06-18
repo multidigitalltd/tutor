@@ -80,7 +80,7 @@ final class Assets {
 		// Self-hosted (same origin) so the script and icon sprite are never
 		// blocked by a CDN/network policy.
 		wp_enqueue_style( 'plyr', MDDS_URL . 'assets/vendor/plyr.css', array(), '3.7.8' );
-		wp_enqueue_script( 'plyr', MDDS_URL . 'assets/vendor/plyr.polyfilled.js', array(), '3.7.8', true );
+		wp_enqueue_script( 'plyr', MDDS_URL . 'assets/vendor/plyr.min.js', array(), '3.7.8', true );
 
 		wp_enqueue_script( self::HANDLE, MDDS_URL . 'assets/js/frontend.js', array( 'plyr' ), MDDS_VERSION, true );
 
