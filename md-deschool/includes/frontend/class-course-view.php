@@ -98,16 +98,17 @@ final class Course_View {
 				<?php else : ?>
 
 					<?php
+					// Learning mode: a compact header (title + progress only) and no
+					// marketing intro/lecturer, so the course content is the focus.
 					Template_Loader::get_part(
 						'unit-header',
 						array(
 							'unit_id'    => $unit_id,
 							'progress'   => $progress,
 							'can_access' => $can_access,
+							'compact'    => true,
 						)
 					);
-
-					Template_Loader::get_part( 'lecturer', array( 'unit_id' => $unit_id ) );
 
 					$sequential   = Data::is_sequential( $unit_id );
 					$total        = count( $chapters );

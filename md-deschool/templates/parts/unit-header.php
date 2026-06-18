@@ -16,6 +16,7 @@ defined( 'ABSPATH' ) || exit;
 $unit_id    = (int) ( $args['unit_id'] ?? 0 );
 $progress   = (array) ( $args['progress'] ?? array() );
 $can_access = (bool) ( $args['can_access'] ?? false );
+$compact    = (bool) ( $args['compact'] ?? false );
 
 $short    = (string) get_post_meta( $unit_id, Data::META_SHORT_DESC, true );
 $includes = (string) get_post_meta( $unit_id, Data::META_INCLUDES, true );
@@ -23,8 +24,8 @@ $total    = (int) ( $progress['total'] ?? 0 );
 $done     = (int) ( $progress['completed'] ?? 0 );
 $percent  = $total > 0 ? (int) round( ( $done / $total ) * 100 ) : 0;
 ?>
-<header class="mdds-unit-header">
-	<?php if ( has_post_thumbnail( $unit_id ) ) : ?>
+<header class="mdds-unit-header<?php echo $compact ? ' is-compact' : ''; ?>">
+	<?php if ( ! $compact && has_post_thumbnail( $unit_id ) ) : ?>
 		<div class="mdds-unit-thumb">
 			<?php echo get_the_post_thumbnail( $unit_id, 'large', array( 'loading' => 'lazy' ) ); ?>
 		</div>
@@ -32,7 +33,7 @@ $percent  = $total > 0 ? (int) round( ( $done / $total ) * 100 ) : 0;
 
 	<h1 class="mdds-unit-title"><?php echo esc_html( get_the_title( $unit_id ) ); ?></h1>
 
-	<?php if ( '' !== $short ) : ?>
+	<?php if ( ! $compact && '' !== $short ) : ?>
 		<p class="mdds-unit-subtitle"><?php echo esc_html( $short ); ?></p>
 	<?php endif; ?>
 
@@ -58,6 +59,13 @@ $percent  = $total > 0 ? (int) round( ( $done / $total ) * 100 ) : 0;
 	<?php endif; ?>
 
 	<?php
+	// In compact (learning) mode, skip the marketing description and "includes"
+	// so the course content is the focus.
+	if ( $compact ) {
+		echo '</header>';
+		return;
+	}
+
 	$content = apply_filters( 'the_content', get_post_field( 'post_content', $unit_id ) ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- applying WordPress core filter.
 	if ( '' !== trim( wp_strip_all_tags( $content ) ) ) :
 		?>
