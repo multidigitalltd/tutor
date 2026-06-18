@@ -89,6 +89,18 @@ final class Unit_Metaboxes {
 	 * @param \WP_Post $post Current post.
 	 */
 	public function render_consult( \WP_Post $post ): void {
+		Field_Renderer::checkbox(
+			Data::META_CONSULT_ENABLED,
+			__( 'הפעלת אזור הייעוץ ביחידה זו', 'md-deschool' ),
+			Data::is_consult_enabled( (int) $post->ID )
+		);
+		Field_Renderer::checkbox(
+			Data::META_CONSULT_ON_DONE,
+			__( 'להציג רק למי שסיים את כל הקורס', 'md-deschool' ),
+			Data::consult_after_complete( (int) $post->ID )
+		);
+		echo '<hr />';
+
 		Field_Renderer::text( Data::META_CONSULT_TITLE, __( 'כותרת', 'md-deschool' ), (string) get_post_meta( $post->ID, Data::META_CONSULT_TITLE, true ) );
 		Field_Renderer::textarea( Data::META_CONSULT_TEXT, __( 'טקסט הסבר', 'md-deschool' ), (string) get_post_meta( $post->ID, Data::META_CONSULT_TEXT, true ), 4 );
 		Field_Renderer::text( Data::META_CONSULT_LABEL, __( 'טקסט הכפתור', 'md-deschool' ), (string) get_post_meta( $post->ID, Data::META_CONSULT_LABEL, true ) );
@@ -199,6 +211,10 @@ final class Unit_Metaboxes {
 		$this->update_text( $post_id, Data::META_CONSULT_LABEL );
 		$this->update_url( $post_id, Data::META_CONSULT_URL );
 		$this->update_text( $post_id, Data::META_QUIZ_TITLE );
+
+		// Consultation banner visibility.
+		update_post_meta( $post_id, Data::META_CONSULT_ENABLED, isset( $_POST[ Data::META_CONSULT_ENABLED ] ) ? 1 : 0 );
+		update_post_meta( $post_id, Data::META_CONSULT_ON_DONE, isset( $_POST[ Data::META_CONSULT_ON_DONE ] ) ? 1 : 0 );
 
 		// Learning structure.
 		update_post_meta( $post_id, Data::META_SEQUENTIAL, isset( $_POST[ Data::META_SEQUENTIAL ] ) ? 1 : 0 );

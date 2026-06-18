@@ -155,7 +155,7 @@ final class Course_View {
 
 					<div class="mdds-course-toolbar">
 						<button type="button" class="mdds-button mdds-button-outline mdds-focus-toggle" data-mdds-focus-toggle aria-pressed="false">
-							<?php esc_html_e( 'מצב מיקוד', 'md-deschool' ); ?>
+							<?php esc_html_e( 'הפעלת מצב מיקוד', 'md-deschool' ); ?>
 						</button>
 					</div>
 
@@ -273,7 +273,13 @@ final class Course_View {
 
 				<?php endif; ?>
 
-				<?php Template_Loader::get_part( 'consultation', array( 'unit_id' => $unit_id ) ); ?>
+				<?php
+				// The consultation banner is shown per the unit's settings — by
+				// default only to learners who completed the whole course.
+				if ( Data::should_show_consultation( $unit_id, $user_id ) ) {
+					Template_Loader::get_part( 'consultation', array( 'unit_id' => $unit_id ) );
+				}
+				?>
 
 			</div>
 		</div>

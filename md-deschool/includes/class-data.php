@@ -36,8 +36,10 @@ final class Data {
 	public const META_CONSULT_TITLE   = '_mdds_consult_title';
 	public const META_CONSULT_TEXT    = '_mdds_consult_text';
 	public const META_CONSULT_LABEL   = '_mdds_consult_button_label';
-	public const META_CONSULT_URL     = '_mdds_consult_button_url';
-	public const META_CONSULT_PRODUCT = '_mdds_consult_product_id';
+	public const META_CONSULT_URL      = '_mdds_consult_button_url';
+	public const META_CONSULT_PRODUCT  = '_mdds_consult_product_id';
+	public const META_CONSULT_ENABLED  = '_mdds_consult_enabled';
+	public const META_CONSULT_ON_DONE  = '_mdds_consult_after_complete';
 	public const META_QUIZ_TITLE      = '_mdds_quiz_title';
 	public const META_QUIZ_QUESTIONS  = '_mdds_quiz_questions';
 	public const META_QUIZ_PASS       = '_mdds_quiz_pass_score';
@@ -183,6 +185,55 @@ final class Data {
 	 */
 	public static function get_learn_url( int $unit_id ): string {
 		return trailingslashit( (string) get_permalink( $unit_id ) ) . 'learn/';
+	}
+
+	/**
+	 * Read a boolean meta that defaults to true when never saved.
+	 *
+	 * @param int    $unit_id Unit ID.
+	 * @param string $key     Meta key.
+	 */
+	private static function bool_meta_default_true( int $unit_id, string $key ): bool {
+		$value = get_post_meta( $unit_id, $key, true );
+
+		return '' === $value ? true : (bool) $value;
+	}
+
+	/**
+	 * Whether the consultation banner is enabled for a unit (default: yes).
+	 *
+	 * @param int $unit_id Unit ID.
+	 */
+	public static function is_consult_enabled( int $unit_id ): bool {
+		return self::bool_meta_default_true( $unit_id, self::META_CONSULT_ENABLED );
+	}
+
+	/**
+	 * Whether the consultation banner shows only after course completion
+	 * (default: yes).
+	 *
+	 * @param int $unit_id Unit ID.
+	 */
+	public static function consult_after_complete( int $unit_id ): bool {
+		return self::bool_meta_default_true( $unit_id, self::META_CONSULT_ON_DONE );
+	}
+
+	/**
+	 * Whether the consultation banner should be shown to the current viewer.
+	 *
+	 * @param int $unit_id Unit ID.
+	 * @param int $user_id User ID.
+	 */
+	public static function should_show_consultation( int $unit_id, int $user_id ): bool {
+		if ( ! self::is_consult_enabled( $unit_id ) ) {
+			return false;
+		}
+
+		if ( self::consult_after_complete( $unit_id ) ) {
+			return $user_id > 0 && self::all_chapters_completed( $user_id, $unit_id );
+		}
+
+		return true;
 	}
 
 	/**
