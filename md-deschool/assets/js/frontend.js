@@ -550,10 +550,10 @@
 		}
 
 		var options = {
-			// Load the control icons (SVG sprite) from the CDN so play/fullscreen
-			// icons render reliably regardless of the site's base path.
-			iconUrl: 'https://cdn.plyr.io/3.7.8/plyr.svg',
-			blankVideo: 'https://cdn.plyr.io/static/blank.mp4',
+			// Self-hosted icon sprite so play/fullscreen/etc. icons always render
+			// (no CDN dependency that a network policy could block).
+			iconUrl: data.plyrIconUrl || '',
+			blankVideo: '',
 			youtube: { noCookie: false, rel: 0, showinfo: 0, iv_load_policy: 3, modestbranding: 1, playsinline: 1 },
 			vimeo: { byline: false, portrait: false, title: false },
 			controls: [ 'play-large', 'play', 'progress', 'current-time', 'mute', 'volume', 'captions', 'fullscreen' ]

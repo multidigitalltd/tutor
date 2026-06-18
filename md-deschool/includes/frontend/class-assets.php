@@ -77,8 +77,10 @@ final class Assets {
 
 		// Plyr media player (same library Tutor LMS uses) — wraps YouTube/Vimeo
 		// with a custom skin so the provider's branding/chrome is not shown.
-		wp_enqueue_style( 'plyr', 'https://cdn.plyr.io/3.7.8/plyr.css', array(), '3.7.8' );
-		wp_enqueue_script( 'plyr', 'https://cdn.plyr.io/3.7.8/plyr.polyfilled.js', array(), '3.7.8', true );
+		// Self-hosted (same origin) so the script and icon sprite are never
+		// blocked by a CDN/network policy.
+		wp_enqueue_style( 'plyr', MDDS_URL . 'assets/vendor/plyr.css', array(), '3.7.8' );
+		wp_enqueue_script( 'plyr', MDDS_URL . 'assets/vendor/plyr.polyfilled.js', array(), '3.7.8', true );
 
 		wp_enqueue_script( self::HANDLE, MDDS_URL . 'assets/js/frontend.js', array( 'plyr' ), MDDS_VERSION, true );
 
@@ -86,10 +88,11 @@ final class Assets {
 			self::HANDLE,
 			'mddsData',
 			array(
-				'ajaxUrl' => admin_url( 'admin-ajax.php' ),
-				'nonce'   => wp_create_nonce( Ajax::NONCE_ACTION ),
-				'unitId'  => $unit_id,
-				'i18n'    => array(
+				'ajaxUrl'      => admin_url( 'admin-ajax.php' ),
+				'nonce'        => wp_create_nonce( Ajax::NONCE_ACTION ),
+				'unitId'       => $unit_id,
+				'plyrIconUrl'  => MDDS_URL . 'assets/vendor/plyr.svg',
+				'i18n'         => array(
 					'saving'     => __( 'שומר…', 'md-deschool' ),
 					'saved'      => __( 'נשמר בהצלחה', 'md-deschool' ),
 					'error'      => __( 'אירעה שגיאה, נסו שוב', 'md-deschool' ),
