@@ -75,9 +75,12 @@ final class Course_View {
 		// Base URL is the sales page; the learning interface lives at /learn/.
 		$view_course = $can_access && ( null !== get_query_var( 'learn', null ) );
 
+		// Learning mode uses a wider container for the two-column course layout.
+		$wrap_class = 'mdds-unit' . ( $view_course ? ' mdds-unit--learning' : '' );
+
 		ob_start();
 		?>
-		<div class="mdds-unit" dir="auto">
+		<div class="<?php echo esc_attr( $wrap_class ); ?>" dir="auto">
 			<div class="mdds-unit-inner">
 
 				<?php if ( ! $view_course ) : ?>
